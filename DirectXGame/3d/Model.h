@@ -167,7 +167,7 @@ public: // メンバ関数
 	/// <param name="viewProjection">ビュープロジェクション</param>
 	/// <param name="textureHadle">テクスチャハンドル</param>
 	/// <param name="objectColor">オブジェクトカラー</param>
-	void Draw(
+	 void Draw(
 	    const WorldTransform& worldTransform, const ViewProjection& viewProjection,
 	    uint32_t textureHadle, const ObjectColor* objectColor = nullptr);
 
