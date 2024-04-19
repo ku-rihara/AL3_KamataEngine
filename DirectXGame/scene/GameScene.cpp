@@ -44,10 +44,11 @@ void GameScene::Update() {
 	if (isBebugCameraActive_ == true) {
 		// デバッグカメラの更新
 		debugCamera_->Update();
+		viewProjection_.matView = Inverse();
+		viewProjection_.matProjection =;
 		
-		viewProjection_.UpdateViewMatrix();
-		/*viewProjection_.UpdateProjectionMatrix();
-		viewProjection_.matView = debugCamera_->GetViewProjection();*/
+		viewProjection_.TransferMatrix();
+		
 	} else {
 		viewProjection_.UpdateMatrix();
 	}
