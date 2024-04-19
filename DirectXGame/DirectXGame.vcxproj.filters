@@ -52,6 +52,9 @@
     <Filter Include="ソース ファイル\2d">
       <UniqueIdentifier>{814a0f6d-f847-4c45-856d-4688fa4c9e6c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Geometry">
+      <UniqueIdentifier>{052e1e07-87fd-4a5e-aa57-cc7eeb65ea83}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -71,6 +74,12 @@
     </ClCompile>
     <ClCompile Include="Player.cpp">
       <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Matrix4x4.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="Vector3.cpp">
+      <Filter>Geometry</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -128,9 +137,6 @@
     <ClInclude Include="input\Input.h">
       <Filter>ヘッダー ファイル\input</Filter>
     </ClInclude>
-    <ClInclude Include="math\Matrix4x4.h">
-      <Filter>ヘッダー ファイル\math</Filter>
-    </ClInclude>
     <ClInclude Include="math\Vector3.h">
       <Filter>ヘッダー ファイル\math</Filter>
     </ClInclude>
@@ -163,6 +169,12 @@
     </ClInclude>
     <ClInclude Include="Player.h">
       <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="math\Matrix4x4.h">
+      <Filter>ヘッダー ファイル\math</Filter>
+    </ClInclude>
+    <ClInclude Include="fMatrix4x4.h">
+      <Filter>Geometry</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

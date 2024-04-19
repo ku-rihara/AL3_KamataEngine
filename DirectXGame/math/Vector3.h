@@ -1,10 +1,22 @@
 #pragma once
+class Vector3 {
 
-/// <summary>
-/// 3次元ベクトル
-/// </summary>
-struct Vector3 final {
+public:
 	float x;
 	float y;
 	float z;
+
+public:
+	Vector3();
+	Vector3(float numX, float numY, float numZ);
+
+	Vector3 operator+(const Vector3& obj);
+
+	Vector3 operator-(const Vector3& obj);
+
+	Vector3 operator*(const Vector3& obj);
+
+	Vector3 operator/(const Vector3& obj);
+
+	void operator+=(const Vector3& obj);
 };
