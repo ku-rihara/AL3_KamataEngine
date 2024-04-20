@@ -2,9 +2,12 @@
 #include"Model.h"
 #include"WorldTransform.h"
 #include"input/input.h"
+//func
 #include"Geometry/fMatrix4x4.h"
+//class
 #include"PlayerBullet.h"
-
+//std
+#include<list>
 
 
 class Player {
@@ -12,6 +15,8 @@ private:
 	//包含
 	Input* input_ = nullptr;
 	PlayerBullet* bullet_ = nullptr;
+	//弾
+	std::list<PlayerBullet*> bullets_;
 	// ワールドトランスフォーム
 	WorldTransform worldTransform_;
 	// 3Dモデル

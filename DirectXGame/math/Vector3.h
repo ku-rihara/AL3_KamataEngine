@@ -8,6 +8,7 @@ public:
 
 public:
 	Vector3();
+	/*~Vector3();*/
 	Vector3(float numX, float numY, float numZ);
 
 	Vector3 operator+(const Vector3& obj);

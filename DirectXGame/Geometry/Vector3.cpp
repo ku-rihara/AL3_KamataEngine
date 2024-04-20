@@ -6,6 +6,10 @@ Vector3::Vector3() {
 	z = 0;
 }
 
+//Vector3::~Vector3() { 
+//
+//}
+
 Vector3::Vector3(float numX, float numY, float numZ) {
 	x = numX;
 	y = numY;
