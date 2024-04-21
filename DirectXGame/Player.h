@@ -15,12 +15,11 @@ private:
 	//包含
 	Input* input_ = nullptr;
 	PlayerBullet* bullet_ = nullptr;
-	//弾
-	std::list<PlayerBullet*> bullets_;
-	// ワールドトランスフォーム
-	WorldTransform worldTransform_;
-	// 3Dモデル
 	Model* model_ = nullptr;
+	
+	WorldTransform worldTransform_;// ワールドトランスフォーム
+	// 弾
+	std::list<PlayerBullet*> bullets_;
 	// テクスチャハンドル
 	uint32_t textureHandle_ = 0u;
 public:

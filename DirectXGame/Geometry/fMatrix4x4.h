@@ -22,6 +22,8 @@ Matrix4x4 MakeRotateZMatrix(float radian);
 
 Vector3 Transform(const Vector3& vector, const Matrix4x4& matrix);
 
+Vector3 TransformNormal(const Vector3& v, const Matrix4x4& m);
+
 Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Vector3 translate);
 
 Matrix4x4 Inverse(const Matrix4x4& m);

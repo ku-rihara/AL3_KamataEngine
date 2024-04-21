@@ -3,10 +3,11 @@
 #include"assert.h"
 
 
-void PlayerBullet::Init(Model* model, const Vector3& position) {
+void PlayerBullet::Init(Model* model, const Vector3& position, const Vector3& velocity) {
 	//NULLポインタチェック
 	assert(model);
 	model_ = model;
+	velocity_ = velocity;
 	//テクスチャ読み込み
 	textureHandle_ = TextureManager::Load("white1x1.png");
 
@@ -15,7 +16,12 @@ void PlayerBullet::Init(Model* model, const Vector3& position) {
 	worldTarnsform_.translation_ = position;
 }
 
-void PlayerBullet::Update() { 
+void PlayerBullet::Update() {
+	//座標を移動させる
+	worldTarnsform_.translation_ += velocity_;
+	if (--deathTimer_ <= 0) {
+		isDeath_ = true;
+	}
 	worldTarnsform_.UpdateMatrix(); 
 
 }
