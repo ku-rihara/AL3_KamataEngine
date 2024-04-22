@@ -9,6 +9,7 @@ GameScene::~GameScene() {
 	delete model_;
 	delete debugCamera_;
 	delete player_;
+	delete enemy_;
 }
 
 void GameScene::Initialize() {
@@ -19,6 +20,7 @@ void GameScene::Initialize() {
 
 	//インスタンス生成
 	player_ = new Player();
+	enemy_ = new Enemy();
 	debugCamera_ = new DebugCamera(1280,720);
 	//画像読み込み
 	textureHandle_ = TextureManager::Load("white1x1.png");
@@ -28,6 +30,7 @@ void GameScene::Initialize() {
 	worldTransform_.Initialize();
 	viewProjection_.Initialize();
 	player_->Init(model_, textureHandle_);
+	enemy_->Init(model_, Vector3{0,2,0}, Vector3{0,0,0.3f});
 	//軸方向表示の表示を有効にする
 	AxisIndicator::GetInstance()->SetVisible(true);
 	//軸方向表示が参照するビュープロジェクションを指定する（アドレス渡し）
@@ -36,6 +39,9 @@ void GameScene::Initialize() {
 
 void GameScene::Update() {
 	player_->Update();
+	if (enemy_) {
+		enemy_->Update();
+	}
 #ifdef _DEBUG
 	if (input_->TriggerKey(DIK_SPACE)) {
 		if (isDebugCameraActive_ == false) {
@@ -85,7 +91,9 @@ void GameScene::Draw() {
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
 	player_->Draw(viewProjection_);
-
+	if (enemy_) {
+		enemy_->Draw(viewProjection_);
+	}
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
 #pragma endregion

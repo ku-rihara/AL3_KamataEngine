@@ -20,4 +20,6 @@ public:
 	Vector3 operator/(const Vector3& obj);
 
 	void operator+=(const Vector3& obj);
+
+	void operator-=(const Vector3& obj);
 };

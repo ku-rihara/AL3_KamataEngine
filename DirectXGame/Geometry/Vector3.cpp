@@ -82,3 +82,10 @@ void Vector3::operator+=(const Vector3& obj) {
 	y += obj.y;
 	z += obj.z;
 }
+
+void Vector3::operator-=(const Vector3& obj) {
+
+	x -= obj.x;
+	y -= obj.y;
+	z -= obj.z;
+}
