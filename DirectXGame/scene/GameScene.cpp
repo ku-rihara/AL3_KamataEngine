@@ -30,7 +30,7 @@ void GameScene::Initialize() {
 	worldTransform_.Initialize();
 	viewProjection_.Initialize();
 	player_->Init(model_, textureHandle_);
-	enemy_->Init(model_, Vector3{0,2,20}, Vector3{0,0,0.3f});
+	enemy_->Init(model_, Vector3{10,2,20}, Vector3{0,0,0.1f});
 	//軸方向表示の表示を有効にする
 	AxisIndicator::GetInstance()->SetVisible(true);
 	//軸方向表示が参照するビュープロジェクションを指定する（アドレス渡し）
@@ -42,7 +42,9 @@ void GameScene::Update() {
 	if (enemy_) {
 		enemy_->Update();
 	}
+
 #ifdef _DEBUG
+	// デバッグカメラモード切り替え------------------------------
 	if (input_->TriggerKey(DIK_SPACE)) {
 		if (isDebugCameraActive_ == false) {
 			isDebugCameraActive_ = true;
@@ -50,8 +52,9 @@ void GameScene::Update() {
 			isDebugCameraActive_ = false;
 		}
 	}
+	// デバッグカメラモード切り替え------------------------------
 #endif
-	if (isDebugCameraActive_ == true) {
+	if (isDebugCameraActive_ == true) {//デバッグカメラがアクティブなら
 		// デバッグカメラの更新
 		debugCamera_->Update();
 		viewProjection_.matView = debugCamera_->GetViewProjection().matView;
@@ -59,7 +62,7 @@ void GameScene::Update() {
 
 		viewProjection_.TransferMatrix();
 
-	} else {
+	} else {//アクティブでない
 		viewProjection_.UpdateMatrix();
 	}
 }

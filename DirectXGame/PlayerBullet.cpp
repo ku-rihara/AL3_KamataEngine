@@ -23,7 +23,6 @@ void PlayerBullet::Update() {
 		isDeath_ = true;
 	}
 	worldTarnsform_.UpdateMatrix(); 
-
 }
 
 void PlayerBullet::Draw(const ViewProjection& viewProjection) {

@@ -1,5 +1,4 @@
 #include"EnemyStateApproach.h"
-#include"EnemyStateLeave.h"
 #include"Enemy.h"
 
 EnemyStateApproach::EnemyStateApproach(Enemy* enemy) 
@@ -12,13 +11,17 @@ EnemyStateApproach::~EnemyStateApproach() {
 }
 
 void EnemyStateApproach::Update() { 
-	enemy_->Move({0.0f, 0.0f, -0.3f});
-	showState();
-	if (enemy_->GetWorldTransform().z <= 0) {
-		isShowState_ = true;
-		enemy_->ChangeState(std::make_unique<EnemyStateLeave>(enemy_));
+	enemy_->Move({0.0f, 0.0f, -0.1f});
+	//発射タイマーカウントダウン
+	enemy_->FireTimerDecrement();
+	//指定時間に達した
+	if (enemy_->GetFireTimer() <= 0) {
+	//弾を発射
+		enemy_->Fire();
+		//発射タイマー初期化
+		enemy_->SetFireTimer(Enemy::kFireInterval);
 	}
-	
+	showState();
 }
 void EnemyStateApproach::showState() { 
 BaseEnemyState::showState();
