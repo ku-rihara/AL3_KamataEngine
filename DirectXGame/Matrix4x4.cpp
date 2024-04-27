@@ -1,6 +1,6 @@
-#include"Geometry/fMatrix4x4.h"
-#include<cmath>
-#include<assert.h>
+#include "Geometry/fMatrix4x4.h"
+#include <assert.h>
+#include <cmath>
 
 Matrix4x4 MakeIdentity4x4() {
 	Matrix4x4 result;
@@ -25,7 +25,6 @@ Matrix4x4 MakeIdentity4x4() {
 	return result;
 }
 
-
 Matrix4x4 Multiply(const Matrix4x4& m1, const Matrix4x4& m2) {
 	Matrix4x4 result;
 
@@ -36,6 +35,15 @@ Matrix4x4 Multiply(const Matrix4x4& m1, const Matrix4x4& m2) {
 			result.m[row][column] = m1.m[row][0] * m2.m[0][column] + m1.m[row][1] * m2.m[1][column] + m1.m[row][2] * m2.m[2][column] + m1.m[row][3] * m2.m[3][column];
 		}
 	}
+
+	return result;
+}
+Vector3 Multiply(const Vector3& vector, const Matrix4x4& matrix) {
+	Vector3 result;
+
+	result.x = vector.x * matrix.m[0][0] + vector.y * matrix.m[1][0] + vector.z * matrix.m[2][0] + matrix.m[3][0];
+	result.y = vector.x * matrix.m[0][1] + vector.y * matrix.m[1][1] + vector.z * matrix.m[2][1] + matrix.m[3][1];
+	result.z = vector.x * matrix.m[0][2] + vector.y * matrix.m[1][2] + vector.z * matrix.m[2][2] + matrix.m[3][2];
 
 	return result;
 }
@@ -171,9 +179,7 @@ Vector3 Transform(const Vector3& vector, const Matrix4x4& matrix) {
 
 Vector3 TransformNormal(const Vector3& v, const Matrix4x4& m) {
 
-	Vector3 result{v.x * m.m[0][0] + v.y * m.m[1][0] + v.z * m.m[2][0], 
-		           v.x * m.m[0][1] + v.y * m.m[1][1] + v.z * m.m[2][1], 
-		           v.x * m.m[0][2] + v.y * m.m[1][2] + v.z * m.m[2][2]};
+	Vector3 result{v.x * m.m[0][0] + v.y * m.m[1][0] + v.z * m.m[2][0], v.x * m.m[0][1] + v.y * m.m[1][1] + v.z * m.m[2][1], v.x * m.m[0][2] + v.y * m.m[1][2] + v.z * m.m[2][2]};
 	return result;
 }
 
@@ -305,4 +311,3 @@ Matrix4x4 MakeViewportMatrix(float left, float top, float width, float height, f
 	result.m[3][3] = 1;
 	return result;
 }
-
