@@ -84,10 +84,9 @@ void Enemy::Fire() {
 }
 
 void Enemy::FireAndReset() { 
-
+	Fire();
 	//発射タイマーをセットする
 	std::function<void(void)> callBack = std::bind(&Enemy::FireAndReset, this);
-	Fire();
 	//時限発動イベントを生成
 	TimedCall* timedCall = new TimedCall(callBack,kFireInterval);
 	//時限発動イベントを時限発動イベントリストに追加
