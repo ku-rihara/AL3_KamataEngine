@@ -29,7 +29,8 @@ void Enemy::Init(Model* model, const Vector3& pos, const Vector3& velocity) {
 
 void Enemy::Update() {
 	state_->Update();
-
+	
+	
 	//終了したタイマーを削除
 	timedCalls_.remove_if([](TimedCall* timedCall) {
 		if (timedCall->IsFinished()) {
@@ -51,10 +52,7 @@ void Enemy::Update() {
 	for (EnemyBullet* enemyBullet : enemyBullets_) {
 		enemyBullet->Update();
 	}
-	//タイマー更新
-	for (TimedCall* timedCall : timedCalls_) {
-		timedCall->Update();
-	}
+	
 
 	worldTransform_.UpdateMatrix();
 }
@@ -90,12 +88,16 @@ void Enemy::FireAndReset() {
 	//時限発動イベントを生成
 	TimedCall* timedCall = new TimedCall(callBack,kFireInterval);
 	//時限発動イベントを時限発動イベントリストに追加
-	timedCalls_.push_back(timedCall);
+	timedCalls_.push_back(timedCall);	
 }
 
 void Enemy::ApproachInit() {
-	// 発射タイマーを初期化
-	FireAndReset();
+	// 発射タイマーをセットする
+	std::function<void(void)> callBack = std::bind(&Enemy::FireAndReset, this);
+	// 時限発動イベントを生成
+	TimedCall* timedCall = new TimedCall(callBack, kFireInterval);
+	// 時限発動イベントを時限発動イベントリストに追加
+	timedCalls_.push_back(timedCall);
 }
 
     //敵の動き

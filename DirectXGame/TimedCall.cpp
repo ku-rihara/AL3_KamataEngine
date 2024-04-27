@@ -1,7 +1,6 @@
 #include "TimedCall.h"
 
 
-
 void TimedCall::Update() {
 	if (isFinished_) {
 		return;
@@ -10,8 +9,7 @@ void TimedCall::Update() {
 	if (time_ <= 0) {
 		isFinished_ = true;
 		//コールバック関数呼び出し
-		if (callback_) {
-			callback_(); 
-		}
+		callback_();
+		
 	}
 }

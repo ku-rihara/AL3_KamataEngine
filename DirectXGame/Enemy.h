@@ -45,4 +45,5 @@ public:
 	void ChangeState(std::unique_ptr<BaseEnemyState> state);//状態変更
 	//getter
 	Vector3 GetWorldTransform() const { return worldTransform_.translation_; }
+	std::list<TimedCall*> GetTimedCalls() const { return timedCalls_; }
 };

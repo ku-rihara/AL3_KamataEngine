@@ -12,7 +12,7 @@ private:
 public: 
 
 	//コンストラクタ
-	TimedCall(std::function<void(void)> callback, uint32_t time): callback_(callback_),time_(time){};
+	TimedCall(std::function<void(void)> callback, uint32_t time): callback_(callback),time_(time){};
 	//更新
 	void Update();
 	//完了ならtrueを返す
