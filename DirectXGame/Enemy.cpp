@@ -1,4 +1,5 @@
 #include "Enemy.h"
+#include"Player.h"
 #include "Geometry/fMatrix4x4.h"
 #include "TextureManager.h"
 #include "assert.h"
@@ -70,10 +71,14 @@ void Enemy::Fire() {
 		delete enemyBullet_;
 		enemyBullet_ = nullptr;
 	}
-	//弾を生成して、初期化
-	const float kBulletSpeed = -0.5f;
-	Vector3 velocity(0, 0, kBulletSpeed);
-	velocity = TransformNormal(velocity, worldTransform_.matWorld_);
+	assert(player_);
+	//弾の速度
+	const float kBulletSpeed = 1.0f;
+	Vector3 playerPos = player_->GetWorldPos();
+	Vector3 enemyPos = GetWorldPos();
+	Vector3 DifferentialVector = playerPos - enemyPos;//敵からプレイやー
+	Vector3 velocity = Normnalize(DifferentialVector) * kBulletSpeed;
+
 	EnemyBullet* newBullet = new EnemyBullet();
 	newBullet->Init(model_, worldTransform_.translation_,velocity);
 
@@ -108,4 +113,14 @@ void Enemy::Move(Vector3 velocity) {
 //state切り替え
 void Enemy::ChangeState(std::unique_ptr<BaseEnemyState> state) { 
 	state_ = std::move(state);
+}
+
+//getter-----------------------------------------------------------------
+Vector3 Enemy::GetWorldPos() {
+	Vector3 worldPos;
+	//ワールド行列の平行移動成分を取得
+	worldPos.x = worldTransform_.matWorld_.m[3][0];
+	worldPos.y = worldTransform_.matWorld_.m[3][1];
+	worldPos.z = worldTransform_.matWorld_.m[3][2];
+	return worldPos;
 }

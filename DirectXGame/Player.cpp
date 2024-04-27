@@ -1,10 +1,8 @@
 #include "Player.h"
-#include"cassert"
-#include"ImGuiManager.h"
+#include "ImGuiManager.h"
+#include "cassert"
 
-Player::Player() {
-
-}
+Player::Player() {}
 
 Player::~Player() {
 	for (PlayerBullet* bullet : bullets_) {
@@ -13,8 +11,8 @@ Player::~Player() {
 }
 
 void Player::Init(Model* model, uint32_t textureHandle) {
-	input_=Input::GetInstance();
-	//NULLポインタチェック
+	input_ = Input::GetInstance();
+	// NULLポインタチェック
 	assert(model);
 	model_ = model;
 	textureHandle_ = textureHandle;
@@ -23,7 +21,7 @@ void Player::Init(Model* model, uint32_t textureHandle) {
 
 void Player::Update() {
 
-	//ですフラグの立った弾を削除
+	// ですフラグの立った弾を削除
 	bullets_.remove_if([](PlayerBullet* bullet) {
 		if (bullet->GetIsDead()) {
 			delete bullet;
@@ -32,18 +30,18 @@ void Player::Update() {
 		return false;
 	});
 
-	//キャラクター旋回処理
+	// キャラクター旋回処理
 	Rotate();
-	//キャラクターの移動処理
+	// キャラクターの移動処理
 	Move();
-	//キャラクターの攻撃処理
+	// キャラクターの攻撃処理
 	Attack();
-	//弾更新
+	// 弾更新
 	for (PlayerBullet* bullet : bullets_) {
 		bullet->Update();
 	};
-	
-	worldTransform_.UpdateMatrix();//行列更新
+
+	worldTransform_.UpdateMatrix(); // 行列更新
 
 	ImGui::Begin("player");
 	ImGui::Text("PosX%f", worldTransform_.translation_.x);
@@ -54,16 +52,16 @@ void Player::Update() {
 
 void Player::Draw(ViewProjection& viewProjection) {
 	model_->Draw(worldTransform_, viewProjection, textureHandle_);
-	//弾描画
+	// 弾描画
 	for (PlayerBullet* bullet : bullets_) {
 		bullet->Draw(viewProjection);
 	}
 }
 
 void Player::Rotate() {
-	//回転速さ[ラジアン/frame]
+	// 回転速さ[ラジアン/frame]
 	const float kRotSpeed = 0.02f;
-	//押した方向で移動ベクトルを変更
+	// 押した方向で移動ベクトルを変更
 	if (input_->PushKey(DIK_A)) {
 		worldTransform_.rotation_.y -= kRotSpeed;
 	} else if (input_->PushKey(DIK_D)) {
@@ -101,15 +99,25 @@ void Player::Move() {
 
 void Player::Attack() {
 	if (input_->TriggerKey(DIK_W)) {
-		//弾の速度
+		// 弾の速度
 		const float kBulletSpeed = 1.0f;
 		Vector3 velocity(0, 0, kBulletSpeed);
-		//速度ベクトルヲ自機の向きに合わせて回転させる
+		// 速度ベクトルヲ自機の向きに合わせて回転させる
 		velocity = TransformNormal(velocity, worldTransform_.matWorld_);
 		// 弾を生成し、初期化
 		PlayerBullet* newBullet = new PlayerBullet();
 		newBullet->Init(model_, worldTransform_.translation_, velocity);
-		//弾を登録する
+		// 弾を登録する
 		bullets_.push_back(newBullet);
 	}
+}
+//Getter-------------------------------------------------------------
+Vector3 Player::GetWorldPos() {
+	Vector3 worldPos;
+	//ワールド行列の平行移動成分を取得
+	worldPos.x = worldTransform_.matWorld_.m[3][0];
+	worldPos.y = worldTransform_.matWorld_.m[3][1];
+	worldPos.z = worldTransform_.matWorld_.m[3][2];
+
+	return worldPos;
 }

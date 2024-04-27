@@ -1,5 +1,4 @@
 #include"EnemyStateApproach.h"
-#include"EnemyStateLeave.h"
 #include"Enemy.h"
 
 
@@ -17,13 +16,9 @@ void EnemyStateApproach::Update() {
 	showState();
 	// タイマー更新
 	for (TimedCall* timedCall : enemy_->GetTimedCalls()) {
-		timedCall->Update();
+			timedCall->Update();
 	}
-	if (enemy_->GetWorldTransform().z <= 0) {
-		enemy_->GetTimedCalls().clear();
-		isShowState_ = false;
-		enemy_->ChangeState(std::make_unique<EnemyStateLeave>(enemy_));
-	}
+
 }
 void EnemyStateApproach::showState() { 
 BaseEnemyState::showState();

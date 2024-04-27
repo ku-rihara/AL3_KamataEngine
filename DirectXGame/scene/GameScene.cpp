@@ -31,6 +31,8 @@ void GameScene::Initialize() {
 	viewProjection_.Initialize();
 	player_->Init(model_, textureHandle_);
 	enemy_->Init(model_, Vector3{10,2,20}, Vector3{0,0,0.1f});
+	//自キャラのアドレスを渡す
+	enemy_->SetPlayer(player_);
 	//軸方向表示の表示を有効にする
 	AxisIndicator::GetInstance()->SetVisible(true);
 	//軸方向表示が参照するビュープロジェクションを指定する（アドレス渡し）

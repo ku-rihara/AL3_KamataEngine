@@ -12,10 +12,14 @@
 //std
 #include<list>
 
+//前方宣言
+class Player;
+
 class Enemy {
 private:
 	//包含
 	EnemyBullet* enemyBullet_=nullptr;
+	Player* player_ = nullptr;
 	Model* model_=nullptr;
 
 	
@@ -44,6 +48,8 @@ public:
 
 	void ChangeState(std::unique_ptr<BaseEnemyState> state);//状態変更
 	//getter
-	Vector3 GetWorldTransform() const { return worldTransform_.translation_; }
+	Vector3 GetWorldPos();
 	std::list<TimedCall*> GetTimedCalls() const { return timedCalls_; }
+	//setter
+	void SetPlayer(Player* player) { player_ = player; }
 };
