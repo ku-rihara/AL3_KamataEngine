@@ -8,6 +8,7 @@
 #include "WorldTransform.h"
 //class
 #include"EnemyBullet.h"
+#include"TimedCall.h"
 //std
 #include<list>
 
@@ -16,20 +17,19 @@ private:
 	//包含
 	EnemyBullet* enemyBullet_=nullptr;
 	Model* model_=nullptr;
-	// 弾
-	std::list<EnemyBullet*> enemyBullets_;
+
+	
 	WorldTransform worldTransform_;
 	Vector3 velocity_;
-	int32_t fireTimer_;
 	uint32_t textureHandle_ = 0;
-	//状態
-    std::unique_ptr<BaseEnemyState> state_;
+	
+	std::list<EnemyBullet*> enemyBullets_;  // 弾
+	std::list<TimedCall*> timedCalls_;//時限発動のリスト
+    std::unique_ptr<BaseEnemyState> state_;//状態
 
 public:
 	//発射間隔
 	static const int kFireInterval = 60;
-
-
 public:
 	Enemy();
 	~Enemy();
@@ -37,16 +37,12 @@ public:
 	void Update();
 	void Draw(ViewProjection& viewProjection);
 
-	void ApproachInit();
-	void Move(Vector3 velocity);
-	void Fire();
+	void ApproachInit();//初期フェーズ
+	void Move(Vector3 velocity);//移動
+	void Fire();//弾の発射
+	void FireAndReset();
 
 	void ChangeState(std::unique_ptr<BaseEnemyState> state);//状態変更
 	//getter
 	Vector3 GetWorldTransform() const { return worldTransform_.translation_; }
-	uint32_t GetFireTimer() const { return fireTimer_; }
-
-	//
-	void SetFireTimer(uint32_t time) { this->fireTimer_ = time; }
-	void FireTimerDecrement() { this->fireTimer_--; }
 };
