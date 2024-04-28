@@ -6,10 +6,11 @@
 #include "Geometry/fMatrix4x4.h"
 // class
 #include "PlayerBullet.h"
+#include"Collider.h"
 // std
 #include <list>
 
-class Player {
+class Player:public Collider {
 private:
 	// 包含
 	Input* input_ = nullptr;
@@ -36,9 +37,9 @@ public:
 	void Draw(ViewProjection& viewProjection);
 
 	//衝突が検知されたら呼び出されるコールバック関数
-	void OnColligion();
+	void OnColligion()override;
 
 	//getter
-	Vector3 GetWorldPos();
+	Vector3 GetWorldPos()override;
 	const std::list<PlayerBullet*>& GetBullets() const { return bullets_; }
 };

@@ -1,8 +1,9 @@
 #pragma once
 #include"WorldTransform.h"
 #include"Model.h"
+#include"Collider.h"
 
-class EnemyBullet {
+class EnemyBullet:public Collider {
 private:
 	static const int32_t kLifeTime = 60 * 5;//寿命
 	int32_t deathTimer_ = kLifeTime;//デスタイマー
@@ -21,6 +22,6 @@ public:
 
 	// 衝突が検知されたら呼び出されるコールバック関数
 	void OnColligion();
-	Vector3 GetWorldPos();
+	Vector3 GetWorldPos()override;
 	bool GetIsDeath() const { return isDeath_; }
 };

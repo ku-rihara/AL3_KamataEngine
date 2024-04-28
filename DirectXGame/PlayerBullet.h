@@ -2,10 +2,11 @@
 
 #include "Model.h"
 #include "WorldTransform.h"
+#include"Collider.h"
 /// <summary>
 /// 自キャラの弾
 /// </summary>
-class PlayerBullet {
+class PlayerBullet:public Collider {
 private:
 	static const int32_t kLifeTime = 60 * 5;//寿命
 	int32_t deathTimer_ = kLifeTime;//デスタイマー
@@ -24,6 +25,6 @@ public:
 
 	void OnColligion();
 
-	Vector3 GetWorldPos();
+	Vector3 GetWorldPos() override;
 	bool GetIsDead() const { return isDeath_; }
 };

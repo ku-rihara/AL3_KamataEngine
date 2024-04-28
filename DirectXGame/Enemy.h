@@ -8,6 +8,7 @@
 #include "WorldTransform.h"
 //class
 #include"EnemyBullet.h"
+#include"Collider.h"
 #include"TimedCall.h"
 //std
 #include<list>
@@ -15,7 +16,7 @@
 //前方宣言
 class Player;
 
-class Enemy {
+class Enemy :public Collider{
 private:
 	//包含
 	EnemyBullet* enemyBullet_=nullptr;
@@ -50,7 +51,7 @@ public:
 	// 衝突が検知されたら呼び出されるコールバック関数
 	void OnColligion();
 	//getter
-	Vector3 GetWorldPos();
+	Vector3 GetWorldPos()override;
 	std::list<TimedCall*> GetTimedCalls() const { return timedCalls_; }
 	const std::list<EnemyBullet*>& GetBullets() const { return enemyBullets_; }
 	//setter

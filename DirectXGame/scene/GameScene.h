@@ -8,9 +8,9 @@
 #include "ViewProjection.h"
 #include "WorldTransform.h"
 
-#include"Player.h"
-#include"Enemy.h"
-#include"DebugCamera.h"
+#include "DebugCamera.h"
+#include "Enemy.h"
+#include "Player.h"
 
 /// <summary>
 /// ゲームシーン
@@ -41,6 +41,14 @@ private: // メンバ変数
 	/// ゲームシーン用
 	/// </summary>
 
+private:
+	/// <summary>
+	/// コライダー2つの衝突判定と応答
+	/// </summary>
+	/// <param name="colliderA"></param>
+	/// <param name="colliderB"></param>
+	void CheckCollisionPair(Collider* colliderA, Collider* colliderB);
+
 public: // メンバ関数
 	/// <summary>
 	/// コンストクラタ
@@ -66,10 +74,6 @@ public: // メンバ関数
 	/// 描画
 	/// </summary>
 	void Draw();
-	
-	/// <summary>
-	/// 衝突判定と応答
-	/// </summary>
-	void ChecAllCollisions();
 
+	void ChecAllCollisions();
 };

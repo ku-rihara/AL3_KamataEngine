@@ -33,6 +33,7 @@ void EnemyBullet::Draw(const ViewProjection& viewProjection) {
 }
 
 Vector3 EnemyBullet::GetWorldPos() {
+	
 	Vector3 worldPos;
 	// ワールド行列の平行移動成分を取得
 	worldPos.x = worldTransform_.matWorld_.m[3][0];

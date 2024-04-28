@@ -119,64 +119,48 @@ void GameScene::Draw() {
 }
 
 void GameScene::ChecAllCollisions() {
-	Vector3 posA, posB;
 	// 自弾リストの取得
 	const std::list<PlayerBullet*>& playerBullets = player_->GetBullets();
 	// 敵弾リストの取得
 	const std::list<EnemyBullet*>& enemyBullets = enemy_->GetBullets();
 
 #pragma region 自キャラと敵弾の当たり判定
-	// 自キャラの座標
-	posA = player_->GetWorldPos();
+
 	// 自キャラと敵弾全ての当たり判定
 	for (EnemyBullet* bullet : enemyBullets) {
-		// 敵弾の座標
-		posB = bullet->GetWorldPos();
-		float distaince = powf((posA.x - posB.x), 2) + powf((posA.y - posB.y), 2) + powf((posA.z - posB.z), 2);
-		// 球と球の交差判定
-		if (distaince <= 5 + 5) {
-			// 自キャラ衝突時コールバックを呼び出す
-			player_->OnColligion();
-			// 敵弾の衝突時コールバックを呼び出す
-			bullet->OnColligion();
-		}
+		CheckCollisionPair(player_,bullet);
 	}
 #pragma endregion
 
 #pragma region 自弾と敵キャラの当たり判定
-	// 自キャラの座標
-	posA = enemy_->GetWorldPos();
-	// 自キャラと敵弾全ての当たり判定
+	
 	for (PlayerBullet* bullet : playerBullets) {
-		// 敵弾の座標
-		posB = bullet->GetWorldPos();
-		float distaince = powf((posA.x - posB.x), 2) + powf((posA.y - posB.y), 2) + powf((posA.z - posB.z), 2);
-		// 球と球の交差判定
-		if (distaince <= 5 + 5) {
-			// 自キャラ衝突時コールバックを呼び出す
-			enemy_->OnColligion();
-			// 敵弾の衝突時コールバックを呼び出す
-			bullet->OnColligion();
-		}
+		CheckCollisionPair(enemy_, bullet);
 	}
 #pragma endregion
 
 #pragma region 自弾と敵弾の当たり判定
-	
+
 	for (EnemyBullet* ebullet : enemyBullets) {
-		
 		for (PlayerBullet* pbullet : playerBullets) {
-			posA = ebullet->GetWorldPos();
-			posB = pbullet->GetWorldPos();
-			float distaince = powf((posA.x - posB.x), 2) + powf((posA.y - posB.y), 2) + powf((posA.z - posB.z), 2);
-			// 球と球の交差判定
-			if (distaince <= 5 + 5) {
-				// 自キャラ衝突時コールバックを呼び出す
-				ebullet->OnColligion();
-				// 敵弾の衝突時コールバックを呼び出す
-				pbullet->OnColligion();
-			}
+			CheckCollisionPair(ebullet, pbullet);
 		}
 	}
 #pragma endregion
+}
+
+void GameScene::CheckCollisionPair(Collider* colliderA, Collider* colliderB) {
+	Vector3 posA, posB;
+	posA = colliderA->GetWorldPos();
+	posB = colliderB->GetWorldPos();
+	float distaince = powf((posA.x - posB.x), 2) + powf((posA.y - posB.y), 2) + powf((posA.z - posB.z), 2);
+
+	// 球と球の交差判定
+	if (distaince <= 5 + 5) {
+		// 自キャラ衝突時コールバックを呼び出す
+		colliderA->OnColligion();
+		// 敵弾の衝突時コールバックを呼び出す
+		colliderB->OnColligion();
+	}
+	
 }
