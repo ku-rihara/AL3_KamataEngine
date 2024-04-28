@@ -13,6 +13,7 @@ Vector3 Lerp(const Vector3& start, const Vector3& end, float t) {
 	return result;
 }
 
+
 Vector3 SLerp(const Vector3& start, const Vector3& end, float t) {
 	Vector3 Nstart = Normnalize(start);
 	Vector3 Nend = Normnalize(end);
