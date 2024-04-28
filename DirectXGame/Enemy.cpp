@@ -115,6 +115,8 @@ void Enemy::ChangeState(std::unique_ptr<BaseEnemyState> state) {
 	state_ = std::move(state);
 }
 
+void Enemy::OnColligion() {}
+
 //getter-----------------------------------------------------------------
 Vector3 Enemy::GetWorldPos() {
 	Vector3 worldPos;

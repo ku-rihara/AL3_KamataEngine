@@ -35,6 +35,10 @@ public:
 	void Update();
 	void Draw(ViewProjection& viewProjection);
 
+	//衝突が検知されたら呼び出されるコールバック関数
+	void OnColligion();
+
 	//getter
 	Vector3 GetWorldPos();
+	const std::list<PlayerBullet*>& GetBullets() const { return bullets_; }
 };

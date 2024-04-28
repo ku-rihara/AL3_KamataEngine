@@ -26,7 +26,18 @@ void PlayerBullet::Update() {
 }
 
 void PlayerBullet::Draw(const ViewProjection& viewProjection) {
-
 	//モデルの描画
 	model_->Draw(worldTarnsform_, viewProjection, textureHandle_);
 }
+
+Vector3 PlayerBullet::GetWorldPos() {
+	Vector3 worldPos;
+	// ワールド行列の平行移動成分を取得
+	worldPos.x = worldTarnsform_.matWorld_.m[3][0];
+	worldPos.y = worldTarnsform_.matWorld_.m[3][1];
+	worldPos.z = worldTarnsform_.matWorld_.m[3][2];
+
+	return worldPos;
+}
+
+void PlayerBullet::OnColligion() { isDeath_ = true; }

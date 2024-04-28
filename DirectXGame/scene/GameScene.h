@@ -16,6 +16,30 @@
 /// ゲームシーン
 /// </summary>
 class GameScene {
+private: // メンバ変数
+	DirectXCommon* dxCommon_ = nullptr;
+	Input* input_ = nullptr;
+	Audio* audio_ = nullptr;
+
+	// 包含
+	Player* player_ = nullptr;
+	Enemy* enemy_ = nullptr;
+	DebugCamera* debugCamera_ = nullptr;
+	// デバッグカメラ有効
+	bool isDebugCameraActive_ = false;
+
+	// テクスチャハンドル
+	uint32_t textureHandle_ = 0;
+	// 3Dモデル
+	Model* model_ = nullptr;
+	// ワールドトランスフォーム
+	WorldTransform worldTransform_;
+	// ビュープロジェクション
+	ViewProjection viewProjection_;
+
+	/// <summary>
+	/// ゲームシーン用
+	/// </summary>
 
 public: // メンバ関数
 	/// <summary>
@@ -42,30 +66,10 @@ public: // メンバ関数
 	/// 描画
 	/// </summary>
 	void Draw();
-
-private: // メンバ変数
-	DirectXCommon* dxCommon_ = nullptr;
-	Input* input_ = nullptr;
-	Audio* audio_ = nullptr;
-
-	//包含
-	Player* player_ = nullptr;
-	Enemy* enemy_ = nullptr;
-	DebugCamera* debugCamera_ = nullptr;
-	//デバッグカメラ有効
-	bool isDebugCameraActive_ = false;
-
-	//テクスチャハンドル
-	uint32_t textureHandle_ = 0;
-	//3Dモデル
-	Model* model_ = nullptr;
-	//ワールドトランスフォーム
-	WorldTransform worldTransform_;
-	//ビュープロジェクション
-	ViewProjection viewProjection_;
-
-
+	
 	/// <summary>
-	/// ゲームシーン用
+	/// 衝突判定と応答
 	/// </summary>
+	void ChecAllCollisions();
+
 };

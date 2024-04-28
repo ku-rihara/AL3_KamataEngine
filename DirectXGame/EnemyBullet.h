@@ -19,5 +19,8 @@ public:
 	void Update();
 	void Draw(const ViewProjection&viewProjection);
 
+	// 衝突が検知されたら呼び出されるコールバック関数
+	void OnColligion();
+	Vector3 GetWorldPos();
 	bool GetIsDeath() const { return isDeath_; }
 };

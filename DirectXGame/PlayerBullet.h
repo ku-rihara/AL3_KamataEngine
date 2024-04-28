@@ -22,5 +22,8 @@ public:
 	void Update();
 	void Draw(const ViewProjection& viewProjection);
 
+	void OnColligion();
+
+	Vector3 GetWorldPos();
 	bool GetIsDead() const { return isDeath_; }
 };

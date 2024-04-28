@@ -45,11 +45,14 @@ public:
 	void Move(Vector3 velocity);//移動
 	void Fire();//弾の発射
 	void FireAndReset();
+	void ChangeState(std::unique_ptr<BaseEnemyState> state); // 状態変更
 
-	void ChangeState(std::unique_ptr<BaseEnemyState> state);//状態変更
+	// 衝突が検知されたら呼び出されるコールバック関数
+	void OnColligion();
 	//getter
 	Vector3 GetWorldPos();
 	std::list<TimedCall*> GetTimedCalls() const { return timedCalls_; }
+	const std::list<EnemyBullet*>& GetBullets() const { return enemyBullets_; }
 	//setter
 	void SetPlayer(Player* player) { player_ = player; }
 };

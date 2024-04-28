@@ -111,6 +111,11 @@ void Player::Attack() {
 		bullets_.push_back(newBullet);
 	}
 }
+
+void Player::OnColligion() {
+	//何もしない
+}
+
 //Getter-------------------------------------------------------------
 Vector3 Player::GetWorldPos() {
 	Vector3 worldPos;

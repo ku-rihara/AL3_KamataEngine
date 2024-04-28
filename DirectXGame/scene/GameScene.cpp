@@ -1,11 +1,11 @@
 #include "GameScene.h"
+#include "AxisIndicator.h"
 #include "TextureManager.h"
 #include <cassert>
-#include"AxisIndicator.h"
 
 GameScene::GameScene() {}
 
-GameScene::~GameScene() { 
+GameScene::~GameScene() {
 	delete model_;
 	delete debugCamera_;
 	delete player_;
@@ -18,24 +18,24 @@ void GameScene::Initialize() {
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
 
-	//インスタンス生成
+	// インスタンス生成
 	player_ = new Player();
 	enemy_ = new Enemy();
-	debugCamera_ = new DebugCamera(1280,720);
-	//画像読み込み
+	debugCamera_ = new DebugCamera(1280, 720);
+	// 画像読み込み
 	textureHandle_ = TextureManager::Load("white1x1.png");
-	//モデル作成
+	// モデル作成
 	model_ = Model::Create();
-	//初期化
+	// 初期化
 	worldTransform_.Initialize();
 	viewProjection_.Initialize();
 	player_->Init(model_, textureHandle_);
-	enemy_->Init(model_, Vector3{10,2,20}, Vector3{0,0,0.1f});
-	//自キャラのアドレスを渡す
+	enemy_->Init(model_, Vector3{10, 2, 20}, Vector3{0, 0, 0.1f});
+	// 自キャラのアドレスを渡す
 	enemy_->SetPlayer(player_);
-	//軸方向表示の表示を有効にする
+	// 軸方向表示の表示を有効にする
 	AxisIndicator::GetInstance()->SetVisible(true);
-	//軸方向表示が参照するビュープロジェクションを指定する（アドレス渡し）
+	// 軸方向表示が参照するビュープロジェクションを指定する（アドレス渡し）
 	AxisIndicator::GetInstance()->SetTargetViewProjection(&viewProjection_);
 }
 
@@ -45,6 +45,7 @@ void GameScene::Update() {
 		enemy_->Update();
 	}
 
+	ChecAllCollisions();
 #ifdef _DEBUG
 	// デバッグカメラモード切り替え------------------------------
 	if (input_->TriggerKey(DIK_SPACE)) {
@@ -56,7 +57,7 @@ void GameScene::Update() {
 	}
 	// デバッグカメラモード切り替え------------------------------
 #endif
-	if (isDebugCameraActive_ == true) {//デバッグカメラがアクティブなら
+	if (isDebugCameraActive_ == true) { // デバッグカメラがアクティブなら
 		// デバッグカメラの更新
 		debugCamera_->Update();
 		viewProjection_.matView = debugCamera_->GetViewProjection().matView;
@@ -64,7 +65,7 @@ void GameScene::Update() {
 
 		viewProjection_.TransferMatrix();
 
-	} else {//アクティブでない
+	} else { // アクティブでない
 		viewProjection_.UpdateMatrix();
 	}
 }
@@ -114,5 +115,68 @@ void GameScene::Draw() {
 	// スプライト描画後処理
 	Sprite::PostDraw();
 
+#pragma endregion
+}
+
+void GameScene::ChecAllCollisions() {
+	Vector3 posA, posB;
+	// 自弾リストの取得
+	const std::list<PlayerBullet*>& playerBullets = player_->GetBullets();
+	// 敵弾リストの取得
+	const std::list<EnemyBullet*>& enemyBullets = enemy_->GetBullets();
+
+#pragma region 自キャラと敵弾の当たり判定
+	// 自キャラの座標
+	posA = player_->GetWorldPos();
+	// 自キャラと敵弾全ての当たり判定
+	for (EnemyBullet* bullet : enemyBullets) {
+		// 敵弾の座標
+		posB = bullet->GetWorldPos();
+		float distaince = powf((posA.x - posB.x), 2) + powf((posA.y - posB.y), 2) + powf((posA.z - posB.z), 2);
+		// 球と球の交差判定
+		if (distaince <= 5 + 5) {
+			// 自キャラ衝突時コールバックを呼び出す
+			player_->OnColligion();
+			// 敵弾の衝突時コールバックを呼び出す
+			bullet->OnColligion();
+		}
+	}
+#pragma endregion
+
+#pragma region 自弾と敵キャラの当たり判定
+	// 自キャラの座標
+	posA = enemy_->GetWorldPos();
+	// 自キャラと敵弾全ての当たり判定
+	for (PlayerBullet* bullet : playerBullets) {
+		// 敵弾の座標
+		posB = bullet->GetWorldPos();
+		float distaince = powf((posA.x - posB.x), 2) + powf((posA.y - posB.y), 2) + powf((posA.z - posB.z), 2);
+		// 球と球の交差判定
+		if (distaince <= 5 + 5) {
+			// 自キャラ衝突時コールバックを呼び出す
+			enemy_->OnColligion();
+			// 敵弾の衝突時コールバックを呼び出す
+			bullet->OnColligion();
+		}
+	}
+#pragma endregion
+
+#pragma region 自弾と敵弾の当たり判定
+	
+	for (EnemyBullet* ebullet : enemyBullets) {
+		
+		for (PlayerBullet* pbullet : playerBullets) {
+			posA = ebullet->GetWorldPos();
+			posB = pbullet->GetWorldPos();
+			float distaince = powf((posA.x - posB.x), 2) + powf((posA.y - posB.y), 2) + powf((posA.z - posB.z), 2);
+			// 球と球の交差判定
+			if (distaince <= 5 + 5) {
+				// 自キャラ衝突時コールバックを呼び出す
+				ebullet->OnColligion();
+				// 敵弾の衝突時コールバックを呼び出す
+				pbullet->OnColligion();
+			}
+		}
+	}
 #pragma endregion
 }
