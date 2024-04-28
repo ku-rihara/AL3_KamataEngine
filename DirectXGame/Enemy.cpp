@@ -31,7 +31,6 @@ void Enemy::Init(Model* model, const Vector3& pos, const Vector3& velocity) {
 void Enemy::Update() {
 	state_->Update();
 	
-	
 	//終了したタイマーを削除
 	timedCalls_.remove_if([](TimedCall* timedCall) {
 		if (timedCall->IsFinished()) {
@@ -80,6 +79,7 @@ void Enemy::Fire() {
 	Vector3 velocity = Normnalize(DifferentialVector) * kBulletSpeed;
 
 	EnemyBullet* newBullet = new EnemyBullet();
+	newBullet->SetPlayer(player_);
 	newBullet->Init(model_, worldTransform_.translation_,velocity);
 
 	//弾を登録する

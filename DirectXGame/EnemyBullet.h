@@ -2,16 +2,20 @@
 #include"WorldTransform.h"
 #include"Model.h"
 
+//前方宣言
+class Player;
+
 class EnemyBullet {
 private:
+	Model* model_ = nullptr;
+	Player* player_;
+
 	static const int32_t kLifeTime = 60 * 5;//寿命
 	int32_t deathTimer_ = kLifeTime;//デスタイマー
-	bool isDeath_ = false;//デスフラグ
-	Model* model_ = nullptr;
 	WorldTransform worldTransform_;
 	Vector3 velocity_;
 	uint32_t TextureHandle_;
-
+	bool isDeath_ = false; // デスフラグ
 public:
 	EnemyBullet();
 	~EnemyBullet();
@@ -19,5 +23,10 @@ public:
 	void Update();
 	void Draw(const ViewProjection&viewProjection);
 
+	void Directionoftravel();
+	//getter
+	Vector3 GetWorldPos();
 	bool GetIsDeath() const { return isDeath_; }
+	//setter
+	void SetPlayer(Player* player) { player_ = player; }
 };
