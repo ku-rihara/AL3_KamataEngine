@@ -152,6 +152,7 @@ void GameScene::ChecAllCollisions() {
 		}
 	}
 	
+
 }
 
 void GameScene::CheckCollisionPair(Collider* colliderA, Collider* colliderB) {
