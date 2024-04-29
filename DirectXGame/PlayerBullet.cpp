@@ -1,6 +1,7 @@
 #include "PlayerBullet.h"
 #include "TextureManager.h"
 #include"assert.h"
+#include"CollisionConfig.h"
 
 
 void PlayerBullet::Init(Model* model, const Vector3& position, const Vector3& velocity) {
@@ -14,6 +15,10 @@ void PlayerBullet::Init(Model* model, const Vector3& position, const Vector3& ve
 	worldTarnsform_.Initialize();
 	//引数で受け取った初期座標をセット
 	worldTarnsform_.translation_ = position;
+	// 衝突属性を設定
+	SetCollisionAttribute(kCollisionAttributePlayer);
+	// 衝突対象を自分の属性以外に設定
+	SetCollisionMask(~kCollisionAttributePlayer);
 }
 
 void PlayerBullet::Update() {

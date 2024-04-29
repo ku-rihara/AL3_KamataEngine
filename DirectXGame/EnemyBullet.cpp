@@ -1,6 +1,7 @@
 #include "EnemyBullet.h"
 #include"assert.h"
 #include"TextureManager.h"
+#include"CollisionConfig.h"
 
 EnemyBullet::EnemyBullet() {
 
@@ -16,6 +17,10 @@ void EnemyBullet::Init(Model* model, const Vector3& position, const Vector3& vel
 	worldTransform_.Initialize();
 	worldTransform_.translation_ = position;
 	velocity_ = velocity;
+	// 衝突属性を設定
+	SetCollisionAttribute(kCollisionAttributeEnemy);
+	// 衝突対象を自分の属性以外に設定
+	SetCollisionMask(~kCollisionAttributeEnemy);
 	TextureHandle_ = TextureManager::Load("uvChecker.png");
 }
 

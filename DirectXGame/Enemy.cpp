@@ -3,7 +3,7 @@
 #include "Geometry/fMatrix4x4.h"
 #include "TextureManager.h"
 #include "assert.h"
-
+#include"CollisionConfig.h"
 
 Enemy::Enemy() {}
 
@@ -26,6 +26,10 @@ void Enemy::Init(Model* model, const Vector3& pos, const Vector3& velocity) {
 	ChangeState(std::make_unique<EnemyStateApproach>(this));
 	//接近フェーズ初期化
 	ApproachInit();
+	// 衝突属性を設定
+	SetCollisionAttribute(kCollisionAttributeEnemy);
+	// 衝突対象を自分の属性以外に設定
+	SetCollisionMask(~kCollisionAttributeEnemy);
 }
 
 void Enemy::Update() {
