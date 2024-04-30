@@ -10,6 +10,7 @@ GameScene::~GameScene() {
 	delete debugCamera_;
 	delete player_;
 	delete enemy_;
+	delete collisionManager_;
 }
 
 void GameScene::Initialize() {
@@ -21,6 +22,7 @@ void GameScene::Initialize() {
 	// インスタンス生成
 	player_ = new Player();
 	enemy_ = new Enemy();
+	collisionManager_ = new CollisionManager();
 	debugCamera_ = new DebugCamera(1280, 720);
 	// 画像読み込み
 	textureHandle_ = TextureManager::Load("white1x1.png");
@@ -45,7 +47,23 @@ void GameScene::Update() {
 		enemy_->Update();
 	}
 
-	ChecAllCollisions();
+	// 自弾リストの取得
+	const std::list<PlayerBullet*>& playerBullets = player_->GetBullets();
+	// 敵弾リストの取得
+	const std::list<EnemyBullet*>& enemyBullets = enemy_->GetBullets();
+
+	collisionManager_->ClearList();
+
+	collisionManager_->EntryList(player_);
+	collisionManager_->EntryList(enemy_);
+	for (EnemyBullet* eBullet : enemyBullets) {
+		collisionManager_->EntryList(eBullet);
+	}
+	for (PlayerBullet* pBullet : playerBullets) {
+		collisionManager_->EntryList(pBullet);
+	}
+
+	collisionManager_->ChecAllCollisions();
 #ifdef _DEBUG
 	// デバッグカメラモード切り替え------------------------------
 	if (input_->TriggerKey(DIK_SPACE)) {
@@ -118,60 +136,3 @@ void GameScene::Draw() {
 #pragma endregion
 }
 
-void GameScene::ChecAllCollisions() {
-	// 自弾リストの取得
-	const std::list<PlayerBullet*>& playerBullets = player_->GetBullets();
-	// 敵弾リストの取得
-	const std::list<EnemyBullet*>& enemyBullets = enemy_->GetBullets();
-	//コライダー
-	std::list<Collider*> colliders_;
-	//コライダーをリストに登録
-	colliders_.push_back(player_);
-	colliders_.push_back(enemy_);
-
-	for (PlayerBullet* pBullet : playerBullets) {
-		colliders_.push_back(pBullet);
-	}
-	for (EnemyBullet* eBullet : enemyBullets) {
-		colliders_.push_back(eBullet);
-	}
-	//リスト内のペアを総当たり
-	std::list<Collider*>::iterator itrA = colliders_.begin();
-	for (; itrA != colliders_.end(); ++itrA) {
-		//イテレータAからコライダーAを取得する
-		Collider* colliderA = *itrA;
-
-		// イテレーターBはイテレータAの次の要素から回す（重複判定を回避）
-		std::list<Collider*>::iterator itrB = itrA;
-		itrB++;
-		for (; itrB != colliders_.end(); ++itrB) {
-			Collider* colliderB = *itrB;
-
-			//ペアの当たり判定
-			CheckCollisionPair(colliderA,colliderB);
-		}
-	}
-	
-
-}
-
-void GameScene::CheckCollisionPair(Collider* colliderA, Collider* colliderB) {
-	Vector3 posA, posB;
-	//衝突フィルタリング
-	if ((colliderA->GetCollisionAttribute() ^ colliderB->GetCollisionMask())==0xFFFFFFFF|| 
-		(colliderB->GetCollisionAttribute() ^ colliderA->GetCollisionMask()) == 0xFFFFFFFF) {
-		return;
-	}
-	posA = colliderA->GetWorldPos();
-	posB = colliderB->GetWorldPos();
-	float distaince = powf((posA.x - posB.x), 2) + powf((posA.y - posB.y), 2) + powf((posA.z - posB.z), 2);
-
-	// 球と球の交差判定
-	if (distaince <= 5 + 5) {
-		// 自キャラ衝突時コールバックを呼び出す
-		colliderA->OnColligion();
-		// 敵弾の衝突時コールバックを呼び出す
-		colliderB->OnColligion();
-	}
-	
-}

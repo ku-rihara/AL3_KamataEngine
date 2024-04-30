@@ -11,6 +11,7 @@
 #include "DebugCamera.h"
 #include "Enemy.h"
 #include "Player.h"
+#include "CollisionManager.h"
 
 /// <summary>
 /// ゲームシーン
@@ -24,6 +25,7 @@ private: // メンバ変数
 	// 包含
 	Player* player_ = nullptr;
 	Enemy* enemy_ = nullptr;
+	CollisionManager* collisionManager_=nullptr;
 	DebugCamera* debugCamera_ = nullptr;
 	// デバッグカメラ有効
 	bool isDebugCameraActive_ = false;
@@ -42,12 +44,6 @@ private: // メンバ変数
 	/// </summary>
 
 private:
-	/// <summary>
-	/// コライダー2つの衝突判定と応答
-	/// </summary>
-	/// <param name="colliderA"></param>
-	/// <param name="colliderB"></param>
-	void CheckCollisionPair(Collider* colliderA, Collider* colliderB);
 
 public: // メンバ関数
 	/// <summary>
@@ -75,5 +71,5 @@ public: // メンバ関数
 	/// </summary>
 	void Draw();
 
-	void ChecAllCollisions();
+
 };
