@@ -12,6 +12,7 @@
 #include "Enemy.h"
 #include "Player.h"
 #include "Skydome.h"
+#include"RailCamera.h"
 
 /// <summary>
 /// ゲームシーン
@@ -23,6 +24,7 @@ private: // メンバ変数
 	Audio* audio_ = nullptr;
 
 	// 包含
+	RailCamera* railCamera_ = nullptr;
 	Player* player_ = nullptr;
 	Enemy* enemy_ = nullptr;
 	Skydome* skyDome_ = nullptr;

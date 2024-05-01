@@ -42,4 +42,6 @@ public:
 	//getter
 	Vector3 GetWorldPos()override;
 	const std::list<PlayerBullet*>& GetBullets() const { return bullets_; }
+	//setter
+	void SetParent(const WorldTransform* parent);
 };
