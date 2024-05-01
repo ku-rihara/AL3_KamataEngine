@@ -7,6 +7,8 @@ GameScene::GameScene() {}
 
 GameScene::~GameScene() {
 	delete model_;
+	delete modelSkydome_;
+	delete skyDome_;
 	delete debugCamera_;
 	delete player_;
 	delete enemy_;
@@ -19,10 +21,13 @@ void GameScene::Initialize() {
 	audio_ = Audio::GetInstance();
 
 	// インスタンス生成
+	skyDome_ = new Skydome();
 	player_ = new Player();
 	enemy_ = new Enemy();
 	debugCamera_ = new DebugCamera(1280, 720);
 	// 画像読み込み
+	// 3Dモデルの生成
+	modelSkydome_ = Model::CreateFromOBJ("skydome",true);
 	textureHandle_ = TextureManager::Load("white1x1.png");
 	// モデル作成
 	model_ = Model::Create();
@@ -31,6 +36,7 @@ void GameScene::Initialize() {
 	viewProjection_.Initialize();
 	player_->Init(model_, textureHandle_);
 	enemy_->Init(model_, Vector3{10, 2, 20}, Vector3{0, 0, 0.1f});
+	skyDome_->Init(modelSkydome_);
 	// 自キャラのアドレスを渡す
 	enemy_->SetPlayer(player_);
 	// 軸方向表示の表示を有効にする
@@ -40,6 +46,7 @@ void GameScene::Initialize() {
 }
 
 void GameScene::Update() {
+	skyDome_->Update();
 	player_->Update();
 	if (enemy_) {
 		enemy_->Update();
@@ -96,10 +103,12 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
+	skyDome_->Draw(viewProjection_);
 	player_->Draw(viewProjection_);
 	if (enemy_) {
 		enemy_->Draw(viewProjection_);
 	}
+	
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
 #pragma endregion

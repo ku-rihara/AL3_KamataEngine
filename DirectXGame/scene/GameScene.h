@@ -11,6 +11,7 @@
 #include "DebugCamera.h"
 #include "Enemy.h"
 #include "Player.h"
+#include "Skydome.h"
 
 /// <summary>
 /// ゲームシーン
@@ -24,6 +25,7 @@ private: // メンバ変数
 	// 包含
 	Player* player_ = nullptr;
 	Enemy* enemy_ = nullptr;
+	Skydome* skyDome_ = nullptr;
 	DebugCamera* debugCamera_ = nullptr;
 	// デバッグカメラ有効
 	bool isDebugCameraActive_ = false;
@@ -32,6 +34,7 @@ private: // メンバ変数
 	uint32_t textureHandle_ = 0;
 	// 3Dモデル
 	Model* model_ = nullptr;
+	Model* modelSkydome_ = nullptr;
 	// ワールドトランスフォーム
 	WorldTransform worldTransform_;
 	// ビュープロジェクション
