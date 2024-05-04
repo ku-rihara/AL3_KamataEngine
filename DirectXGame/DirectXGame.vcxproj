@@ -116,6 +116,7 @@
     <ClCompile Include="EnemyStateApproach.cpp" />
     <ClCompile Include="Geometry\Vector3.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MathFunction.cpp" />
     <ClCompile Include="Matrix4x4.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PlayerBullet.cpp" />
@@ -157,6 +158,7 @@
     <ClInclude Include="EnemyStateApproach.h" />
     <ClInclude Include="Geometry\fMatrix4x4.h" />
     <ClInclude Include="input\Input.h" />
+    <ClInclude Include="MathFunction.h" />
     <ClInclude Include="math\Matrix4x4.h" />
     <ClInclude Include="math\Vector2.h" />
     <ClInclude Include="math\Vector3.h" />

@@ -94,7 +94,7 @@ public:
 	/// <param name="p1">始点座標</param>
 	/// <param name="p2">終点座標</param>
 	/// <param name="color">色(RGBA)</param>
-	void DrawLine3d(const Vector3& p1, const Vector3& p2, const Vector4& color);
+	 void DrawLine3d(const Vector3& p1, const Vector3& p2, const Vector4& color);
 
 	/// <summary>
 	/// リセット

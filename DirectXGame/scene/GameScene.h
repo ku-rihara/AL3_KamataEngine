@@ -22,6 +22,7 @@ private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
 	Audio* audio_ = nullptr;
+	/*PrimitiveDrawer* primitiveDrawer_=nullptr;*/
 
 	// 包含
 	RailCamera* railCamera_ = nullptr;
@@ -42,6 +43,9 @@ private: // メンバ変数
 	// ビュープロジェクション
 	ViewProjection viewProjection_;
 
+	// スプライン曲線制御点
+	std::vector<Vector3> controlPoints_;
+	
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>
