@@ -43,8 +43,6 @@ private: // メンバ変数
 	// ビュープロジェクション
 	ViewProjection viewProjection_;
 
-	// スプライン曲線制御点
-	std::vector<Vector3> controlPoints_;
 	
 	/// <summary>
 	/// ゲームシーン用
