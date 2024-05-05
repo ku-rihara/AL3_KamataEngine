@@ -1,16 +1,15 @@
 #include "Enemy.h"
+#include"GameScene.h"
 #include"Player.h"
 #include "Geometry/fMatrix4x4.h"
 #include "TextureManager.h"
 #include "assert.h"
 #include"CollisionConfig.h"
 
-Enemy::Enemy() {}
+Enemy::Enemy() {  }
 
 Enemy::~Enemy() {
-	for (EnemyBullet* enemyBullet : enemyBullets_) {
-		delete enemyBullet;
-	}
+
 	for (TimedCall* timedCall : timedCalls_) {
 		delete timedCall;
 	}
@@ -33,8 +32,8 @@ void Enemy::Init(Model* model, const Vector3& pos, const Vector3& velocity) {
 }
 
 void Enemy::Update() {
-	state_->Update();
 	
+	state_->Update();
 	
 	//終了したタイマーを削除
 	timedCalls_.remove_if([](TimedCall* timedCall) {
@@ -45,29 +44,12 @@ void Enemy::Update() {
 		return false;
 	});
 
-	// デスフラグの立った弾を削除
-	enemyBullets_.remove_if([](EnemyBullet* enemybullet) {
-		if (enemybullet->GetIsDeath()) {
-			delete enemybullet;
-			return true;
-		}
-		return false;
-	});
-	//弾更新
-	for (EnemyBullet* enemyBullet : enemyBullets_) {
-		enemyBullet->Update();
-	}
-	
-
 	worldTransform_.UpdateMatrix();
 }
 
 void Enemy::Draw(ViewProjection& viewProjection) { 
 	model_->Draw(worldTransform_, viewProjection, textureHandle_);
-	//弾描画
-	for (EnemyBullet* enemyBullet : enemyBullets_) {
-		enemyBullet->Draw(viewProjection);
-	}
+	
 }
 //関数**********************************************************************************
 void Enemy::Fire() {
@@ -85,9 +67,8 @@ void Enemy::Fire() {
 
 	EnemyBullet* newBullet = new EnemyBullet();
 	newBullet->Init(model_, worldTransform_.translation_,velocity);
-
-	//弾を登録する
-	enemyBullets_.push_back(newBullet);
+	gameScene_->AddEnemyBullet(newBullet);
+	
 }
 
 void Enemy::FireAndReset() { 
@@ -119,7 +100,10 @@ void Enemy::ChangeState(std::unique_ptr<BaseEnemyState> state) {
 	state_ = std::move(state);
 }
 
-void Enemy::OnColligion() {}
+void Enemy::OnColligion() {
+	isdeath_ = true;
+
+}
 
 //getter-----------------------------------------------------------------
 Vector3 Enemy::GetWorldPos() {

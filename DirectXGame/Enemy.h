@@ -15,20 +15,22 @@
 
 //前方宣言
 class Player;
+class GameScene;
 
 class Enemy :public Collider{
 private:
 	//包含
+	GameScene* gameScene_ = nullptr;
 	EnemyBullet* enemyBullet_=nullptr;
 	Player* player_ = nullptr;
 	Model* model_=nullptr;
-
+	bool isdeath_=false;
 	
 	WorldTransform worldTransform_;
 	Vector3 velocity_;
 	uint32_t textureHandle_ = 0;
 	
-	std::list<EnemyBullet*> enemyBullets_;  // 弾
+	
 	std::list<TimedCall*> timedCalls_;//時限発動のリスト
     std::unique_ptr<BaseEnemyState> state_;//状態
 
@@ -52,8 +54,9 @@ public:
 	void OnColligion();
 	//getter
 	Vector3 GetWorldPos()override;
+	bool GetIsDeath() const { return isdeath_; }
 	std::list<TimedCall*> GetTimedCalls() const { return timedCalls_; }
-	const std::list<EnemyBullet*>& GetBullets() const { return enemyBullets_; }
-	//setter
+		//setter
+	void SetGameScene(GameScene* gameScene) { gameScene_ = gameScene; }
 	void SetPlayer(Player* player) { player_ = player; }
 };

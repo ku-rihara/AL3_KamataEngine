@@ -1,4 +1,5 @@
 #pragma once
+#include<sstream>
 
 #include "Audio.h"
 #include "DirectXCommon.h"
@@ -18,15 +19,21 @@
 /// </summary>
 class GameScene {
 private: // メンバ変数
+	//包含
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
 	Audio* audio_ = nullptr;
-
-	// 包含
 	Player* player_ = nullptr;
 	Enemy* enemy_ = nullptr;
 	CollisionManager* collisionManager_ = nullptr;
 	Skydome* skyDome_ = nullptr;
+
+	std::stringstream enemyPopCommands;//敵発生コマンド
+	bool isWaiting_=false;
+	int32_t waitTimer_=0;
+	std::list<Enemy*> enemys_; // 敵
+	std::list<EnemyBullet*> enemyBullets_; // 弾
+	
 
 DebugCamera* debugCamera_ = nullptr;
 	// デバッグカメラ有効
@@ -74,5 +81,24 @@ public: // メンバ関数
 	/// </summary>
 	void Draw();
 
+	/// <summary>
+	/// 敵弾を追加する
+	/// </summary>
+	/// <param name="enemyBullet"></param>
+	void AddEnemyBullet(EnemyBullet* enemyBullet);
 
+	/// <summary>
+	/// 敵を追加
+	/// </summary>
+	void AddEnemy(const Vector3& pos);
+
+	/// <summary>
+	/// 敵発生データの読み込み
+	/// </summary>
+	void LoadEnemyPopData();
+
+	/// <summary>
+	/// 敵発生コマンドの更新
+	/// </summary>
+	void UpdateEnemyPopCommands();
 };
