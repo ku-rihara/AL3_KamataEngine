@@ -49,7 +49,7 @@ void GameScene::Initialize() {
 	railCamera_->Init(Vector3{0, 0, 0}, Vector3{0, 0, 0});
 	player_->Init(model_, textureHandle_);
 	skyDome_->Init(modelSkydome_);
-	//自キャラとレールカメラの親子関係を結ぶ
+	// 自キャラとレールカメラの親子関係を結ぶ
 	player_->SetParent(&railCamera_->GetWorldTransform());
 	// 軸方向表示の表示を有効にする
 	AxisIndicator::GetInstance()->SetVisible(true);
@@ -84,7 +84,7 @@ void GameScene::Update() {
 	// 敵更新
 	for (Enemy* enemy : enemys_) {
 
-		enemy->Update();
+		enemy->Update(viewProjection_);
 	}
 	// 弾更新
 	for (EnemyBullet* enemyBullet : enemyBullets_) {
@@ -107,7 +107,7 @@ void GameScene::Update() {
 	for (PlayerBullet* pBullet : playerBullets) {
 		collisionManager_->EntryList(pBullet);
 	}
-
+	ColligionTargettoEnemy();
 	collisionManager_->ChecAllCollisions();
 #ifdef _DEBUG
 	// デバッグカメラモード切り替え------------------------------
@@ -197,13 +197,12 @@ void GameScene::AddEnemyBullet(EnemyBullet* enemyBullet) {
 }
 
 void GameScene::AddEnemy(const Vector3& pos) {
-	
-		enemy_ = new Enemy();
-		enemy_->Init(model_, pos, Vector3{0, 0, 0.1f});
-		enemy_->SetPlayer(player_);
-		enemy_->SetGameScene(this);
-		enemys_.push_back(enemy_);
-	
+
+	enemy_ = new Enemy();
+	enemy_->Init(model_, pos, Vector3{0, 0, 0.1f});
+	enemy_->SetPlayer(player_);
+	enemy_->SetGameScene(this);
+	enemys_.push_back(enemy_);
 }
 
 void GameScene::LoadEnemyPopData() {
@@ -218,11 +217,11 @@ void GameScene::LoadEnemyPopData() {
 }
 
 void GameScene::UpdateEnemyPopCommands() {
-	//待機処理
+	// 待機処理
 	if (isWaiting_) {
 		waitTimer_--;
 		if (waitTimer_ <= 0) {
-		//待機完了
+			// 待機完了
 			isWaiting_ = false;
 		}
 		return;
@@ -258,20 +257,39 @@ void GameScene::UpdateEnemyPopCommands() {
 			getline(line_stream, word, ',');
 			float z = (float)std::atof(word.c_str());
 
-			//敵を発生させる
+			// 敵を発生させる
 			AddEnemy(Vector3(x, y, z));
 		}
-		//WAITコマンド
+		// WAITコマンド
 		else if (word.find("WAIT") == 0) {
 			getline(line_stream, word, ',');
-			//待ち時間
+			// 待ち時間
 			int32_t waitTime = atoi(word.c_str());
 
-			//待機開始
+			// 待機開始
 			isWaiting_ = true;
 			waitTimer_ = waitTime;
-			//ループを抜ける
+			// ループを抜ける
 			break;
+		}
+	}
+}
+
+void GameScene::ColligionTargettoEnemy() {
+
+	for (Enemy* enemy : enemys_) {
+
+		Vector2 posA = player_->Getsprite2DreticlePos();
+		Vector2 posB = enemy->GetScreenPos();
+
+		float distaince = powf((posA.x - posB.x), 2) + powf((posA.y - posB.y), 2);
+
+		// 球と球の交差判定
+		if (distaince <= 144*2) {
+			player_->RockOn();
+
+		} else {
+			player_->CanselRockOn();
 		}
 	}
 }

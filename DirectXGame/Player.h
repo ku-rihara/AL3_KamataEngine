@@ -14,11 +14,12 @@
 class Player:public Collider {
 private:
 	// 包含
+
 	Input* input_ = nullptr;
 	PlayerBullet* bullet_ = nullptr;
 	Model* model_ = nullptr;
 	Sprite* sprite2DReticle_ = nullptr;
-
+	bool isRockOn_;
 	WorldTransform worldTransform_; // ワールドトランスフォーム
 	WorldTransform worldTransform3DReticle_;
 	
@@ -40,14 +41,17 @@ public:
 	void Update(const ViewProjection& viewProjection);
 	void Draw(ViewProjection& viewProjection);
 	void DrawUI();
-
+	void RockOn();
+	void CanselRockOn();
 	//衝突が検知されたら呼び出されるコールバック関数
 	void OnColligion()override;
 
 	//getter
 	Vector3 GetWorldPos()override;
 	Vector3 GetWorld3DRecticlPos();
+	Vector2 Getsprite2DreticlePos() const { return sprite2DReticle_->GetPosition(); }
 	const std::list<PlayerBullet*>& GetBullets() const { return bullets_; }
 	//setter
 	void SetParent(const WorldTransform* parent);
+	
 };

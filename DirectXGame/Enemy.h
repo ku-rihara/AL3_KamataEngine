@@ -27,6 +27,7 @@ private:
 	bool isdeath_=false;
 	
 	WorldTransform worldTransform_;
+	Vector2 ScreenPos_;
 	Vector3 velocity_;
 	uint32_t textureHandle_ = 0;
 	
@@ -41,7 +42,7 @@ public:
 	Enemy();
 	~Enemy();
 	void Init(Model* model, const Vector3& pos, const Vector3& velocity);
-	void Update();
+	void Update(const ViewProjection& viewProjection);
 	void Draw(ViewProjection& viewProjection);
 
 	void ApproachInit();//初期フェーズ
@@ -54,6 +55,7 @@ public:
 	void OnColligion();
 	//getter
 	Vector3 GetWorldPos()override;
+	Vector2 GetScreenPos() const { return ScreenPos_; }
 	bool GetIsDeath() const { return isdeath_; }
 	std::list<TimedCall*> GetTimedCalls() const { return timedCalls_; }
 		//setter

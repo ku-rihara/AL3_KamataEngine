@@ -104,4 +104,6 @@ public: // メンバ関数
 	/// 敵発生コマンドの更新
 	/// </summary>
 	void UpdateEnemyPopCommands();
+
+	void ColligionTargettoEnemy();
 };

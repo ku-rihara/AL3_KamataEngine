@@ -31,7 +31,7 @@ void Enemy::Init(Model* model, const Vector3& pos, const Vector3& velocity) {
 	SetCollisionMask(~kCollisionAttributeEnemy);
 }
 
-void Enemy::Update() {
+void Enemy::Update(const ViewProjection& viewProjection) {
 	
 	state_->Update();
 	
@@ -45,6 +45,16 @@ void Enemy::Update() {
 	});
 
 	worldTransform_.UpdateMatrix();
+
+	Vector3 positionReticle = GetWorldPos();
+	// ビューポート行列
+	Matrix4x4 matViewport = MakeViewportMatrix(0, 0, WinApp::kWindowWidth, WinApp::kWindowHeight, 0, 1);
+	// ビュー行列とプロジェクション行列、ビューポート行列を合成する
+	Matrix4x4 matViewPrijectionViewPort = Multiply(viewProjection.matView, Multiply(viewProjection.matProjection, matViewport));
+	// ワールド➩スクリーン変換（3Dから2D）
+	positionReticle = Transform(positionReticle, matViewPrijectionViewPort);
+	// スプライトのレティクルに座標変換
+	ScreenPos_ = {positionReticle.x, positionReticle.y};
 }
 
 void Enemy::Draw(ViewProjection& viewProjection) { 

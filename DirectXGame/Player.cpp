@@ -1,10 +1,10 @@
-#include"WinApp.h"
 #include "Player.h"
+#include "CollisionConfig.h"
 #include "ImGuiManager.h"
+#include "TextureManager.h"
+#include "ViewProjection.h"
+#include "WinApp.h"
 #include "cassert"
-#include"CollisionConfig.h"
-#include"ViewProjection.h"
-#include"TextureManager.h"
 
 Player::Player() {}
 
@@ -24,27 +24,34 @@ void Player::Init(Model* model, uint32_t textureHandle) {
 	worldTransform_.translation_.z = 30;
 	worldTransform_.Initialize();
 	worldTransform3DReticle_.Initialize();
-	//レティクル用テクスチャ取得
+	// レティクル用テクスチャ取得
 	uint32_t textureReticle = TextureManager::Load("anchorPoint.png");
-	sprite2DReticle_ = Sprite::Create(textureReticle, Vector2(640,320), Vector4(1, 1, 1, 1), Vector2(0.5f, 0.5f));
-	//衝突属性を設定
+	sprite2DReticle_ = Sprite::Create(textureReticle, Vector2(640, 320), Vector4(1, 1, 1, 1), Vector2(0.5f, 0.5f));
+	// 衝突属性を設定
 	SetCollisionAttribute(kCollisionAttributePlayer);
-	//衝突対象を自分の属性以外に設定
+	// 衝突対象を自分の属性以外に設定
 	SetCollisionMask(~kCollisionAttributePlayer);
 }
 
 void Player::Update(const ViewProjection& viewProjection) {
-	//自機から3Dレティクルへの距離
+
+	// 自機から3Dレティクルへの距離
 	const float kDistancePlayerTo3DReticle = 50.0f;
-	//自機から３Dレティクルへのオフセット（Z）
+	// 自機から３Dレティクルへのオフセット（Z）
 	Vector3 offset = {0, 0, kDistancePlayerTo3DReticle};
-	//自機のワールド行列の回転を反映
-	offset = Multiply(offset,worldTransform_.matWorld_);
-	//自機の長さを整える
+	// 自機のワールド行列の回転を反映
+	offset = Multiply(offset, worldTransform_.matWorld_);
+	// 自機の長さを整える
 	offset = Normnalize(offset) * kDistancePlayerTo3DReticle;
-	//3Dレティクルの座標を設定
+	// 3Dレティクルの座標を設定
 	worldTransform3DReticle_.translation_ = GetWorldPos() + offset;
 	worldTransform3DReticle_.UpdateMatrix();
+
+	if (isRockOn_) {
+		sprite2DReticle_->SetColor(Vector4{1, 0, 0, 0});
+	} else {
+		sprite2DReticle_->SetColor(Vector4{1, 1,1, 1});
+	}
 
 	// ですフラグの立った弾を削除
 	bullets_.remove_if([](PlayerBullet* bullet) {
@@ -69,13 +76,13 @@ void Player::Update(const ViewProjection& viewProjection) {
 	worldTransform_.UpdateMatrix(); // 行列更新
 
 	Vector3 positionReticle = GetWorld3DRecticlPos();
-	//ビューポート行列
+	// ビューポート行列
 	Matrix4x4 matViewport = MakeViewportMatrix(0, 0, WinApp::kWindowWidth, WinApp::kWindowHeight, 0, 1);
-	//ビュー行列とプロジェクション行列、ビューポート行列を合成する
-	Matrix4x4 matViewPrijectionViewPort = Multiply(viewProjection.matView, Multiply(viewProjection.matProjection, matViewport)); 
-	//ワールド➩スクリーン変換（3Dから2D）
+	// ビュー行列とプロジェクション行列、ビューポート行列を合成する
+	Matrix4x4 matViewPrijectionViewPort = Multiply(viewProjection.matView, Multiply(viewProjection.matProjection, matViewport));
+	// ワールド➩スクリーン変換（3Dから2D）
 	positionReticle = Transform(positionReticle, matViewPrijectionViewPort);
-	//スプライトのレティクルに座標変換
+	// スプライトのレティクルに座標変換
 	sprite2DReticle_->SetPosition(Vector2(positionReticle.x, positionReticle.y));
 
 	ImGui::Begin("player");
@@ -91,7 +98,6 @@ void Player::Draw(ViewProjection& viewProjection) {
 	for (PlayerBullet* bullet : bullets_) {
 		bullet->Draw(viewProjection);
 	}
-	
 }
 
 void Player::DrawUI() {
@@ -143,10 +149,10 @@ void Player::Attack() {
 		// 弾の速度
 		const float kBulletSpeed = 1.0f;
 		/*Vector3 velocity = {0.0f, 0.0f, 1.0f};*/
-	//	 速度ベクトルヲ自機の向きに合わせて回転させる
-	/*	velocity = TransformNormal(velocity, worldTransform_.matWorld_);*/
-		//自機から標準オブジェクトへのベクトル
-		Vector3 velocity = worldTransform3DReticle_.translation_ -GetWorldPos();
+		//	 速度ベクトルヲ自機の向きに合わせて回転させる
+		/*	velocity = TransformNormal(velocity, worldTransform_.matWorld_);*/
+		// 自機から標準オブジェクトへのベクトル
+		Vector3 velocity = worldTransform3DReticle_.translation_ - GetWorldPos();
 		velocity = Normnalize(velocity) * kBulletSpeed;
 		// 弾を生成し、初期化
 		PlayerBullet* newBullet = new PlayerBullet();
@@ -157,13 +163,17 @@ void Player::Attack() {
 }
 
 void Player::OnColligion() {
-	//何もしない
+	// 何もしない
 }
 
-//Getter-------------------------------------------------------------
+void Player::RockOn() { isRockOn_ = true; }
+
+void Player::CanselRockOn() { isRockOn_ = false; }
+
+// Getter-------------------------------------------------------------
 Vector3 Player::GetWorldPos() {
 	Vector3 worldPos;
-	//ワールド行列の平行移動成分を取得
+	// ワールド行列の平行移動成分を取得
 	worldPos.x = worldTransform_.matWorld_.m[3][0];
 	worldPos.y = worldTransform_.matWorld_.m[3][1];
 	worldPos.z = worldTransform_.matWorld_.m[3][2];
@@ -181,6 +191,6 @@ Vector3 Player::GetWorld3DRecticlPos() {
 	return worldPos;
 }
 
-//setter
-//親子関係を結ぶ
-void Player::SetParent(const WorldTransform*parent) { worldTransform_.parent_ = parent; }
+// setter
+// 親子関係を結ぶ
+void Player::SetParent(const WorldTransform* parent) { worldTransform_.parent_ = parent; }
