@@ -18,6 +18,7 @@ void Player::Init(Model* model, uint32_t textureHandle) {
 	model_ = model;
 	textureHandle_ = textureHandle;
 	worldTransform_.Initialize();
+	worldTransform3DReticle_.Initialize();
 	//衝突属性を設定
 	SetCollisionAttribute(kCollisionAttributePlayer);
 	//衝突対象を自分の属性以外に設定
@@ -25,7 +26,12 @@ void Player::Init(Model* model, uint32_t textureHandle) {
 }
 
 void Player::Update() {
-
+	//自機から3Dレティクルへの距離
+	const float kDistancePlayerTo3DReticle = 50.0f;
+	//自機から３Dレティクルへのオフセット（Z）
+	Vector3 offset = {0, 0, 1.0f};
+	//自機のワールド行列の回転を反映
+	offset = Multiply(worldTransform_.matWorld_, offset);
 	// ですフラグの立った弾を削除
 	bullets_.remove_if([](PlayerBullet* bullet) {
 		if (bullet->GetIsDead()) {

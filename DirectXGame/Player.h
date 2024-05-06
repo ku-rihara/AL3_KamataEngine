@@ -18,6 +18,7 @@ private:
 	Model* model_ = nullptr;
 
 	WorldTransform worldTransform_; // ワールドトランスフォーム
+	WorldTransform worldTransform3DReticle_;
 	// 弾
 	std::list<PlayerBullet*> bullets_;
 	// テクスチャハンドル
