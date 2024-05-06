@@ -31,7 +31,13 @@ void Player::Update() {
 	//自機から３Dレティクルへのオフセット（Z）
 	Vector3 offset = {0, 0, 1.0f};
 	//自機のワールド行列の回転を反映
-	offset = Multiply(worldTransform_.matWorld_, offset);
+	offset = Multiply(offset,worldTransform_.matWorld_);
+	//自機の長さを整える
+	offset = Normnalize(offset) * kDistancePlayerTo3DReticle;
+	//3Dレティクルの座標を設定
+	worldTransform3DReticle_.translation_ =worldTransform_.translation_ + offset;
+	worldTransform3DReticle_.UpdateMatrix();
+
 	// ですフラグの立った弾を削除
 	bullets_.remove_if([](PlayerBullet* bullet) {
 		if (bullet->GetIsDead()) {
@@ -67,6 +73,8 @@ void Player::Draw(ViewProjection& viewProjection) {
 	for (PlayerBullet* bullet : bullets_) {
 		bullet->Draw(viewProjection);
 	}
+	//3Dレティクル
+	model_->Draw(worldTransform3DReticle_, viewProjection);
 }
 
 void Player::Rotate() {
@@ -112,9 +120,12 @@ void Player::Attack() {
 	if (input_->TriggerKey(DIK_W)) {
 		// 弾の速度
 		const float kBulletSpeed = 1.0f;
-		Vector3 velocity(0, 0, kBulletSpeed);
+		Vector3 velocity = {0.0f, 0.0f, 1.0f};
 		// 速度ベクトルヲ自機の向きに合わせて回転させる
-		velocity = TransformNormal(velocity, worldTransform_.matWorld_);
+	/*	velocity = TransformNormal(velocity, worldTransform_.matWorld_);*/
+		//自機から標準オブジェクトへのベクトル
+		 velocity = worldTransform3DReticle_.translation_ - worldTransform_.translation_;
+		velocity = Normnalize(velocity) * kBulletSpeed;
 		// 弾を生成し、初期化
 		PlayerBullet* newBullet = new PlayerBullet();
 		newBullet->Init(model_, worldTransform_.translation_, velocity);
