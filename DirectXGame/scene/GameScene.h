@@ -14,6 +14,7 @@
 #include "Player.h"
 #include "CollisionManager.h"
 #include "Skydome.h"
+#include"RailCamera.h"
 /// <summary>
 /// ゲームシーン
 /// </summary>
@@ -23,6 +24,8 @@ private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
 	Audio* audio_ = nullptr;
+	// 包含
+	RailCamera* railCamera_ = nullptr;
 	Player* player_ = nullptr;
 	Enemy* enemy_ = nullptr;
 	CollisionManager* collisionManager_ = nullptr;

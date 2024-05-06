@@ -111,7 +111,10 @@
       <ClCompile Include="Skydome.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    </ItemGroup>
+  <ClCompile Include="RailCamera.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+ </ItemGroup>
   <ItemGroup>
     <ClInclude Include="3d\ViewProjection.h">
       <Filter>ヘッダー ファイル\3d</Filter>
@@ -236,7 +239,10 @@
      <ClInclude Include="Skydome.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    </ItemGroup>
+  <ClInclude Include="RailCamera.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+ </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\shaders\SpritePS.hlsl">
       <Filter>シェーダー ファイル</Filter>

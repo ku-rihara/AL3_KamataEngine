@@ -96,6 +96,13 @@ void Vector3::operator+=(const Vector3& obj) {
 	z += obj.z;
 }
 
+void Vector3::operator+=(const float& obj) {
+
+	x += obj;
+	y += obj;
+	z += obj;
+}
+
 void Vector3::operator-=(const Vector3& obj) {
 
 	x -= obj.x;

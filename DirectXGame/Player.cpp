@@ -17,6 +17,7 @@ void Player::Init(Model* model, uint32_t textureHandle) {
 	assert(model);
 	model_ = model;
 	textureHandle_ = textureHandle;
+	worldTransform_.translation_.z = 30;
 	worldTransform_.Initialize();
 	worldTransform3DReticle_.Initialize();
 	//衝突属性を設定
@@ -128,7 +129,7 @@ void Player::Attack() {
 		velocity = Normnalize(velocity) * kBulletSpeed;
 		// 弾を生成し、初期化
 		PlayerBullet* newBullet = new PlayerBullet();
-		newBullet->Init(model_, worldTransform_.translation_, velocity);
+		newBullet->Init(model_, GetWorldPos(), velocity);
 		// 弾を登録する
 		bullets_.push_back(newBullet);
 	}
@@ -148,3 +149,7 @@ Vector3 Player::GetWorldPos() {
 
 	return worldPos;
 }
+
+//setter
+//親子関係を結ぶ
+void Player::SetParent(const WorldTransform*parent) { worldTransform_.parent_ = parent; }
