@@ -1,5 +1,6 @@
 #pragma once
 #include "Model.h"
+#include"Sprite.h"
 #include "WorldTransform.h"
 #include "input/input.h"
 // func
@@ -16,6 +17,7 @@ private:
 	Input* input_ = nullptr;
 	PlayerBullet* bullet_ = nullptr;
 	Model* model_ = nullptr;
+	Sprite* sprite2DReticle_ = nullptr;
 
 	WorldTransform worldTransform_; // ワールドトランスフォーム
 	WorldTransform worldTransform3DReticle_;
@@ -35,14 +37,16 @@ public:
 	~Player();
 
 	void Init(Model* model, uint32_t textureHandle);
-	void Update();
+	void Update(const ViewProjection& viewProjection);
 	void Draw(ViewProjection& viewProjection);
+	void DrawUI();
 
 	//衝突が検知されたら呼び出されるコールバック関数
 	void OnColligion()override;
 
 	//getter
 	Vector3 GetWorldPos()override;
+	Vector3 GetWorld3DRecticlPos();
 	const std::list<PlayerBullet*>& GetBullets() const { return bullets_; }
 	//setter
 	void SetParent(const WorldTransform* parent);

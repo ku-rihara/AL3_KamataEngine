@@ -39,6 +39,7 @@ void GameScene::Initialize() {
 	// 3Dモデルの生成
 	modelSkydome_ = Model::CreateFromOBJ("skydome", true);
 	textureHandle_ = TextureManager::Load("white1x1.png");
+	TextureManager::Load("anchorPoint.png");
 	LoadEnemyPopData();
 	// モデル作成
 	model_ = Model::Create();
@@ -60,7 +61,7 @@ void GameScene::Update() {
 	UpdateEnemyPopCommands();
 	railCamera_->Update();
 	skyDome_->Update();
-	player_->Update();
+	player_->Update(viewProjection_);
 
 	// デスフラグの立った弾を削除
 	enemyBullets_.remove_if([](EnemyBullet* enemybullet) {
@@ -183,7 +184,7 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに前景スプライトの描画処理を追加できる
 	/// </summary>
-
+	player_->DrawUI();
 	// スプライト描画後処理
 	Sprite::PostDraw();
 
