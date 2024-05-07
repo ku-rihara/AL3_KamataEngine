@@ -95,6 +95,8 @@ void GameScene::Update() {
 	const std::list<PlayerBullet*>& playerBullets = player_->GetBullets();
 	// 敵弾リストの取得
 	const std::list<EnemyBullet*>& enemyBullets = enemyBullets_;
+
+
 	collisionManager_->ClearList();
 
 	collisionManager_->EntryList(player_);
@@ -107,7 +109,9 @@ void GameScene::Update() {
 	for (PlayerBullet* pBullet : playerBullets) {
 		collisionManager_->EntryList(pBullet);
 	}
-	ColligionTargettoEnemy();
+	
+		ColligionTargettoEnemy();
+	
 	collisionManager_->ChecAllCollisions();
 #ifdef _DEBUG
 	// デバッグカメラモード切り替え------------------------------
@@ -275,14 +279,15 @@ void GameScene::UpdateEnemyPopCommands() {
 	}
 }
 
+
+
 void GameScene::ColligionTargettoEnemy() {
 
 	for (Enemy* enemy : enemys_) {
 
 		Vector2 posA = player_->Getsprite2DreticlePos();
-		Vector2 posB = enemy->GetScreenPos();
-
-		float distaince = powf((posA.x - posB.x), 2) + powf((posA.y - posB.y), 2);
+	
+		float distaince = powf((posA.x - enemy->GetScreenPos().x), 2) + powf((posA.y - enemy->GetScreenPos().y), 2);
 
 		// 球と球の交差判定
 		if (distaince <= 144*2) {
@@ -293,3 +298,30 @@ void GameScene::ColligionTargettoEnemy() {
 		}
 	}
 }
+
+//const std::list<PlayerBullet*>& playerBullets = player_->GetBullets();
+//
+//// コライダー
+//std::list<Collider*> colliders_;
+//
+//colliders_.push_back(enemy_);
+//
+//for (PlayerBullet* pBullet : playerBullets) {
+//	colliders_.push_back(pBullet);
+//}
+//
+//// リスト内のペアを総当たり
+//std::list<Collider*>::iterator itrA = colliders_.begin();
+//for (; itrA != colliders_.end(); ++itrA) {
+//	// イテレータAからコライダーAを取得する
+//	Collider* colliderA = *itrA;
+//
+//	// イテレーターBはイテレータAの次の要素から回す（重複判定を回避）
+//	std::list<Collider*>::iterator itrB = itrA;
+//	itrB++;
+//	for (; itrB != colliders_.end(); ++itrB) {
+//		Collider* colliderB = *itrB;
+//
+//		// ペアの当たり判定
+//		CheckCollisionPair(colliderA, colliderB);
+//	}

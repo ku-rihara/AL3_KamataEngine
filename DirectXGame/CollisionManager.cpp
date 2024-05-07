@@ -34,7 +34,7 @@ void CollisionManager::ChecAllCollisions() {
 }
 
 void CollisionManager::CheckCollisionPair(Collider* colliderA, Collider* colliderB) {
-
+	
 	Vector3 posA, posB;
 	// 衝突フィルタリング
 	if ((colliderA->GetCollisionAttribute() ^ colliderB->GetCollisionMask()) == 0xFFFFFFFF || (colliderB->GetCollisionAttribute() ^ colliderA->GetCollisionMask()) == 0xFFFFFFFF) {
