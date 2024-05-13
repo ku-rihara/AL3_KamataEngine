@@ -50,6 +50,7 @@ void GameScene::Initialize() {
 	player_->Init(model_, textureHandle_);
 	skyDome_->Init(modelSkydome_);
 	//自キャラとレールカメラの親子関係を結ぶ
+	player_->SetRailCamera(railCamera_);
 	player_->SetParent(&railCamera_->GetWorldTransform());
 	// 軸方向表示の表示を有効にする
 	AxisIndicator::GetInstance()->SetVisible(true);

@@ -11,10 +11,12 @@
 // std
 #include <list>
 
+class RailCamera;
 class Player:public Collider {
 private:
 	// 包含
 	Input* input_ = nullptr;
+	RailCamera* railCamera_=nullptr;
 	PlayerBullet* bullet_ = nullptr;
 	Model* model_ = nullptr;
 	Sprite* sprite2DReticle_ = nullptr;
@@ -29,7 +31,7 @@ private:
 
 private:
 	void Rotate(); // 回転
-	void Move();   // 移動
+	void Move(const ViewProjection& viewProjection); // 移動
 	void Attack(); // 攻撃
 
 public:
@@ -49,5 +51,6 @@ public:
 	Vector3 GetWorld3DRecticlPos();
 	const std::list<PlayerBullet*>& GetBullets() const { return bullets_; }
 	//setter
+	void SetRailCamera(RailCamera* rail) { railCamera_ = rail; }
 	void SetParent(const WorldTransform* parent);
 };

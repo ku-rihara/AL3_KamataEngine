@@ -5,6 +5,7 @@
 #include "ViewProjection.h"
 #include "WinApp.h"
 #include "cassert"
+#include"RailCamera.h"
 
 static XINPUT_STATE joyState;
 Player::Player() {}
@@ -77,14 +78,16 @@ void Player::Update(const ViewProjection& viewProjection) {
 	Vector3 mouseDirection = posFar - posNear;
 	mouseDirection = Normnalize(mouseDirection);
 	// カメラから標準オブジェクトの距離
-	const float kDistanceTestObject = 50;
-	worldTransform3DReticle_.translation_ = mouseDirection * kDistanceTestObject;
+	float kDistanceTestObject =150;
+	worldTransform3DReticle_.translation_.x = posNear.x+ mouseDirection.x * kDistanceTestObject;
+	worldTransform3DReticle_.translation_.y = posNear.y + mouseDirection.y * kDistanceTestObject;
+	worldTransform3DReticle_.translation_.z = posNear.z + mouseDirection.z * kDistanceTestObject;
 	worldTransform3DReticle_.UpdateMatrix();
 
 	// キャラクター旋回処理
 	Rotate();
 	// キャラクターの移動処理
-	Move();
+	Move(viewProjection);
 	// キャラクターの攻撃処理
 	Attack();
 	// 弾更新
@@ -126,7 +129,7 @@ void Player::Rotate() {
 	}
 }
 
-void Player::Move() {
+void Player::Move(const ViewProjection& viewProjection) {
 	Vector3 move = {0, 0, 0};
 	// キャラクターの移動の速さ
 	const float kCharacterSpeed = 0.2f;
@@ -149,13 +152,13 @@ void Player::Move() {
 	}
 
 	worldTransform_.translation_ += move;
-
+	viewProjection;
 	// 移動限界座標
-	const float kMoveLimitX = 35.0f;
-	const float kMoveLimitY = 19.0f;
+	const float kMoveLimitX = 20.0f;
+	const float kMoveLimitY = 11.0f;
 	// 範囲を超えない処理
 	worldTransform_.translation_.x = max(worldTransform_.translation_.x, -kMoveLimitX);
-	worldTransform_.translation_.x = min(worldTransform_.translation_.x, kMoveLimitX);
+	worldTransform_.translation_.x = min(worldTransform_.translation_.x,  kMoveLimitX);
 	worldTransform_.translation_.y = max(worldTransform_.translation_.y, -kMoveLimitY);
 	worldTransform_.translation_.y = min(worldTransform_.translation_.y, kMoveLimitY);
 }
@@ -164,15 +167,15 @@ void Player::Attack() {
 
 	if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER || (!Input::GetInstance()->GetJoystickState(0, joyState) && Input::GetInstance()->TriggerKey(DIK_W))) {
 		// 弾の速度
-		const float kBulletSpeed = 1.0f;
+		const float kBulletSpeed = 5.0f;
 		/*Vector3 velocity = {0.0f, 0.0f, 1.0f};*/
 		//	 速度ベクトルヲ自機の向きに合わせて回転させる
-		/*	velocity = TransformNormal(velocity, worldTransform_.matWorld_);*/
+			
 		// 自機から標準オブジェクトへのベクトル
-		Vector3 velocity = worldTransform3DReticle_.translation_ - GetWorldPos();
-		velocity = Normnalize(velocity) * kBulletSpeed;
+	Vector3 velocity = GetWorld3DRecticlPos() - GetWorldPos();
 		// 弾を生成し、初期化
 		PlayerBullet* newBullet = new PlayerBullet();
+		velocity = Normnalize(velocity) * kBulletSpeed;
 		newBullet->Init(model_, GetWorldPos(), velocity);
 		// 弾を登録する
 		bullets_.push_back(newBullet);
