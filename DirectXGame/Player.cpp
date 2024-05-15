@@ -23,7 +23,6 @@ void Player::Init(Model* model, uint32_t textureHandle) {
 	assert(model);
 	model_ = model;
 	textureHandle_ = textureHandle;
-	worldTransform_.translation_.z = 30;
 	worldTransform_.Initialize();
 	worldTransform3DReticle_.Initialize();
 	// レティクル用テクスチャ取得
