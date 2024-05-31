@@ -95,7 +95,7 @@ void GameScene::Update() {
 	}
 
 	
-
+	PrimitiveDrawer::GetInstance()->SetViewProjection(&viewProjection_);
 	// 線分で描画する用の頂点リスト
 	std::vector<Vector3> pointsDrawing;
 	// 線分の数
