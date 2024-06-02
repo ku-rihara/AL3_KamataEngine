@@ -11,15 +11,18 @@
 // std
 #include <list>
 
+class Enemy;
 class Player:public Collider {
 private:
 	// 包含
+	Enemy* enemy_ = nullptr;
 
 	Input* input_ = nullptr;
 	PlayerBullet* bullet_ = nullptr;
 	Model* model_ = nullptr;
 	Sprite* sprite2DReticle_ = nullptr;
 	bool isRockOn_;
+	bool isHoming_;
 	WorldTransform worldTransform_; // ワールドトランスフォーム
 	WorldTransform worldTransform3DReticle_;
 	
@@ -53,5 +56,6 @@ public:
 	const std::list<PlayerBullet*>& GetBullets() const { return bullets_; }
 	//setter
 	void SetParent(const WorldTransform* parent);
+	void SetEnemy(Enemy* enemy) { enemy_ = enemy; }
 	
 };

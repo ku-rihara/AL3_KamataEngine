@@ -6,12 +6,17 @@
 /// <summary>
 /// 自キャラの弾
 /// </summary>
+class Enemy;
 class PlayerBullet:public Collider {
 private:
+	// 包含
+	Enemy* enemy_ = nullptr;
+
+
 	static const int32_t kLifeTime = 60 * 5;//寿命
 	int32_t deathTimer_ = kLifeTime;//デスタイマー
 	bool isDeath_ = false; // デスフラグ
-	//包含
+	
 	Model* model_;
 	WorldTransform worldTarnsform_;
 	Vector3 velocity_; // 速度
@@ -27,4 +32,6 @@ public:
 
 	Vector3 GetWorldPos() override;
 	bool GetIsDead() const { return isDeath_; }
+
+	void SetEnemy(Enemy* enemy) { enemy_ = enemy; }
 };

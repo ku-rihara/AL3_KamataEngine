@@ -3,6 +3,8 @@
 #include"assert.h"
 #include"CollisionConfig.h"
 
+#include"Enemy.h"
+
 void PlayerBullet::Init(Model* model, const Vector3& position, const Vector3& velocity) {
 	//NULLポインタチェック
 	assert(model);
@@ -18,11 +20,19 @@ void PlayerBullet::Init(Model* model, const Vector3& position, const Vector3& ve
 	SetCollisionAttribute(kCollisionAttributePlayer);
 	// 衝突対象を自分の属性以外に設定
 	SetCollisionMask(~kCollisionAttributePlayer);
+
+
 }
 
 void PlayerBullet::Update() {
-	//座標を移動させる
-	worldTarnsform_.translation_ += velocity_;
+	if (enemy_->GetIsTarget()) {//	ターゲットしてる
+		
+	
+	} else {
+
+		// 座標を移動させる
+		worldTarnsform_.translation_ += velocity_;
+	}
 	if (--deathTimer_ <= 0) {
 		isDeath_ = true;
 	}

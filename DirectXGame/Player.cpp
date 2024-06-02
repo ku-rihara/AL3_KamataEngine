@@ -5,6 +5,8 @@
 #include "ViewProjection.h"
 #include "WinApp.h"
 #include "cassert"
+//class
+#include"Enemy.h"
 
 Player::Player() {}
 
@@ -36,7 +38,7 @@ void Player::Init(Model* model, uint32_t textureHandle) {
 void Player::Update(const ViewProjection& viewProjection) {
 
 	// 自機から3Dレティクルへの距離
-	const float kDistancePlayerTo3DReticle = 50.0f;
+	const float kDistancePlayerTo3DReticle = 60.0f;
 	// 自機から３Dレティクルへのオフセット（Z）
 	Vector3 offset = {0, 0, kDistancePlayerTo3DReticle};
 	// 自機のワールド行列の回転を反映
@@ -146,16 +148,18 @@ void Player::Move() {
 
 void Player::Attack() {
 	if (input_->TriggerKey(DIK_W)) {
+		Vector3 velocity;
+	
 		// 弾の速度
 		const float kBulletSpeed = 1.0f;
-		/*Vector3 velocity = {0.0f, 0.0f, 1.0f};*/
-		//	 速度ベクトルヲ自機の向きに合わせて回転させる
-		/*	velocity = TransformNormal(velocity, worldTransform_.matWorld_);*/
-		// 自機から標準オブジェクトへのベクトル
-		Vector3 velocity = worldTransform3DReticle_.translation_ - GetWorldPos();
-		velocity = Normnalize(velocity) * kBulletSpeed;
+
+			 velocity = worldTransform3DReticle_.translation_ - GetWorldPos();
+			 velocity = worldTransform3DReticle_.translation_ - GetWorldPos();
+			velocity = Normnalize(velocity) * kBulletSpeed;
+		
 		// 弾を生成し、初期化
 		PlayerBullet* newBullet = new PlayerBullet();
+		    newBullet->SetEnemy(enemy_);
 		newBullet->Init(model_, GetWorldPos(), velocity);
 		// 弾を登録する
 		bullets_.push_back(newBullet);

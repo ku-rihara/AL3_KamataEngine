@@ -51,6 +51,7 @@ void GameScene::Initialize() {
 	skyDome_->Init(modelSkydome_);
 	// 自キャラとレールカメラの親子関係を結ぶ
 	player_->SetParent(&railCamera_->GetWorldTransform());
+	player_->SetEnemy(enemy_);
 	// 軸方向表示の表示を有効にする
 	AxisIndicator::GetInstance()->SetVisible(true);
 	// 軸方向表示が参照するビュープロジェクションを指定する（アドレス渡し）
@@ -282,23 +283,28 @@ void GameScene::UpdateEnemyPopCommands() {
 
 
 void GameScene::ColligionTargettoEnemy() {
+	bool isLockedOn = false;
+	
 
 	for (Enemy* enemy : enemys_) {
-
 		Vector2 posA = player_->Getsprite2DreticlePos();
-	
-		float distaince = powf((posA.x - enemy->GetScreenPos().x), 2) + powf((posA.y - enemy->GetScreenPos().y), 2);
+		float distance = powf((posA.x - enemy->GetScreenPos().x), 2) + powf((posA.y - enemy->GetScreenPos().y), 2);
 
 		// 球と球の交差判定
-		if (distaince <= 144*2) {
-			player_->RockOn();
-
-		} else {
-			player_->CanselRockOn();
+		if (distance <= 144 * 2) { // 144の半径を使った円の交差判定
+			isLockedOn = true;
+			enemy->SetIsTarget(true);
+			break;
 		}
+		
+	}
+
+	if (isLockedOn) {
+		player_->RockOn();
+	} else {
+		player_->CanselRockOn();
 	}
 }
-
 //const std::list<PlayerBullet*>& playerBullets = player_->GetBullets();
 //
 //// コライダー
