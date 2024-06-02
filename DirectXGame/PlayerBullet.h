@@ -29,6 +29,7 @@ public:
 	void Draw(const ViewProjection& viewProjection);
 
 	void OnColligion();
+	void Directionoftravel();
 
 	Vector3 GetWorldPos() override;
 	bool GetIsDead() const { return isDeath_; }
