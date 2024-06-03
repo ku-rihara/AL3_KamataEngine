@@ -124,3 +124,4 @@ Vector3 Enemy::GetWorldPos() {
 	worldPos.z = worldTransform_.matWorld_.m[3][2];
 	return worldPos;
 }
+

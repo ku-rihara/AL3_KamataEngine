@@ -1,12 +1,15 @@
 #include "Player.h"
 #include "CollisionConfig.h"
+#include "Easing.h"
 #include "ImGuiManager.h"
 #include "TextureManager.h"
 #include "ViewProjection.h"
 #include "WinApp.h"
+#include <algorithm>
 #include "cassert"
 // class
 #include "Enemy.h"
+#include "GameScene.h"
 
 Player::Player() {}
 
@@ -37,6 +40,12 @@ void Player::Init(Model* model, uint32_t textureHandle) {
 
 void Player::Update(const ViewProjection& viewProjection) {
 
+	ImGui::Begin("player");
+	ImGui::Text("PosX%f", worldTransform_.translation_.x);
+	ImGui::Text("PosY%f", worldTransform_.translation_.y);
+	ImGui::Text("PosZ%f", worldTransform_.translation_.z);
+	ImGui::End();
+
 	// 自機から3Dレティクルへの距離
 	const float kDistancePlayerTo3DReticle = 60.0f;
 	// 自機から３Dレティクルへのオフセット（Z）
@@ -48,12 +57,6 @@ void Player::Update(const ViewProjection& viewProjection) {
 	// 3Dレティクルの座標を設定
 	worldTransform3DReticle_.translation_ = GetWorldPos() + offset;
 	worldTransform3DReticle_.UpdateMatrix();
-
-	if (isRockOn_) {
-		sprite2DReticle_->SetColor(Vector4{1, 0, 0, 0});
-	} else {
-		sprite2DReticle_->SetColor(Vector4{1, 1, 1, 1});
-	}
 
 	// ですフラグの立った弾を削除
 	bullets_.remove_if([](PlayerBullet* bullet) {
@@ -75,7 +78,7 @@ void Player::Update(const ViewProjection& viewProjection) {
 		bullet->Update();
 	};
 
-	worldTransform_.UpdateMatrix(); // 行列更新
+	worldTransform_.UpdateMatrix(); // プレイヤーの行列更新
 
 	Vector3 positionReticle = GetWorld3DRecticlPos();
 	// ビューポート行列
@@ -85,13 +88,28 @@ void Player::Update(const ViewProjection& viewProjection) {
 	// ワールド➩スクリーン変換（3Dから2D）
 	positionReticle = Transform(positionReticle, matViewPrijectionViewPort);
 	// スプライトのレティクルに座標変換
-	sprite2DReticle_->SetPosition(Vector2(positionReticle.x, positionReticle.y));
+	Reticle2DPos_ = (Vector2(positionReticle.x, positionReticle.y));
 
-	ImGui::Begin("player");
-	ImGui::Text("PosX%f", worldTransform_.translation_.x);
-	ImGui::Text("PosY%f", worldTransform_.translation_.y);
-	ImGui::Text("PosZ%f", worldTransform_.translation_.z);
-	ImGui::End();
+	if (isRockOn_) {
+		// ロックオン中のレティクル
+		rockPos_ = {};
+		for (Enemy* enemy : gameScene_->GetEnemys()) {
+			if (enemy->GetIsTarget()) { //	ターゲットしてる
+				rockPos_ = enemy->GetScreenPos();
+			}
+		}
+		reticleMoveTime_ += 0.09f;//イージングタイム
+		sprite2DReticle_->SetColor(Vector4{1, 0, 0, 1}); // 色
+
+	} else {
+		// ロックオンが外れている時のレティクル
+		reticleMoveTime_ -= 0.09f;
+	
+		sprite2DReticle_->SetColor(Vector4{1, 1, 1, 1});
+	}
+	reticleMoveTime_ = std::clamp(reticleMoveTime_,0.0f, 1.0f);
+	//レティクルのイージング
+	sprite2DReticle_->SetPosition(Lerp(Reticle2DPos_, rockPos_, reticleMoveTime_));
 }
 
 void Player::Draw(ViewProjection& viewProjection) {
@@ -103,10 +121,10 @@ void Player::Draw(ViewProjection& viewProjection) {
 }
 
 void Player::DrawUI() {
-	// 3Dレティクル
+	// 2Dレティクル
 	sprite2DReticle_->Draw();
 }
-
+// その他関数*********************************************************************************************************
 void Player::Rotate() {
 	// 回転速さ[ラジアン/frame]
 	const float kRotSpeed = 0.02f;
@@ -147,13 +165,24 @@ void Player::Move() {
 }
 
 void Player::Attack() {
-	if (input_->TriggerKey(DIK_W)) {		
+	if (input_->TriggerKey(DIK_W)) {
 		Vector3 velocity;
 		// 弾の速度
 		const float kBulletSpeed = 1.0f;
 
 		velocity = worldTransform3DReticle_.translation_ - GetWorldPos();
 		velocity = Normnalize(velocity) * kBulletSpeed;
+
+		 // 現在ロックオンしている敵を取得
+		/*Enemy* targetEnemy = nullptr;
+		if (isRockOn_) {
+			for (Enemy* enemy : gameScene_->GetEnemys()) {
+				if (enemy->GetIsTarget()) {
+					targetEnemy = enemy;
+					break;
+				}
+			}
+		}*/
 
 		// 弾を生成し、初期化
 		PlayerBullet* newBullet = new PlayerBullet();
@@ -179,7 +208,6 @@ Vector3 Player::GetWorldPos() {
 	worldPos.x = worldTransform_.matWorld_.m[3][0];
 	worldPos.y = worldTransform_.matWorld_.m[3][1];
 	worldPos.z = worldTransform_.matWorld_.m[3][2];
-
 	return worldPos;
 }
 
@@ -189,7 +217,6 @@ Vector3 Player::GetWorld3DRecticlPos() {
 	worldPos.x = worldTransform3DReticle_.matWorld_.m[3][0];
 	worldPos.y = worldTransform3DReticle_.matWorld_.m[3][1];
 	worldPos.z = worldTransform3DReticle_.matWorld_.m[3][2];
-
 	return worldPos;
 }
 

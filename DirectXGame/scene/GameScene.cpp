@@ -286,11 +286,12 @@ void GameScene::ColligionTargettoEnemy() {
 	bool isLockedOn = false;
 	
 	for (Enemy* enemy : enemys_) {
-		Vector2 posA = player_->Getsprite2DreticlePos();
+		enemy->SetIsTarget(false);
+		Vector2 posA = player_->Get2DreticlePos();
 		float distance = powf((posA.x - enemy->GetScreenPos().x), 2) + powf((posA.y - enemy->GetScreenPos().y), 2);
 
 		// 球と球の交差判定
-		if (distance <= 144 * 2) { // 144の半径を使った円の交差判定
+		if (distance <= 144 * 30) { // 144の半径を使った円の交差判定
 			isLockedOn = true;
 			enemy->SetIsTarget(true);
 			break;

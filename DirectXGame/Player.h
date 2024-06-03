@@ -21,7 +21,10 @@ private:
 	PlayerBullet* bullet_ = nullptr;
 	Model* model_ = nullptr;
 	Sprite* sprite2DReticle_ = nullptr;
+	Vector2 Reticle2DPos_;
+	Vector2 rockPos_;
 	bool isRockOn_;
+	float reticleMoveTime_;
 	WorldTransform worldTransform_; // ワールドトランスフォーム
 	WorldTransform worldTransform3DReticle_;
 	
@@ -51,6 +54,7 @@ public:
 	Vector3 GetWorldPos()override;
 	Vector3 GetWorld3DRecticlPos();
 	Vector2 Getsprite2DreticlePos() const { return sprite2DReticle_->GetPosition(); }
+	Vector2 Get2DreticlePos() const { return Reticle2DPos_; }
 	const std::list<PlayerBullet*>& GetBullets() const { return bullets_; }
 	//setter
 	void SetParent(const WorldTransform* parent);
