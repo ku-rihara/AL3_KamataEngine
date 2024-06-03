@@ -41,17 +41,19 @@ void PlayerBullet::Update() {
 				velocity_ = Normnalize(velocity_);
 				// 球面線形補間により、今の速度と自キャラのベクトルを内挿し、新たな速度とする
 				velocity_ = SLerp(velocity_, toEnemy, 0.1f) * 1.0f;
+				
 				Directionoftravel();
 			}
 		}
 	} else {
 
-		// 座標を移動させる
-		worldTarnsform_.translation_ += velocity_;
+		
+	}
+	// 座標を移動させる
+	worldTarnsform_.translation_ += velocity_;
 
-		if (--deathTimer_ <= 0) {
-			isDeath_ = true;
-		}
+	if (--deathTimer_ <= 0) {
+		isDeath_ = true;
 	}
 	worldTarnsform_.UpdateMatrix();
 }
