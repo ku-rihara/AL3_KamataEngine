@@ -10,21 +10,21 @@ class GameScene;
 class PlayerBullet:public Collider {
 private:
 	// 包含
-	Enemy* enemy_ = nullptr;
-
+	GameScene* gameScene_ = nullptr;
 
 	static const int32_t kLifeTime = 60 * 5;//寿命
 	int32_t deathTimer_ = kLifeTime;//デスタイマー
 	bool isDeath_ = false; // デスフラグ
-	
+	bool isHoming_;
 	Model* model_;
 	WorldTransform worldTarnsform_;
+	Vector3 startPos_;
 	Vector3 velocity_; // 速度
 	uint32_t textureHandle_ = 0;
 
 public:
 	
-	void Init(Model* model, const Vector3& position, const Vector3& velocity);
+	void Init(Model* model, const Vector3& position, const Vector3& velocity,bool isHorming);
 	void Update();
 	void Draw(const ViewProjection& viewProjection);
 
@@ -33,6 +33,7 @@ public:
 
 	Vector3 GetWorldPos() override;
 	bool GetIsDead() const { return isDeath_; }
+	void SetGameScene(GameScene* scene) { gameScene_ = scene; }
 
 	
 };

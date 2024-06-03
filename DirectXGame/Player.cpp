@@ -5,8 +5,8 @@
 #include "ViewProjection.h"
 #include "WinApp.h"
 #include "cassert"
-//class
-#include"Enemy.h"
+// class
+#include "Enemy.h"
 
 Player::Player() {}
 
@@ -52,7 +52,7 @@ void Player::Update(const ViewProjection& viewProjection) {
 	if (isRockOn_) {
 		sprite2DReticle_->SetColor(Vector4{1, 0, 0, 0});
 	} else {
-		sprite2DReticle_->SetColor(Vector4{1, 1,1, 1});
+		sprite2DReticle_->SetColor(Vector4{1, 1, 1, 1});
 	}
 
 	// ですフラグの立った弾を削除
@@ -150,18 +150,17 @@ void Player::Attack() {
 	if (input_->TriggerKey(DIK_W)) {
 		
 		Vector3 velocity;
-	
+
 		// 弾の速度
 		const float kBulletSpeed = 1.0f;
 
-			 velocity = worldTransform3DReticle_.translation_ - GetWorldPos();
-			 velocity = worldTransform3DReticle_.translation_ - GetWorldPos();
-			velocity = Normnalize(velocity) * kBulletSpeed;
-		
+		velocity = worldTransform3DReticle_.translation_ - GetWorldPos();
+		velocity = Normnalize(velocity) * kBulletSpeed;
+
 		// 弾を生成し、初期化
 		PlayerBullet* newBullet = new PlayerBullet();
-		    newBullet->SetEnemy(enemy_);
-		newBullet->Init(model_, GetWorldPos(), velocity);
+		newBullet->SetGameScene(gameScene_);
+		newBullet->Init(model_, GetWorldPos(), velocity, isRockOn_);
 		// 弾を登録する
 		bullets_.push_back(newBullet);
 	}

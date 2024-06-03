@@ -106,4 +106,6 @@ public: // メンバ関数
 	void UpdateEnemyPopCommands();
 
 	void ColligionTargettoEnemy();
+
+	std::list<Enemy*> GetEnemys() const { return enemys_; }
 };

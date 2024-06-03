@@ -1,25 +1,28 @@
 #include "PlayerBullet.h"
 #include "CollisionConfig.h"
+#include "Geometry/fMatrix4x4.h"
 #include "TextureManager.h"
 #include "assert.h"
-#include"Geometry/fMatrix4x4.h"
-#include<cmath>
-//function
-#include"Easing.h"
-//class
+#include <cmath>
+// function
+#include "Easing.h"
+// class
 #include "Enemy.h"
+#include "GameScene.h"
 
-void PlayerBullet::Init(Model* model, const Vector3& position, const Vector3& velocity) {
+void PlayerBullet::Init(Model* model, const Vector3& position, const Vector3& velocity, bool isHorming) {
 	// NULLポインタチェック
 	assert(model);
 	model_ = model;
 	velocity_ = velocity;
+	isHoming_ = isHorming;
 	// テクスチャ読み込み
 	textureHandle_ = TextureManager::Load("white1x1.png");
 
 	worldTarnsform_.Initialize();
 	// 引数で受け取った初期座標をセット
 	worldTarnsform_.translation_ = position;
+	startPos_ = position;
 	// 衝突属性を設定
 	SetCollisionAttribute(kCollisionAttributePlayer);
 	// 衝突対象を自分の属性以外に設定
@@ -27,23 +30,28 @@ void PlayerBullet::Init(Model* model, const Vector3& position, const Vector3& ve
 }
 
 void PlayerBullet::Update() {
-	if (enemy_->GetIsTarget()) { //	ターゲットしてる
-		                         
-		Vector3 toEnemy = enemy_->GetWorldPos() - GetWorldPos();//プレイヤーから敵
-		// ベクトルを正規化
-		toEnemy = Normnalize(toEnemy);
-		velocity_ = Normnalize(velocity_);
-		// 球面線形補間により、今の速度と自キャラのベクトルを内挿し、新たな速度とする
-		velocity_ = SLerp(velocity_, toEnemy, 0.1f) * 1.0f;
-		Directionoftravel();
+	if (isHoming_) {
 
+		for (Enemy* enemy : gameScene_->GetEnemys()) {
+			if (enemy->GetIsTarget()) { //	ターゲットしてる
+
+				Vector3 toEnemy = enemy->GetWorldPos() - startPos_; // プレイヤーから敵
+				// ベクトルを正規化
+				toEnemy = Normnalize(toEnemy);
+				velocity_ = Normnalize(velocity_);
+				// 球面線形補間により、今の速度と自キャラのベクトルを内挿し、新たな速度とする
+				velocity_ = SLerp(velocity_, toEnemy, 0.1f) * 1.0f;
+				Directionoftravel();
+			}
+		}
 	} else {
 
 		// 座標を移動させる
 		worldTarnsform_.translation_ += velocity_;
-	}
-	if (--deathTimer_ <= 0) {
-		isDeath_ = true;
+
+		if (--deathTimer_ <= 0) {
+			isDeath_ = true;
+		}
 	}
 	worldTarnsform_.UpdateMatrix();
 }

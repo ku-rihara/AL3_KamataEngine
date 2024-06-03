@@ -11,18 +11,17 @@
 // std
 #include <list>
 class GameScene;
-class Enemy;
+//class Enemy;
 class Player:public Collider {
 private:
 	// 包含
-	Enemy* enemy_ = nullptr;
-
+	/*Enemy* enemy_ = nullptr;*/
+	GameScene* gameScene_;
 	Input* input_ = nullptr;
 	PlayerBullet* bullet_ = nullptr;
 	Model* model_ = nullptr;
 	Sprite* sprite2DReticle_ = nullptr;
 	bool isRockOn_;
-	bool isHoming_;
 	WorldTransform worldTransform_; // ワールドトランスフォーム
 	WorldTransform worldTransform3DReticle_;
 	
@@ -35,7 +34,6 @@ private:
 	void Rotate(); // 回転
 	void Move();   // 移動
 	void Attack(); // 攻撃
-
 public:
 	Player();
 	~Player();
@@ -56,6 +54,6 @@ public:
 	const std::list<PlayerBullet*>& GetBullets() const { return bullets_; }
 	//setter
 	void SetParent(const WorldTransform* parent);
-	void SetEnemy(Enemy* enemy) { enemy_ = enemy; }
+	void SetGameScene(GameScene* scene) { gameScene_ = scene; }
 	
 };

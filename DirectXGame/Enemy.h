@@ -19,6 +19,7 @@ class GameScene;
 
 class Enemy :public Collider{
 private:
+	
 	//包含
 	GameScene* gameScene_ = nullptr;
 	EnemyBullet* enemyBullet_=nullptr;
