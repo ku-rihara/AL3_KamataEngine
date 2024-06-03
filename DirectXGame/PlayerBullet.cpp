@@ -2,6 +2,8 @@
 #include "CollisionConfig.h"
 #include "TextureManager.h"
 #include "assert.h"
+#include"Geometry/fMatrix4x4.h"
+#include<cmath>
 //function
 #include"Easing.h"
 //class
@@ -65,11 +67,11 @@ void PlayerBullet::OnColligion() { isDeath_ = true; }
 
 void PlayerBullet::Directionoftravel() {
 	// Y軸周り角度(θy)
-	worldTransform_.rotation_.y = std::atan2(velocity_.x, velocity_.z);
+	worldTarnsform_.rotation_.y = std::atan2(velocity_.x, velocity_.z);
 	// Y軸周りに-θy回す回転行列を計算
-	Matrix4x4 matrix = MakeRotateYMatrix(-worldTransform_.rotation_.y);
+	Matrix4x4 matrix = MakeRotateYMatrix(-worldTarnsform_.rotation_.y);
 	// velocity_に回転行列を掛け算してvelocityZを求める
 	Vector3 velocityZ = Multiply(velocity_, matrix);
 	// X軸周り角度(θX)
-	worldTransform_.rotation_.x = std::atan2(-velocityZ.y, velocityZ.z);
+	worldTarnsform_.rotation_.x = std::atan2(-velocityZ.y, velocityZ.z);
 }

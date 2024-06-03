@@ -6,7 +6,7 @@
 /// <summary>
 /// 自キャラの弾
 /// </summary>
-class Enemy;
+class GameScene;
 class PlayerBullet:public Collider {
 private:
 	// 包含
@@ -34,5 +34,5 @@ public:
 	Vector3 GetWorldPos() override;
 	bool GetIsDead() const { return isDeath_; }
 
-	void SetEnemy(Enemy* enemy) { enemy_ = enemy; }
+	
 };

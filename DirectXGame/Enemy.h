@@ -27,6 +27,7 @@ private:
 	bool isdeath_=false;
 	bool isTarget_;
 	
+	
 	WorldTransform worldTransform_;
 	Vector2 ScreenPos_;
 	Vector3 velocity_;

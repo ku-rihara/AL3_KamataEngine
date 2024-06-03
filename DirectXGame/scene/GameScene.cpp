@@ -285,7 +285,6 @@ void GameScene::UpdateEnemyPopCommands() {
 void GameScene::ColligionTargettoEnemy() {
 	bool isLockedOn = false;
 	
-
 	for (Enemy* enemy : enemys_) {
 		Vector2 posA = player_->Getsprite2DreticlePos();
 		float distance = powf((posA.x - enemy->GetScreenPos().x), 2) + powf((posA.y - enemy->GetScreenPos().y), 2);
@@ -295,8 +294,7 @@ void GameScene::ColligionTargettoEnemy() {
 			isLockedOn = true;
 			enemy->SetIsTarget(true);
 			break;
-		}
-		
+		}	
 	}
 
 	if (isLockedOn) {

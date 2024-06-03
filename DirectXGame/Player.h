@@ -10,7 +10,7 @@
 #include"Collider.h"
 // std
 #include <list>
-
+class GameScene;
 class Enemy;
 class Player:public Collider {
 private:
