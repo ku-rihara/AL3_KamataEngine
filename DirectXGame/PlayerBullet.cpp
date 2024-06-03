@@ -40,7 +40,7 @@ void PlayerBullet::Update() {
 				toEnemy = Normnalize(toEnemy);
 				velocity_ = Normnalize(velocity_);
 				// 球面線形補間により、今の速度と自キャラのベクトルを内挿し、新たな速度とする
-				velocity_ = SLerp(velocity_, toEnemy, 0.1f) * 1.0f;
+				velocity_ = SLerp(velocity_, toEnemy,0.4f) * 3.0f;
 				
 				Directionoftravel();
 			}

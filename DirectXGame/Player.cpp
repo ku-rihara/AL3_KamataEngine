@@ -147,10 +147,8 @@ void Player::Move() {
 }
 
 void Player::Attack() {
-	if (input_->TriggerKey(DIK_W)) {
-		
+	if (input_->TriggerKey(DIK_W)) {		
 		Vector3 velocity;
-
 		// 弾の速度
 		const float kBulletSpeed = 1.0f;
 
