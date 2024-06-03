@@ -23,6 +23,7 @@ void PlayerBullet::Init(Model* model, const Vector3& position, const Vector3& ve
 	// 引数で受け取った初期座標をセット
 	worldTarnsform_.translation_ = position;
 	startPos_ = position;
+	worldTarnsform_.scale_ = {0.5f, 0.5f, 3.0f};
 	// 衝突属性を設定
 	SetCollisionAttribute(kCollisionAttributePlayer);
 	// 衝突対象を自分の属性以外に設定
