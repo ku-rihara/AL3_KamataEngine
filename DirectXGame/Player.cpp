@@ -4,11 +4,10 @@
 #include "ImGuiManager.h"
 #include "TextureManager.h"
 #include "ViewProjection.h"
-#include "WinApp.h"
-#include <algorithm>
 #include "cassert"
 // class
 #include "Enemy.h"
+#include "Reticle2D.h"
 #include "GameScene.h"
 
 Player::Player() {}
@@ -17,7 +16,11 @@ Player::~Player() {
 	for (PlayerBullet* bullet : bullets_) {
 		delete bullet;
 	}
-	delete sprite2DReticle_;
+
+		for (Sprite* reticle2D : sprite2DReticles_) {
+		delete reticle2D;
+	}
+	
 }
 
 void Player::Init(Model* model, uint32_t textureHandle) {
@@ -28,17 +31,14 @@ void Player::Init(Model* model, uint32_t textureHandle) {
 	textureHandle_ = textureHandle;
 	worldTransform_.translation_.z = 30;
 	worldTransform_.Initialize();
-	worldTransform3DReticle_.Initialize();
-	// レティクル用テクスチャ取得
-	uint32_t textureReticle = TextureManager::Load("anchorPoint.png");
-	sprite2DReticle_ = Sprite::Create(textureReticle, Vector2(640, 320), Vector4(1, 1, 1, 1), Vector2(0.5f, 0.5f));
-	// 衝突属性を設定
+
+		// 衝突属性を設定
 	SetCollisionAttribute(kCollisionAttributePlayer);
 	// 衝突対象を自分の属性以外に設定
 	SetCollisionMask(~kCollisionAttributePlayer);
 }
 
-void Player::Update(const ViewProjection& viewProjection) {
+void Player::Update() {
 
 	ImGui::Begin("player");
 	ImGui::Text("PosX%f", worldTransform_.translation_.x);
@@ -46,17 +46,7 @@ void Player::Update(const ViewProjection& viewProjection) {
 	ImGui::Text("PosZ%f", worldTransform_.translation_.z);
 	ImGui::End();
 
-	// 自機から3Dレティクルへの距離
-	const float kDistancePlayerTo3DReticle = 60.0f;
-	// 自機から３Dレティクルへのオフセット（Z）
-	Vector3 offset = {0, 0, kDistancePlayerTo3DReticle};
-	// 自機のワールド行列の回転を反映
-	offset = Multiply(offset, worldTransform_.matWorld_);
-	// 自機の長さを整える
-	offset = Normnalize(offset) * kDistancePlayerTo3DReticle;
-	// 3Dレティクルの座標を設定
-	worldTransform3DReticle_.translation_ = GetWorldPos() + offset;
-	worldTransform3DReticle_.UpdateMatrix();
+	
 
 	// ですフラグの立った弾を削除
 	bullets_.remove_if([](PlayerBullet* bullet) {
@@ -80,36 +70,6 @@ void Player::Update(const ViewProjection& viewProjection) {
 
 	worldTransform_.UpdateMatrix(); // プレイヤーの行列更新
 
-	Vector3 positionReticle = GetWorld3DRecticlPos();
-	// ビューポート行列
-	Matrix4x4 matViewport = MakeViewportMatrix(0, 0, WinApp::kWindowWidth, WinApp::kWindowHeight, 0, 1);
-	// ビュー行列とプロジェクション行列、ビューポート行列を合成する
-	Matrix4x4 matViewPrijectionViewPort = Multiply(viewProjection.matView, Multiply(viewProjection.matProjection, matViewport));
-	// ワールド➩スクリーン変換（3Dから2D）
-	positionReticle = Transform(positionReticle, matViewPrijectionViewPort);
-	// スプライトのレティクルに座標変換
-	Reticle2DPos_ = (Vector2(positionReticle.x, positionReticle.y));
-
-	if (isRockOn_) {
-		// ロックオン中のレティクル
-		rockPos_ = {};
-		for (Enemy* enemy : gameScene_->GetEnemys()) {
-			if (enemy->GetIsTarget()) { //	ターゲットしてる
-				rockPos_ = enemy->GetScreenPos();
-			}
-		}
-		reticleMoveTime_ += 0.09f;//イージングタイム
-		sprite2DReticle_->SetColor(Vector4{1, 0, 0, 1}); // 色
-
-	} else {
-		// ロックオンが外れている時のレティクル
-		reticleMoveTime_ -= 0.09f;
-	
-		sprite2DReticle_->SetColor(Vector4{1, 1, 1, 1});
-	}
-	reticleMoveTime_ = std::clamp(reticleMoveTime_,0.0f, 1.0f);
-	//レティクルのイージング
-	sprite2DReticle_->SetPosition(Lerp(Reticle2DPos_, rockPos_, reticleMoveTime_));
 }
 
 void Player::Draw(ViewProjection& viewProjection) {
@@ -120,10 +80,6 @@ void Player::Draw(ViewProjection& viewProjection) {
 	}
 }
 
-void Player::DrawUI() {
-	// 2Dレティクル
-	sprite2DReticle_->Draw();
-}
 // その他関数*********************************************************************************************************
 void Player::Rotate() {
 	// 回転速さ[ラジアン/frame]
@@ -170,7 +126,7 @@ void Player::Attack() {
 		// 弾の速度
 		const float kBulletSpeed = 1.0f;
 
-		velocity = worldTransform3DReticle_.translation_ - GetWorldPos();
+		velocity = reticle2D_->GetWorld3DRecticlPos() - GetWorldPos();
 		velocity = Normnalize(velocity) * kBulletSpeed;
 
 		 // 現在ロックオンしている敵を取得
@@ -182,7 +138,7 @@ void Player::Attack() {
 					break;
 				}
 			}
-		}*/
+		}*/ 
 
 		// 弾を生成し、初期化
 		PlayerBullet* newBullet = new PlayerBullet();
@@ -191,6 +147,10 @@ void Player::Attack() {
 		// 弾を登録する
 		bullets_.push_back(newBullet);
 	}
+}
+
+void Player::ReticleInit() {
+
 }
 
 void Player::OnColligion() {
@@ -208,15 +168,6 @@ Vector3 Player::GetWorldPos() {
 	worldPos.x = worldTransform_.matWorld_.m[3][0];
 	worldPos.y = worldTransform_.matWorld_.m[3][1];
 	worldPos.z = worldTransform_.matWorld_.m[3][2];
-	return worldPos;
-}
-
-Vector3 Player::GetWorld3DRecticlPos() {
-	Vector3 worldPos;
-	// ワールド行列の平行移動成分を取得
-	worldPos.x = worldTransform3DReticle_.matWorld_.m[3][0];
-	worldPos.y = worldTransform3DReticle_.matWorld_.m[3][1];
-	worldPos.z = worldTransform3DReticle_.matWorld_.m[3][2];
 	return worldPos;
 }
 

@@ -21,6 +21,7 @@ GameScene::~GameScene() {
 	delete debugCamera_;
 	delete player_;
 	delete collisionManager_;
+	delete reticle2D_;
 }
 
 void GameScene::Initialize() {
@@ -35,6 +36,7 @@ void GameScene::Initialize() {
 	railCamera_ = new RailCamera();
 	collisionManager_ = new CollisionManager();
 	debugCamera_ = new DebugCamera(1280, 720);
+	reticle2D_ = new Reticle2D();
 	// 画像読み込み
 	// 3Dモデルの生成
 	modelSkydome_ = Model::CreateFromOBJ("skydome", true);
@@ -49,9 +51,14 @@ void GameScene::Initialize() {
 	railCamera_->Init(Vector3{0, 0, 0}, Vector3{0, 0, 0});
 	player_->Init(model_, textureHandle_);
 	skyDome_->Init(modelSkydome_);
+	reticle2D_->Init();
 	// 自キャラとレールカメラの親子関係を結ぶ
 	player_->SetParent(&railCamera_->GetWorldTransform());
+	reticle2D_->SetPlayer(player_);
+	reticle2D_->SetGameScene(this);
+	player_->SetReticle2D(reticle2D_);
 	player_->SetGameScene(this);
+
 	// 軸方向表示の表示を有効にする
 	AxisIndicator::GetInstance()->SetVisible(true);
 	// 軸方向表示が参照するビュープロジェクションを指定する（アドレス渡し）
@@ -62,7 +69,8 @@ void GameScene::Update() {
 	UpdateEnemyPopCommands();
 	railCamera_->Update();
 	skyDome_->Update();
-	player_->Update(viewProjection_);
+	player_->Update();
+	reticle2D_->Updata(viewProjection_);
 
 	// デスフラグの立った弾を削除
 	enemyBullets_.remove_if([](EnemyBullet* enemybullet) {
@@ -189,7 +197,7 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに前景スプライトの描画処理を追加できる
 	/// </summary>
-	player_->DrawUI();
+	reticle2D_->Draw();
 	// スプライト描画後処理
 	Sprite::PostDraw();
 
@@ -287,7 +295,7 @@ void GameScene::ColligionTargettoEnemy() {
 	
 	for (Enemy* enemy : enemys_) {
 		enemy->SetIsTarget(false);
-		Vector2 posA = player_->Get2DreticlePos();
+		Vector2 posA = reticle2D_->Get2DReticlePos();
 		float distance = powf((posA.x - enemy->GetScreenPos().x), 2) + powf((posA.y - enemy->GetScreenPos().y), 2);
 
 		// 球と球の交差判定

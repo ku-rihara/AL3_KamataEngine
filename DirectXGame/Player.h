@@ -8,28 +8,30 @@
 // class
 #include "PlayerBullet.h"
 #include"Collider.h"
+#include"Reticle2D.h"
 // std
 #include <list>
 class GameScene;
+class Reticle2D;
 //class Enemy;
 class Player:public Collider {
 private:
 	// 包含
-	/*Enemy* enemy_ = nullptr;*/
+	Reticle2D* reticle2D_; 
 	GameScene* gameScene_;
+
 	Input* input_ = nullptr;
 	PlayerBullet* bullet_ = nullptr;
 	Model* model_ = nullptr;
-	Sprite* sprite2DReticle_ = nullptr;
-	Vector2 Reticle2DPos_;
-	Vector2 rockPos_;
+	
 	bool isRockOn_;
-	float reticleMoveTime_;
 	WorldTransform worldTransform_; // ワールドトランスフォーム
-	WorldTransform worldTransform3DReticle_;
+
 	
 	// 弾
 	std::list<PlayerBullet*> bullets_;
+	std::list<Sprite*> sprite2DReticles_;
+	
 	// テクスチャハンドル
 	uint32_t textureHandle_ = 0u;
 
@@ -42,22 +44,24 @@ public:
 	~Player();
 
 	void Init(Model* model, uint32_t textureHandle);
-	void Update(const ViewProjection& viewProjection);
+	void Update();
 	void Draw(ViewProjection& viewProjection);
-	void DrawUI();
 	void RockOn();
 	void CanselRockOn();
 	//衝突が検知されたら呼び出されるコールバック関数
 	void OnColligion()override;
+	void ReticleInit();
 
 	//getter
 	Vector3 GetWorldPos()override;
-	Vector3 GetWorld3DRecticlPos();
-	Vector2 Getsprite2DreticlePos() const { return sprite2DReticle_->GetPosition(); }
-	Vector2 Get2DreticlePos() const { return Reticle2DPos_; }
+	Matrix4x4 GetMatWorld() const { return worldTransform_.matWorld_; }
+	bool GetIsRockOn() const { return isRockOn_; }
+	
+
 	const std::list<PlayerBullet*>& GetBullets() const { return bullets_; }
 	//setter
 	void SetParent(const WorldTransform* parent);
 	void SetGameScene(GameScene* scene) { gameScene_ = scene; }
+	void SetReticle2D(Reticle2D* reticle) { reticle2D_ = reticle; }
 	
 };

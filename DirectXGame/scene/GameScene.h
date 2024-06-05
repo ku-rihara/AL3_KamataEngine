@@ -15,6 +15,7 @@
 #include "CollisionManager.h"
 #include "Skydome.h"
 #include"RailCamera.h"
+#include "Reticle2D.h"
 /// <summary>
 /// ゲームシーン
 /// </summary>
@@ -30,6 +31,7 @@ private: // メンバ変数
 	Enemy* enemy_ = nullptr;
 	CollisionManager* collisionManager_ = nullptr;
 	Skydome* skyDome_ = nullptr;
+	Reticle2D* reticle2D_ = nullptr; 
 
 	std::stringstream enemyPopCommands;//敵発生コマンド
 	bool isWaiting_=false;
