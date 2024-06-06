@@ -125,6 +125,7 @@
     <ClCompile Include="Reticle2D.cpp" />
     <ClCompile Include="scene\GameScene.cpp" />
     <ClCompile Include="Skydome.cpp" />
+    <ClCompile Include="SpriteReticles.cpp" />
     <ClCompile Include="TimedCall.cpp" />
     <ClCompile Include="WorldTransformEx.cpp" />
   </ItemGroup>
@@ -172,6 +173,7 @@
     <ClInclude Include="Reticle2D.h" />
     <ClInclude Include="scene\GameScene.h" />
     <ClInclude Include="Skydome.h" />
+    <ClInclude Include="SpriteReticles.h" />
     <ClInclude Include="TimedCall.h" />
   </ItemGroup>
   <ItemGroup>

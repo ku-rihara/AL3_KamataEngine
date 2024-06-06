@@ -13,6 +13,7 @@ Enemy::~Enemy() {
 	for (TimedCall* timedCall : timedCalls_) {
 		delete timedCall;
 	}
+	
 }
 
 void Enemy::Init(Model* model, const Vector3& pos, const Vector3& velocity) {

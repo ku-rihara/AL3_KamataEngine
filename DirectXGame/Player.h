@@ -19,6 +19,7 @@ private:
 	// 包含
 	Reticle2D* reticle2D_; 
 	GameScene* gameScene_;
+	/*Enemy* enemy_;*/
 
 	Input* input_ = nullptr;
 	PlayerBullet* bullet_ = nullptr;
@@ -26,12 +27,11 @@ private:
 	
 	bool isRockOn_;
 	WorldTransform worldTransform_; // ワールドトランスフォーム
-
 	
 	// 弾
 	std::list<PlayerBullet*> bullets_;
-	std::list<Sprite*> sprite2DReticles_;
-	
+	/*std::list<Enemy*> enemys_;*/
+
 	// テクスチャハンドル
 	uint32_t textureHandle_ = 0u;
 
@@ -57,11 +57,13 @@ public:
 	Matrix4x4 GetMatWorld() const { return worldTransform_.matWorld_; }
 	bool GetIsRockOn() const { return isRockOn_; }
 	
-
 	const std::list<PlayerBullet*>& GetBullets() const { return bullets_; }
 	//setter
 	void SetParent(const WorldTransform* parent);
 	void SetGameScene(GameScene* scene) { gameScene_ = scene; }
+	/*void SetEnemy(Enemy* e) { enemy_ = e; }*/
 	void SetReticle2D(Reticle2D* reticle) { reticle2D_ = reticle; }
-	
+
+	/*void SetEnemys(Enemy* enemys) {  enemys_.push_back(enemys); }
+	*/
 };

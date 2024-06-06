@@ -34,23 +34,6 @@ void PlayerBullet::Init(Model* model, const Vector3& position, const Vector3& ve
 
 void PlayerBullet::Update() {
 	
-	if (isHoming_) {
-
-		for (Enemy* enemy : gameScene_->GetEnemys()) {
-			if (enemy->GetIsTarget()) { //	ターゲットしてる
-
-				Vector3 toEnemy = enemy->GetWorldPos() - startPos_; // プレイヤーから敵
-
-				// ベクトルを正規化
-				toEnemy = Normnalize(toEnemy);
-				velocity_ = Normnalize(velocity_);
-				// 球面線形補間により、今の速度と自キャラのベクトルを内挿し、新たな速度とする
-				velocity_ = SLerp(velocity_, toEnemy, 0.4f) * 3.0f;
-				
-				Directionoftravel();
-			}
-		}
-	}
 	// 座標を移動させる
 	worldTarnsform_.translation_ += velocity_;
 

@@ -27,6 +27,7 @@ private:
 	Model* model_=nullptr;
 	bool isdeath_=false;
 	bool isTarget_;
+	bool isRocked_;
 	
 	
 	WorldTransform worldTransform_;
@@ -61,9 +62,11 @@ public:
 	Vector2 GetScreenPos() const { return ScreenPos_; }
 	bool GetIsDeath() const { return isdeath_; }
 	bool GetIsTarget() const { return isTarget_; }
+	bool GetIsRocked() const { return isRocked_; }
 	std::list<TimedCall*> GetTimedCalls() const { return timedCalls_; }
 		//setter
 	void SetIsTarget(bool is) { isTarget_ = is; }
+	void SetIsRocked(bool is) { isRocked_ = is; }
 	void SetGameScene(GameScene* gameScene) { gameScene_ = gameScene; }
 	void SetPlayer(Player* player) { player_ = player; }
 };

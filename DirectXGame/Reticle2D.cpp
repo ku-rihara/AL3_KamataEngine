@@ -1,27 +1,29 @@
 #include "Reticle2D.h"
-#include "TextureManager.h"
-#include"Geometry/fMatrix4x4.h"
 #include "Easing.h"
+#include "Geometry/fMatrix4x4.h"
+#include "TextureManager.h"
 #include <algorithm>
-//class
-#include"Player.h"
-#include"GameScene.h"
+// class
+#include "GameScene.h"
+#include "Player.h"
 #include "WinApp.h"
 
-Reticle2D::Reticle2D() {}	
-
+Reticle2D::Reticle2D() {}
 
 Reticle2D::~Reticle2D() {
 
+for (SpriteReticles* reticle2D : sprite2DReticles_) {
+		delete reticle2D;
+	}
 }
 
 void Reticle2D::Init() {
 	// レティクル用テクスチャ取得
-	uint32_t textureReticle = TextureManager::Load("anchorPoint.png");
+	textureReticle = TextureManager::Load("anchorPoint.png");
 	worldTransform3DReticle_.Initialize();
 	sprite2DReticle_ = Sprite::Create(textureReticle, Vector2(640, 320), Vector4(1, 1, 1, 1), Vector2(0.5f, 0.5f));
 }
-   
+
 void Reticle2D::Updata(const ViewProjection& viewProjection) {
 	// 自機から3Dレティクルへの距離
 	const float kDistancePlayerTo3DReticle = 60.0f;
@@ -35,7 +37,6 @@ void Reticle2D::Updata(const ViewProjection& viewProjection) {
 	worldTransform3DReticle_.translation_ = player_->GetWorldPos() + offset;
 	worldTransform3DReticle_.UpdateMatrix();
 
-	
 	Vector3 positionReticle = GetWorld3DRecticlPos();
 	// ビューポート行列
 	Matrix4x4 matViewport = MakeViewportMatrix(0, 0, WinApp::kWindowWidth, WinApp::kWindowHeight, 0, 1);
@@ -45,31 +46,42 @@ void Reticle2D::Updata(const ViewProjection& viewProjection) {
 	positionReticle = Transform(positionReticle, matViewPrijectionViewPort);
 	// スプライトのレティクルに座標変換
 	Reticle2DPos_ = (Vector2(positionReticle.x, positionReticle.y));
+	sprite2DReticle_->SetPosition(Reticle2DPos_);
 
-	if (player_->GetIsRockOn()) {
-		// ロックオン中のレティクル
-		rockPos_ = {};
-		for (Enemy* enemy : gameScene_->GetEnemys()) {
-			if (enemy->GetIsTarget()) { //	ターゲットしてる
-				rockPos_ = enemy->GetScreenPos();
-			}
+	Enemy* targetEnemy = nullptr;
+	
+	for (Enemy* enemy : gameScene_->GetEnemys()) {
+		
+		if (enemy->GetIsTarget()&&!enemy->GetIsRocked()) { //	ターゲットしてる
+			targetEnemy = enemy;
+			SpriteReticles* newSpriteReticle = new SpriteReticles();
+			newSpriteReticle->SetPlayer(player_);
+			newSpriteReticle->SetGameScene(gameScene_);
+			newSpriteReticle->Init(targetEnemy);		
+			sprite2DReticles_.push_back(newSpriteReticle);
+			enemy->SetIsRocked(true);
+			
 		}
-		reticleMoveTime_ += 0.09f;                       // イージングタイム
-		sprite2DReticle_->SetColor(Vector4{1, 0, 0, 1}); // 色
-
-	} else {
-		// ロックオンが外れている時のレティクル
-		reticleMoveTime_ -= 0.09f;
-
-		sprite2DReticle_->SetColor(Vector4{1, 1, 1, 1});
 	}
-	reticleMoveTime_ = std::clamp(reticleMoveTime_, 0.0f, 1.0f);
-	// レティクルのイージング
-	sprite2DReticle_->SetPosition(Lerp(Reticle2DPos_, rockPos_, reticleMoveTime_));
+	//複数レティクルの更新
+	for (SpriteReticles* reticleSprite : sprite2DReticles_) {
+		reticleSprite->Updata();
+		
+	}
+	//クリアしてしまっているがここをなんとかしたい
+	for (Enemy* enemy : gameScene_->GetEnemys()) {
+		if (enemy->GetIsDeath()) {
+			sprite2DReticles_.clear();
+		}
+	}
 }
 
 void Reticle2D::Draw() {
-	sprite2DReticle_->Draw(); 
+
+	for (SpriteReticles* reticleSprite : sprite2DReticles_) {
+		reticleSprite->Draw();
+	}
+		sprite2DReticle_->Draw();
 }
 
 Vector3 Reticle2D::GetWorld3DRecticlPos() {
@@ -80,3 +92,4 @@ Vector3 Reticle2D::GetWorld3DRecticlPos() {
 	worldPos.z = worldTransform3DReticle_.matWorld_.m[3][2];
 	return worldPos;
 }
+

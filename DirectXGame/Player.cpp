@@ -17,9 +17,7 @@ Player::~Player() {
 		delete bullet;
 	}
 
-		for (Sprite* reticle2D : sprite2DReticles_) {
-		delete reticle2D;
-	}
+		
 	
 }
 
@@ -67,6 +65,7 @@ void Player::Update() {
 	for (PlayerBullet* bullet : bullets_) {
 		bullet->Update();
 	};
+
 
 	worldTransform_.UpdateMatrix(); // プレイヤーの行列更新
 
@@ -126,26 +125,33 @@ void Player::Attack() {
 		// 弾の速度
 		const float kBulletSpeed = 1.0f;
 
-		velocity = reticle2D_->GetWorld3DRecticlPos() - GetWorldPos();
-		velocity = Normnalize(velocity) * kBulletSpeed;
+		if (reticle2D_->GetSpriteReticles().size() >= 1) {
 
-		 // 現在ロックオンしている敵を取得
-		/*Enemy* targetEnemy = nullptr;
-		if (isRockOn_) {
-			for (Enemy* enemy : gameScene_->GetEnemys()) {
-				if (enemy->GetIsTarget()) {
-					targetEnemy = enemy;
-					break;
+			for (Enemy* enemy :gameScene_->GetEnemys()) {
+				if (enemy->GetIsRocked()) {
+
+					velocity = enemy->GetWorldPos() - GetWorldPos();
+					velocity = Normnalize(velocity) * kBulletSpeed;
+					// 弾を生成し、初期化
+					PlayerBullet* newBullet = new PlayerBullet();
+					newBullet->SetGameScene(gameScene_);
+					newBullet->Init(model_, GetWorldPos(), velocity, isRockOn_);
+					// 弾を登録する
+					bullets_.push_back(newBullet);
 				}
 			}
-		}*/ 
+		} else {
 
-		// 弾を生成し、初期化
-		PlayerBullet* newBullet = new PlayerBullet();
-		newBullet->SetGameScene(gameScene_);
-		newBullet->Init(model_, GetWorldPos(), velocity, isRockOn_);
-		// 弾を登録する
-		bullets_.push_back(newBullet);
+			velocity = reticle2D_->GetWorld3DRecticlPos() - GetWorldPos();
+			velocity = Normnalize(velocity) * kBulletSpeed;
+			// 弾を生成し、初期化
+			PlayerBullet* newBullet = new PlayerBullet();
+			newBullet->SetGameScene(gameScene_);
+			newBullet->Init(model_, GetWorldPos(), velocity, false);
+			// 弾を登録する
+			bullets_.push_back(newBullet);
+		}
+			
 	}
 }
 

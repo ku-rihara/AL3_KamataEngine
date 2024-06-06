@@ -214,8 +214,10 @@ void GameScene::AddEnemy(const Vector3& pos) {
 	enemy_ = new Enemy();
 	enemy_->Init(model_, pos, Vector3{0, 0, 0.1f});
 	enemy_->SetPlayer(player_);
+	//player_->SetEnemy(enemy_);
 	enemy_->SetGameScene(this);
 	enemys_.push_back(enemy_);
+	/*player_->SetEnemys(enemy_);*/
 }
 
 void GameScene::LoadEnemyPopData() {

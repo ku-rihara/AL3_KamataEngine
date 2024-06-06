@@ -24,6 +24,7 @@ private:
 	Vector3 startPos_;
 	Vector3 velocity_; // 速度
 	uint32_t textureHandle_ = 0;
+	Enemy* targetEnemy_;
 
 public:
 	
