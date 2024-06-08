@@ -83,7 +83,7 @@ void Enemy::Fire() {
 }
 
 void Enemy::FireAndReset() { 
-	Fire();
+	
 	//発射タイマーをセットする
 	std::function<void(void)> callBack = std::bind(&Enemy::FireAndReset, this);
 	//時限発動イベントを生成

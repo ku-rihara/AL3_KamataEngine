@@ -71,7 +71,6 @@ void GameScene::Update() {
 	skyDome_->Update();
 	player_->Update();
 	reticle2D_->Updata(viewProjection_);
-
 	// デスフラグの立った弾を削除
 	enemyBullets_.remove_if([](EnemyBullet* enemybullet) {
 		if (enemybullet->GetIsDeath()) {
@@ -89,7 +88,7 @@ void GameScene::Update() {
 		}
 		return false;
 	});
-
+	
 	// 敵更新
 	for (Enemy* enemy : enemys_) {
 
@@ -99,6 +98,8 @@ void GameScene::Update() {
 	for (EnemyBullet* enemyBullet : enemyBullets_) {
 		enemyBullet->Update();
 	}
+	
+
 
 	// 自弾リストの取得
 	const std::list<PlayerBullet*>& playerBullets = player_->GetBullets();

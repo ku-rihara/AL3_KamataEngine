@@ -25,21 +25,15 @@ void SpriteReticles::Init(Enemy* targetEnemy) {
 }
 
 void SpriteReticles::Updata() {
-	if (this) {
-
+	
 		sprite2DReticle_->SetPosition(targetEnemy_->GetScreenPos());
-	}
+	
 }
 
 void SpriteReticles::Draw() {
-	if (this) {
+	
 		sprite2DReticle_->Draw();
-	}
+	
 }
 
 
-void SpriteReticles::OnEnemyDeath() {
-
-	delete sprite2DReticle_;
-	sprite2DReticle_ = nullptr;
-}

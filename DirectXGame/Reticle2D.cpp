@@ -12,7 +12,7 @@ Reticle2D::Reticle2D() {}
 
 Reticle2D::~Reticle2D() {
 
-for (SpriteReticles* reticle2D : sprite2DReticles_) {
+	for (SpriteReticles* reticle2D : sprite2DReticles_) {
 		delete reticle2D;
 	}
 }
@@ -49,29 +49,41 @@ void Reticle2D::Updata(const ViewProjection& viewProjection) {
 	sprite2DReticle_->SetPosition(Reticle2DPos_);
 
 	Enemy* targetEnemy = nullptr;
-	
+
 	for (Enemy* enemy : gameScene_->GetEnemys()) {
-		
-		if (enemy->GetIsTarget()&&!enemy->GetIsRocked()) { //	ターゲットしてる
+
+		if (enemy->GetIsTarget() && !enemy->GetIsRocked()) { //	ターゲットしてる
 			targetEnemy = enemy;
 			SpriteReticles* newSpriteReticle = new SpriteReticles();
 			newSpriteReticle->SetPlayer(player_);
 			newSpriteReticle->SetGameScene(gameScene_);
-			newSpriteReticle->Init(targetEnemy);		
+			newSpriteReticle->Init(targetEnemy);
 			sprite2DReticles_.push_back(newSpriteReticle);
 			enemy->SetIsRocked(true);
-			
 		}
 	}
-	//複数レティクルの更新
+	// 複数レティクルの更新
 	for (SpriteReticles* reticleSprite : sprite2DReticles_) {
 		reticleSprite->Updata();
-		
 	}
-	//クリアしてしまっているがここをなんとかしたい
-	for (Enemy* enemy : gameScene_->GetEnemys()) {
-		if (enemy->GetIsDeath()) {
-			sprite2DReticles_.clear();
+
+	//敵が死んだらレティクルを削除
+	for (auto it = sprite2DReticles_.begin(); it != sprite2DReticles_.end();) {
+		SpriteReticles* reticleSprite = *it;
+		bool shouldDelete = false;
+		for (Enemy* enemy : gameScene_->GetEnemys()) {
+			if (enemy->GetIsDeath()) {
+				shouldDelete = true;
+				break;
+			}
+		}
+		if (shouldDelete) {
+			delete reticleSprite;
+			it = sprite2DReticles_.erase(it);
+			break;
+		} else {
+			reticleSprite->Updata();
+			++it;
 		}
 	}
 }
@@ -79,9 +91,10 @@ void Reticle2D::Updata(const ViewProjection& viewProjection) {
 void Reticle2D::Draw() {
 
 	for (SpriteReticles* reticleSprite : sprite2DReticles_) {
+
 		reticleSprite->Draw();
 	}
-		sprite2DReticle_->Draw();
+	sprite2DReticle_->Draw();
 }
 
 Vector3 Reticle2D::GetWorld3DRecticlPos() {
@@ -92,4 +105,3 @@ Vector3 Reticle2D::GetWorld3DRecticlPos() {
 	worldPos.z = worldTransform3DReticle_.matWorld_.m[3][2];
 	return worldPos;
 }
-
