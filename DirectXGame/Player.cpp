@@ -23,7 +23,7 @@ void Player::Init(Model* model, uint32_t textureHandle) {
 	assert(model);
 	model_ = model;
 	textureHandle_ = textureHandle;
-	worldTransform_.translation_ = {0, 0, 25};
+	worldTransform_.translation_ = {0, 0, 0};
 	worldTransform_.Initialize();
 	worldTransform3DReticle_.Initialize();
 	// レティクル用テクスチャ取得
@@ -78,7 +78,7 @@ void Player::Update(const ViewProjection& viewProjection) {
 	Vector3 mouseDirection = posFar - posNear;
 	mouseDirection = Normnalize(mouseDirection);
 	// カメラから標準オブジェクトの距離
-	float kDistanceTestObject =150;
+	float kDistanceTestObject =50;
 	worldTransform3DReticle_.translation_.x = posNear.x+ mouseDirection.x * kDistanceTestObject;
 	worldTransform3DReticle_.translation_.y = posNear.y + mouseDirection.y * kDistanceTestObject;
 	worldTransform3DReticle_.translation_.z = posNear.z + mouseDirection.z * kDistanceTestObject;
