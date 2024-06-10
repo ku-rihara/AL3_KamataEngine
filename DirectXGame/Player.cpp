@@ -17,7 +17,7 @@ void Player::Init(Model* model, uint32_t textureHandle) {
 	assert(model);
 	model_ = model;
 	textureHandle_ = textureHandle;
-	worldTransform_.translation_.z = 30;
+	worldTransform_.translation_.z =30;
 	worldTransform_.Initialize();
 	//衝突属性を設定
 	SetCollisionAttribute(kCollisionAttributePlayer);

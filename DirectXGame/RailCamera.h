@@ -9,7 +9,7 @@ private:
 	// スプライン曲線制御点
 	std::vector<Vector3> controlPoints_;
 	// 線分の数
-	const size_t segmentCount = 100;
+	const size_t segmentCount = 300;
 	float railMoveTime_;
 	Vector3 cameraRotate_;
 	int RailIndex = 0;

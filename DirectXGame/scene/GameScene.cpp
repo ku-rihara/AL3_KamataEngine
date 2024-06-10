@@ -84,6 +84,7 @@ void GameScene::Update() {
 
 	} else { // アクティブでない
 		viewProjection_.matView = railCamera_->GetViewProjection().matView;
+		viewProjection_.matView.m[3][1] = railCamera_->GetViewProjection().matView.m[3][1] - 0.5f;
 		viewProjection_.matProjection = railCamera_->GetViewProjection().matProjection;
 		viewProjection_.TransferMatrix();
 	}

@@ -10,12 +10,10 @@ void RailCamera::Init(Vector3 pos, Vector3 rad) {
 	worldTransform_.rotation_ = rad;
 	controlPoints_ = {
 	    {0, 0, 0},
-	    {
-         10, 10,
-         0, },
+	    {10, 10, 3,},
 	    {10, 15, 0},
 	    {20, 15, 0},
-	    {20, 0, 0},
+	    {20, 0, 6},
 	    {30, 0, 0},
 	};
 	viewProjection_.Initialize();
@@ -38,27 +36,25 @@ void RailCamera::Update() {
 		pointsDrawing.push_back(pos);
 	}
 
-	 railMoveTime_ += 0.002f;
-	 if (railMoveTime_ > 1.0f) {
-		railMoveTime_ = 0;
-	 }
-	
-	 float t = railMoveTime_ * segmentCount;
-	 int segmentIndex = int(t);
-	 float segmentT = t - segmentIndex;
-	
-	 Vector3 eye = pointsDrawing[segmentIndex];
-	 Vector3 target = pointsDrawing[segmentIndex + 1];
-	
-	 Vector3 forward = Normnalize(target - eye);
-	 cameraRotate_.y = std::atan2(forward.x, forward.z);
-	 Matrix4x4 cameraRotateMatrix = MakeRotateYMatrix(-cameraRotate_.y);
-	 Vector3 velocityZ = Multiply(forward, cameraRotateMatrix);
-	 cameraRotate_.x = std::atan2(-velocityZ.y, velocityZ.z);
-	
-	 worldTransform_.matWorld_ = MakeAffineMatrix(worldTransform_.scale_, cameraRotate_, Lerp(pointsDrawing[segmentIndex], pointsDrawing[segmentIndex + 1], segmentT));
-	
-	 viewProjection_.matView = Inverse(worldTransform_.matWorld_);
+	railMoveTime_ += 0.6f;
+	if (RailIndex < segmentCount) {
+		Vector3 eye = pointsDrawing[RailIndex];
+		Vector3 target = pointsDrawing[RailIndex + 1];
+		Vector3 forward = target - eye;
+
+		cameraRotate_.y = std::atan2(forward.x, forward.z);
+		Matrix4x4 cameraRotateMatrix = MakeRotateYMatrix(-cameraRotate_.y);
+		Vector3 velocityZ = Multiply(forward, cameraRotateMatrix);
+		cameraRotate_.x = std::atan2(-velocityZ.y, velocityZ.z);
+
+		
+		worldTransform_.matWorld_ = MakeAffineMatrix(worldTransform_.scale_, cameraRotate_, Lerp(eye, target, railMoveTime_));
+		viewProjection_.matView = Inverse(worldTransform_.matWorld_);
+		if (railMoveTime_ >= 1.0f) {
+			railMoveTime_ = 0;
+			RailIndex++;
+		}
+	}
 	
 }
 
