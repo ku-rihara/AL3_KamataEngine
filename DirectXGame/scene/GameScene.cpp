@@ -1,4 +1,6 @@
 #include "GameScene.h"
+#include "MathFunction.h"
+#include "PrimitiveDrawer.h"
 #include "TextureManager.h"
 #include <cassert>
 
@@ -15,13 +17,22 @@ GameScene::~GameScene() {
 }
 
 void GameScene::Initialize() {
-	
+	controlPoints_ = {
+	    {0, 0, 0},
+	    {
+         10, 10,
+         0, },
+	    {10, 15, 0},
+	    {20, 15, 0},
+	    {20, 0, 0},
+	    {30, 0, 0},
+	};
 	dxCommon_ = DirectXCommon::GetInstance();
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
-	//primitiveDrawer_ = PrimitiveDrawer::GetInstance();
+	// primitiveDrawer_ = PrimitiveDrawer::GetInstance();
 	//
-	// インスタンス生成
+	//  インスタンス生成
 	skyDome_ = new Skydome();
 	player_ = new Player();
 	enemy_ = new Enemy();
@@ -29,7 +40,7 @@ void GameScene::Initialize() {
 	debugCamera_ = new DebugCamera(1280, 720);
 	// 画像読み込み
 	// 3Dモデルの生成
-	modelSkydome_ = Model::CreateFromOBJ("skydome",true);
+	modelSkydome_ = Model::CreateFromOBJ("skydome", true);
 	textureHandle_ = TextureManager::Load("white1x1.png");
 	// モデル作成
 	model_ = Model::Create();
@@ -42,16 +53,17 @@ void GameScene::Initialize() {
 	skyDome_->Init(modelSkydome_);
 	// 自キャラのアドレスを渡す
 	enemy_->SetPlayer(player_);
-	//自キャラとレールカメラの親子関係を結ぶ
+	// 自キャラとレールカメラの親子関係を結ぶ
 	player_->SetParent(&railCamera_->GetWorldTransform());
+	PrimitiveDrawer::GetInstance()->SetViewProjection(&viewProjection_);
 	// 軸方向表示の表示を有効にする
-	//AxisIndicator::GetInstance()->SetVisible(true);
+	// AxisIndicator::GetInstance()->SetVisible(true);
 	//// 軸方向表示が参照するビュープロジェクションを指定する（アドレス渡し）
-	//AxisIndicator::GetInstance()->SetTargetViewProjection(&viewProjection_);
+	// AxisIndicator::GetInstance()->SetTargetViewProjection(&viewProjection_);
 }
 
 void GameScene::Update() {
-	
+
 	railCamera_->Update();
 	skyDome_->Update();
 	player_->Update();
@@ -89,7 +101,7 @@ void GameScene::Update() {
 void GameScene::Draw() {
 	// コマンドリストの取得
 	ID3D12GraphicsCommandList* commandList = dxCommon_->GetCommandList();
-	railCamera_->LineDraw();
+
 #pragma region 背景スプライト描画
 	// 背景スプライト描画前処理
 	Sprite::PreDraw(commandList);
@@ -116,7 +128,21 @@ void GameScene::Draw() {
 	if (enemy_) {
 		enemy_->Draw(viewProjection_);
 	}
-	
+	// 線分で描画する用の頂点リスト
+	std::vector<Vector3> pointsDrawing;
+	// 線分の数
+	const size_t segmentCount = 100;
+	// 線分の数+1個分の頂点座標を計算
+	for (size_t i = 0; i < segmentCount + 1; i++) {
+		float t = 1.0f / segmentCount * i;
+		Vector3 pos = CatmullRomPosition(controlPoints_, t);
+		// 描画用頂点リストに追加
+		pointsDrawing.push_back(pos);
+	}
+	for (size_t i = 0; i < segmentCount; ++i) {
+		// 先頭から2点取り出してライン描画
+		PrimitiveDrawer::GetInstance()->DrawLine3d(pointsDrawing[i], pointsDrawing[i + 1], Vector4{1.0f, 0.0f, 0.0f, 1.0f});
+	}
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
 #pragma endregion
@@ -133,8 +159,6 @@ void GameScene::Draw() {
 	Sprite::PostDraw();
 
 #pragma endregion
-
-	
 }
 
 void GameScene::ChecAllCollisions() {
@@ -142,9 +166,9 @@ void GameScene::ChecAllCollisions() {
 	const std::list<PlayerBullet*>& playerBullets = player_->GetBullets();
 	// 敵弾リストの取得
 	const std::list<EnemyBullet*>& enemyBullets = enemy_->GetBullets();
-	//コライダー
+	// コライダー
 	std::list<Collider*> colliders_;
-	//コライダーをリストに登録
+	// コライダーをリストに登録
 	colliders_.push_back(player_);
 	colliders_.push_back(enemy_);
 
@@ -154,10 +178,10 @@ void GameScene::ChecAllCollisions() {
 	for (EnemyBullet* eBullet : enemyBullets) {
 		colliders_.push_back(eBullet);
 	}
-	//リスト内のペアを総当たり
+	// リスト内のペアを総当たり
 	std::list<Collider*>::iterator itrA = colliders_.begin();
 	for (; itrA != colliders_.end(); ++itrA) {
-		//イテレータAからコライダーAを取得する
+		// イテレータAからコライダーAを取得する
 		Collider* colliderA = *itrA;
 
 		// イテレーターBはイテレータAの次の要素から回す（重複判定を回避）
@@ -166,19 +190,16 @@ void GameScene::ChecAllCollisions() {
 		for (; itrB != colliders_.end(); ++itrB) {
 			Collider* colliderB = *itrB;
 
-			//ペアの当たり判定
-			CheckCollisionPair(colliderA,colliderB);
+			// ペアの当たり判定
+			CheckCollisionPair(colliderA, colliderB);
 		}
 	}
-	
-
 }
 
 void GameScene::CheckCollisionPair(Collider* colliderA, Collider* colliderB) {
 	Vector3 posA, posB;
-	//衝突フィルタリング
-	if ((colliderA->GetCollisionAttribute() ^ colliderB->GetCollisionMask())==0xFFFFFFFF|| 
-		(colliderB->GetCollisionAttribute() ^ colliderA->GetCollisionMask()) == 0xFFFFFFFF) {
+	// 衝突フィルタリング
+	if ((colliderA->GetCollisionAttribute() ^ colliderB->GetCollisionMask()) == 0xFFFFFFFF || (colliderB->GetCollisionAttribute() ^ colliderA->GetCollisionMask()) == 0xFFFFFFFF) {
 		return;
 	}
 	posA = colliderA->GetWorldPos();
@@ -192,5 +213,4 @@ void GameScene::CheckCollisionPair(Collider* colliderA, Collider* colliderB) {
 		// 敵弾の衝突時コールバックを呼び出す
 		colliderB->OnColligion();
 	}
-	
 }

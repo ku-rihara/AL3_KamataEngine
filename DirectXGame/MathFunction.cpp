@@ -62,7 +62,7 @@ Vector3 CatmullRomPosition(const std::vector<Vector3>& points, float t) {
 	// 区間番号
 	size_t index = static_cast<size_t>(t / areaWidth);
 	// 区間番号が上限を超えないように収める
-	index = Clamp(index, 1, division - 2);
+	index = Clamp(index, 0, division - 1);
 
 	// 4点分のインデックス
 	size_t index0 = index - 1;
