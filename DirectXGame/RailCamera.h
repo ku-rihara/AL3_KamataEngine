@@ -2,6 +2,7 @@
 #include "WorldTransform.h"
 #include "ViewProjection.h"
 #include "MathFunction.h"
+
 class RailCamera {
 private:
 	WorldTransform worldTransform_;
