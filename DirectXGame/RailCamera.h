@@ -8,11 +8,16 @@ private:
 	ViewProjection viewProjection_;
 	// スプライン曲線制御点
 	std::vector<Vector3> controlPoints_;
-
-	Vector3 eye_;
-	Vector3 target_;
-	Vector3 forward_;
+	// 線分の数
+	const size_t segmentCount = 100;
+	float railMoveTime_;
 	Vector3 cameraRotate_;
+	// 線分で描画する用の頂点リスト
+	std::vector<Vector3> eye_;
+	std::vector<Vector3> target_;
+	std::vector<Vector3> forward_;
+	std::vector<Vector3> pointsDrawing;
+	
 
 public:
 	
