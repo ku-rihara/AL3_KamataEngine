@@ -12,6 +12,7 @@ private:
 	const size_t segmentCount = 100;
 	float railMoveTime_;
 	Vector3 cameraRotate_;
+	int RailIndex = 0;
 	// 線分で描画する用の頂点リスト
 	std::vector<Vector3> eye_;
 	std::vector<Vector3> target_;

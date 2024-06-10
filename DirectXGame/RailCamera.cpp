@@ -1,4 +1,5 @@
 #include "RailCamera.h"
+#include "Easing.h"
 #include "Geometry/fMatrix4x4.h"
 #include "PrimitiveDrawer.h"
 #include <cmath>
@@ -26,6 +27,7 @@ void RailCamera::Update() {
 	ImGui::Begin("Camera");
 	ImGui::SliderFloat3("Translation", &worldTransform_.translation_.x, -100.0f, 100.0f);
 	ImGui::SliderFloat3("Rotation", &worldTransform_.rotation_.x, -3.14f, 3.14f);
+	ImGui::DragInt("Index", &RailIndex);
 	ImGui::End();
 
 	// 線分の数+1個分の頂点座標を計算
@@ -34,34 +36,30 @@ void RailCamera::Update() {
 		Vector3 pos = CatmullRomPosition(controlPoints_, t);
 		// 描画用頂点リストに追加
 		pointsDrawing.push_back(pos);
-
 	}
-	railMoveTime_ += 0.01f;
+
+	 railMoveTime_ += 0.002f;
+	 if (railMoveTime_ > 1.0f) {
+		railMoveTime_ = 0;
+	 }
 	
-	// 線分の数+1個分の頂点座標を計算
-	for (size_t i = 0; i < segmentCount; i++) {
-		Vector3 eye = pointsDrawing[i];
-		Vector3 target = pointsDrawing[i + 1];
-		Vector3 forward = target - eye;
-
-		eye_.push_back(eye);
-		target_.push_back(target);
-		forward_.push_back(forward);
-
-		cameraRotate_.y = std::atan2(forward_[i].x, forward_[i].z);
-		Matrix4x4 cameraRotateMatrix = MakeRotateYMatrix(-cameraRotate_.y);
-		Vector3 velocityZ = Multiply(forward_[i], cameraRotateMatrix);
-		cameraRotate_.x = std::atan2(-velocityZ.y, velocityZ.z);
-		// ワールドからビュー
-		viewProjection_.matView = Inverse(worldTransform_.matWorld_);
-
-		// スケール、回転、平行移動を合成して行列を計算する
-		worldTransform_.matWorld_ = MakeAffineMatrix(worldTransform_.scale_, cameraRotate_, Leap);
-		if (railMoveTime_ >= 1) {
-			railMoveTime_ = 0;
-			i += 1;
-		}
-	}
+	 float t = railMoveTime_ * segmentCount;
+	 int segmentIndex = int(t);
+	 float segmentT = t - segmentIndex;
+	
+	 Vector3 eye = pointsDrawing[segmentIndex];
+	 Vector3 target = pointsDrawing[segmentIndex + 1];
+	
+	 Vector3 forward = Normnalize(target - eye);
+	 cameraRotate_.y = std::atan2(forward.x, forward.z);
+	 Matrix4x4 cameraRotateMatrix = MakeRotateYMatrix(-cameraRotate_.y);
+	 Vector3 velocityZ = Multiply(forward, cameraRotateMatrix);
+	 cameraRotate_.x = std::atan2(-velocityZ.y, velocityZ.z);
+	
+	 worldTransform_.matWorld_ = MakeAffineMatrix(worldTransform_.scale_, cameraRotate_, Lerp(pointsDrawing[segmentIndex], pointsDrawing[segmentIndex + 1], segmentT));
+	
+	 viewProjection_.matView = Inverse(worldTransform_.matWorld_);
+	
 }
 
 void RailCamera::LineDraw() {
@@ -71,3 +69,6 @@ void RailCamera::LineDraw() {
 		PrimitiveDrawer::GetInstance()->DrawLine3d(pointsDrawing[i], pointsDrawing[i + 1], Vector4{1.0f, 0.0f, 0.0f, 1.0f});
 	}
 }
+
+
+
