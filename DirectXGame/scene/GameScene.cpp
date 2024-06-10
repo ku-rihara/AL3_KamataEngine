@@ -53,6 +53,7 @@ void GameScene::Initialize() {
 	enemy_->SetPlayer(player_);
 	//自キャラとレールカメラの親子関係を結ぶ
 	player_->SetParent(&railCamera_->GetWorldTransform());
+	PrimitiveDrawer::GetInstance()->SetViewProjection(&viewProjection_);
 	// 軸方向表示の表示を有効にする
 	//AxisIndicator::GetInstance()->SetVisible(true);
 	//// 軸方向表示が参照するビュープロジェクションを指定する（アドレス渡し）
@@ -95,22 +96,8 @@ void GameScene::Update() {
 	}
 
 	
-	PrimitiveDrawer::GetInstance()->SetViewProjection(&viewProjection_);
-	// 線分で描画する用の頂点リスト
-	std::vector<Vector3> pointsDrawing;
-	// 線分の数
-	const size_t segmentCount = 100;
-	// 線分の数+1個分の頂点座標を計算
-	for (size_t i = 0; i < segmentCount + 1; i++) {
-		float t = 1.0f / segmentCount * i;
-		Vector3 pos = CatmullRomPosition(controlPoints_, t);
-		// 描画用頂点リストに追加
-		pointsDrawing.push_back(pos);
-	}
-	for (size_t i = 0; i < segmentCount; ++i) {
-		// 先頭から2点取り出してライン描画
-		PrimitiveDrawer::GetInstance()->DrawLine3d(pointsDrawing[i], pointsDrawing[i + 1], Vector4{1.0f, 0.0f, 0.0f, 1.0f});
-	}
+
+	
 }
 
 void GameScene::Draw() {
@@ -143,7 +130,21 @@ void GameScene::Draw() {
 	if (enemy_) {
 		enemy_->Draw(viewProjection_);
 	}
-	
+	// 線分で描画する用の頂点リスト
+	std::vector<Vector3> pointsDrawing;
+	// 線分の数
+	const size_t segmentCount = 100;
+	// 線分の数+1個分の頂点座標を計算
+	for (size_t i = 0; i < segmentCount + 1; i++) {
+		float t = 1.0f / segmentCount * i;
+		Vector3 pos = CatmullRomPosition(controlPoints_, t);
+		// 描画用頂点リストに追加
+		pointsDrawing.push_back(pos);
+	}
+	for (size_t i = 0; i < segmentCount; ++i) {
+		// 先頭から2点取り出してライン描画
+		PrimitiveDrawer::GetInstance()->DrawLine3d(pointsDrawing[i], pointsDrawing[i + 1], Vector4{1.0f, 0.0f, 0.0f, 1.0f});
+	}
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
 #pragma endregion
