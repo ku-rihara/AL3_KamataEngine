@@ -11,8 +11,8 @@
 #include "DebugCamera.h"
 #include "Enemy.h"
 #include "Player.h"
+#include "RailCamera.h"
 #include "Skydome.h"
-#include"RailCamera.h"
 
 /// <summary>
 /// ゲームシーン
@@ -43,7 +43,9 @@ private: // メンバ変数
 	// ビュープロジェクション
 	ViewProjection viewProjection_;
 
-	
+	// スプライン曲線制御点
+	std::vector<Vector3> controlPoints_;
+
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>
