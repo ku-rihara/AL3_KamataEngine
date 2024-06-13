@@ -13,6 +13,7 @@
 //class
 #include "player.h"
 #include "SkyDome.h"
+#include "Ground.h"
 
 /// <summary>
 /// ゲームシーン
@@ -32,11 +33,14 @@ private: // メンバ変数
 	Sprite* sprite_ = nullptr;     // スプライト
 	std::unique_ptr<DebugCamera> debugCamera_ = nullptr;
 	std::unique_ptr<Model> model_ = nullptr; // 3Dモデル
+	std::unique_ptr<Model> modelSkyDome_ = nullptr; // 3Dモデル
+	std::unique_ptr<Model> modelGround_ = nullptr; // 3Dモデル
 	/// <summary>
 	/// 包含
 	/// </summary>
 	std::unique_ptr<Player> player_;
 	std::unique_ptr<Skydome> skyDome_;
+	std::unique_ptr<Ground> ground_;
 	/// <summary>
 	/// メンバ変数
 	/// </summary>

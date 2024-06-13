@@ -13,17 +13,21 @@ void GameScene::Initialize() {
 	audio_ = Audio::GetInstance();
 	textureHandle_ = TextureManager::Load("white1x1.png");
 	debugCamera_ = std::make_unique<DebugCamera>(1280, 720);
-	model_.reset(Model::Create());
+	modelSkyDome_.reset(Model::CreateFromOBJ("skydome", true));
+	modelGround_.reset(Model::CreateFromOBJ("Ground", true));
+	model_.reset(Model::CreateFromOBJ("Player", true));
 	/// <summary>
 	/// 生成
 	/// </summary>
 	player_ = std::make_unique<Player>(); 
 	skyDome_ = std::make_unique<Skydome>();
+	ground_ = std::make_unique<Ground>();
 	/// <summary>
 	/// 初期化
 	/// </summary>
 	player_->Init(model_.get(), textureHandle_); // 自キャラ初期化
-	skyDome_->Init(model_.get());
+	skyDome_->Init(modelSkyDome_.get());
+	ground_->Init(modelGround_.get());
 
 	worldTransform_.Initialize();
 	viewProjection_.Initialize();
@@ -36,6 +40,7 @@ void GameScene::Initialize() {
 
 void GameScene::Update() {
 	skyDome_->Update();
+	ground_->Update();
 	player_->Update();
 
 	#ifdef _DEBUG
@@ -89,6 +94,7 @@ void GameScene::Draw() {
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
 	skyDome_->Draw(viewProjection_);
+	ground_->Draw(viewProjection_);
 	player_->Draw(viewProjection_);
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
