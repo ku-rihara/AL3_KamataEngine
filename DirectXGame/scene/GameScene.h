@@ -12,6 +12,7 @@
 #include "WorldTransform.h"
 //class
 #include "player.h"
+#include "SkyDome.h"
 
 /// <summary>
 /// ゲームシーン
@@ -35,6 +36,7 @@ private: // メンバ変数
 	/// 包含
 	/// </summary>
 	std::unique_ptr<Player> player_;
+	std::unique_ptr<Skydome> skyDome_;
 	/// <summary>
 	/// メンバ変数
 	/// </summary>

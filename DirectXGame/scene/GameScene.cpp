@@ -14,9 +14,16 @@ void GameScene::Initialize() {
 	textureHandle_ = TextureManager::Load("white1x1.png");
 	debugCamera_ = std::make_unique<DebugCamera>(1280, 720);
 	model_.reset(Model::Create());
-
-	player_ = std::make_unique<Player>(); // 自キャラ生成
+	/// <summary>
+	/// 生成
+	/// </summary>
+	player_ = std::make_unique<Player>(); 
+	skyDome_ = std::make_unique<Skydome>();
+	/// <summary>
+	/// 初期化
+	/// </summary>
 	player_->Init(model_.get(), textureHandle_); // 自キャラ初期化
+	skyDome_->Init(model_.get());
 
 	worldTransform_.Initialize();
 	viewProjection_.Initialize();
@@ -28,6 +35,7 @@ void GameScene::Initialize() {
 }
 
 void GameScene::Update() {
+	skyDome_->Update();
 	player_->Update();
 
 	#ifdef _DEBUG
@@ -80,6 +88,7 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
+	skyDome_->Draw(viewProjection_);
 	player_->Draw(viewProjection_);
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
