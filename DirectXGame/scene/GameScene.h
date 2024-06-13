@@ -29,17 +29,20 @@ private: // メンバ変数
 	uint32_t soundDataHandle_ = 0; // サウンドデータハンドル
 	uint32_t voiceHandle_ = 0;     // 音声再生ハンドル
 	Sprite* sprite_ = nullptr;     // スプライト
+	std::unique_ptr<DebugCamera> debugCamera_ = nullptr;
 	std::unique_ptr<Model> model_ = nullptr; // 3Dモデル
 	/// <summary>
 	/// 包含
 	/// </summary>
 	std::unique_ptr<Player> player_;
+	/// <summary>
+	/// メンバ変数
+	/// </summary>
+	bool isDebugCameraActive_ = false;
 
 	// ImGuiで値を入力する変数
 	float inputFloat3[3] = {0, 0, 0};
-	// デバッグカメラ
-	DebugCamera* debugCamera_ = nullptr;
-
+	
 	// ワールドトランスフォーム
 	WorldTransform worldTransform_;
 	// ビュープロジェクション
