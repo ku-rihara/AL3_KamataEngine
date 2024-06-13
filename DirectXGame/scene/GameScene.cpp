@@ -4,19 +4,19 @@
 
 GameScene::GameScene() {}
 
-GameScene::~GameScene() { delete model_; }
+
 
 void GameScene::Initialize() {
 	dxCommon_ = DirectXCommon::GetInstance();
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
 
-	player_ = new Player(); // 自キャラ生成
+	player_ = std::make_unique<Player>(); // 自キャラ生成
 	textureHandle_ = TextureManager::Load("white1x1.png");
-	model_ = Model::Create();
+	model_.reset(Model::Create());
 	worldTransform_.Initialize();
 	viewProjection_.Initialize();
-	player_->Init(model_, textureHandle_); // 自キャラ初期化
+	player_->Init(model_.get(), textureHandle_); // 自キャラ初期化
 }
 
 void GameScene::Update() { player_->Update(); }

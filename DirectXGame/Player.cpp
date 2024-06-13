@@ -3,8 +3,6 @@
 
 Player::Player() {}
 
-Player::~Player() {}
-
 void Player::Init(Model* model, uint32_t textureHandle) {
 	// NULLポインタチェック
 	assert(model);
