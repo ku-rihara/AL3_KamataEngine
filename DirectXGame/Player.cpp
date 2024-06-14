@@ -21,7 +21,7 @@ void Player::Update() {
 		//移動量に速さを反映
 		move = Normnalize(move) * speed;
 		//移動ベクトルをカメラの角度だけ回転する
-		move += viewProjection_->rotation_;
+		Vector3 differentialVector 
 		//移動
 		worldTransform_.translation_ += move;
 
