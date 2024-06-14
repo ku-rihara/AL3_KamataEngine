@@ -2,6 +2,7 @@
 #include <memory>
 #include "Model.h"
 #include "WorldTransform.h"
+#include "input/input.h"
 
 class Player {
 private:
