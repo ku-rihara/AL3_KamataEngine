@@ -14,6 +14,7 @@
 #include "player.h"
 #include "SkyDome.h"
 #include "Ground.h"
+#include "FollowCamera.h"
 
 /// <summary>
 /// ゲームシーン
@@ -41,6 +42,7 @@ private: // メンバ変数
 	std::unique_ptr<Player> player_;
 	std::unique_ptr<Skydome> skyDome_;
 	std::unique_ptr<Ground> ground_;
+	std::unique_ptr<FollowCamera> followCamera_;
 	/// <summary>
 	/// メンバ変数
 	/// </summary>

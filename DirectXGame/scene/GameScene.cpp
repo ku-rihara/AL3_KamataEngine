@@ -22,15 +22,20 @@ void GameScene::Initialize() {
 	player_ = std::make_unique<Player>(); 
 	skyDome_ = std::make_unique<Skydome>();
 	ground_ = std::make_unique<Ground>();
+	followCamera_ = std::make_unique<FollowCamera>();
 	/// <summary>
 	/// 初期化
 	/// </summary>
 	player_->Init(model_.get(), textureHandle_); // 自キャラ初期化
 	skyDome_->Init(modelSkyDome_.get());
 	ground_->Init(modelGround_.get());
+	followCamera_->Init();
 
 	worldTransform_.Initialize();
 	viewProjection_.Initialize();
+
+	//自キャラのワールドトランスフォームを追従カメラにセット
+	followCamera_->SetTarget(&player_->GetWorldTransform());
 
 	// 軸方向表示の表示を有効にする
 	AxisIndicator::GetInstance()->SetVisible(true);
@@ -41,6 +46,7 @@ void GameScene::Initialize() {
 void GameScene::Update() {
 	skyDome_->Update();
 	ground_->Update();
+	followCamera_->Update();
 	player_->Update();
 
 	#ifdef _DEBUG
