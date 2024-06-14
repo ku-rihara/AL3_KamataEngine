@@ -1,6 +1,8 @@
 #include "Player.h"
 #include "cassert"
 
+static XINPUT_STATE joyState;
+
 Player::Player() {}
 
 void Player::Init(Model* model, uint32_t textureHandle) {
