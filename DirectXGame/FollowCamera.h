@@ -1,6 +1,7 @@
 #pragma once
 #include"ViewProjection.h"
 #include "WorldTransform.h"
+
 /// <summary>
 /// 追従カメラ
 /// </summary>
@@ -15,7 +16,7 @@ public:
 	void Update();
 
 	//getter
-	ViewProjection GetViewProjection() const { return viewprojection_; }
+	const ViewProjection& GetViewProjection()  { return viewprojection_; }
 	//setter
 	void SetTarget(const WorldTransform* target) { target_ = target; }
 };

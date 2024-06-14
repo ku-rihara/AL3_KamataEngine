@@ -33,9 +33,9 @@ void GameScene::Initialize() {
 
 	worldTransform_.Initialize();
 	viewProjection_.Initialize();
-
 	//自キャラのワールドトランスフォームを追従カメラにセット
 	followCamera_->SetTarget(&player_->GetWorldTransform());
+	player_->SetViewProjection(&followCamera_->GetViewProjection());
 
 	// 軸方向表示の表示を有効にする
 	AxisIndicator::GetInstance()->SetVisible(true);
@@ -69,7 +69,10 @@ void GameScene::Update() {
 		viewProjection_.TransferMatrix();
 		// アクティブでない
 	} else { 
-		viewProjection_.UpdateMatrix();
+			viewProjection_.matView = followCamera_->GetViewProjection().matView;
+		viewProjection_.matProjection = followCamera_->GetViewProjection().matProjection;
+
+	viewProjection_.TransferMatrix();
 	}
 }
 
