@@ -15,6 +15,7 @@ public:
 	void Init();
 	void Update();
 
+
 	//getter
 	const ViewProjection& GetViewProjection()  { return viewprojection_; }
 	//setter

@@ -23,10 +23,10 @@ public:
 	void Init(Model* model, uint32_t textureHandle);
 	void Update();
 	void Draw(ViewProjection& viewProjection);
+	Vector3 GetWorldPos();
 
 	const WorldTransform& GetWorldTransform()  { return worldTransform_; }
 
 	//setter
-	void SetViewProjection(const ViewProjection* viewProjection) { viewProjection_ = viewProjection;
-	}
+	void SetViewProjection(const ViewProjection* viewProjection) { viewProjection_ = viewProjection;}
 };
