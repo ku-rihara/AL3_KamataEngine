@@ -25,7 +25,7 @@ public:
 	Player();
 	
 
-	void Init(std::vector<Model*> modelParts, uint32_t textureHandle);
+	void Init(Model* modelBody, Model* modelHead, Model* modelLeftArm, Model* modelRightArm, uint32_t textureHandle);
 	void Update();
 	void Draw(ViewProjection& viewProjection);
 	Vector3 GetWorldPos();

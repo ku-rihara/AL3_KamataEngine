@@ -15,11 +15,10 @@ void GameScene::Initialize() {
 	debugCamera_ = std::make_unique<DebugCamera>(1280, 720);
 	modelSkyDome_.reset(Model::CreateFromOBJ("skydome", true));
 	modelGround_.reset(Model::CreateFromOBJ("Ground", true));
-	modelFighterParts.push_back(std::unique_ptr<Model>(Model::CreateFromOBJ("playerBody", true)));
-	modelFighterParts.push_back(std::unique_ptr<Model>(Model::CreateFromOBJ("PlayerFace", true)));
-	modelFighterParts.push_back(std::unique_ptr<Model>(Model::CreateFromOBJ("PlayerLeftArm", true)));
-	modelFighterParts.push_back(std::unique_ptr<Model>(Model::CreateFromOBJ("PlayerRightArm", true)));
-	/// <summary>
+	modelFighterBody_.reset(Model::CreateFromOBJ("PlayerBody", true));
+	modelFighterHead_.reset(Model::CreateFromOBJ("PlayerFace", true));
+	modelFighterLeftArm_.reset(Model::CreateFromOBJ("PlayerLeftArm", true));
+	modelFighterRightArm_.reset(Model::CreateFromOBJ("PlayerRightArm", true)); /// <summary>
 	/// 生成
 	/// </summary>
 	player_ = std::make_unique<Player>(); 
@@ -29,9 +28,8 @@ void GameScene::Initialize() {
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	for (std::unique_ptr<Model> parts : modelFighterParts) {
-		player_->Init(modelFighterParts.get\, textureHandle_); // 自キャラ初期化
-	}
+	player_->Init(modelFighterBody_.get(), modelFighterHead_.get(), modelFighterLeftArm_.get(), modelFighterRightArm_.get(),textureHandle_); // 自キャラ初期化
+	
 	skyDome_->Init(modelSkyDome_.get());
 	ground_->Init(modelGround_.get());
 	followCamera_->Init();

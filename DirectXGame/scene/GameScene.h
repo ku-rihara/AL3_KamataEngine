@@ -36,11 +36,11 @@ private: // メンバ変数
 	std::unique_ptr<DebugCamera> debugCamera_ = nullptr;
 	std::unique_ptr<Model> modelSkyDome_ = nullptr; // 3Dモデル
 	std::unique_ptr<Model> modelGround_ = nullptr; // 3Dモデル
-	std::vector<std::unique_ptr<Model>> modelFighterParts;
-	//std::unique_ptr<Model> modelFighterBody_ = nullptr;        // 3Dモデル
-	//std::unique_ptr<Model> modelFighterHead_ = nullptr; // 3Dモデル
-	//std::unique_ptr<Model> modelFighterLeftArm_ = nullptr;        // 3Dモデル
-	//std::unique_ptr<Model> modelFighterRightArm_ = nullptr; // 3Dモデル
+	/*std::vector<std::unique_ptr<Model>> modelFighterParts;*/
+	std::unique_ptr<Model> modelFighterBody_ = nullptr;        // 3Dモデル
+	std::unique_ptr<Model> modelFighterHead_ = nullptr; // 3Dモデル
+	std::unique_ptr<Model> modelFighterLeftArm_ = nullptr;        // 3Dモデル
+	std::unique_ptr<Model> modelFighterRightArm_ = nullptr; // 3Dモデル
 	/// <summary>
 	/// 包含
 	/// </summary>
