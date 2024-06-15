@@ -1,6 +1,7 @@
 #pragma once
 
 #include<memory>
+#include<vector>
 #include "Audio.h"
 #include "AxisIndicator.h"
 #include "DebugCamera.h"
@@ -33,9 +34,13 @@ private: // メンバ変数
 	uint32_t voiceHandle_ = 0;     // 音声再生ハンドル
 	Sprite* sprite_ = nullptr;     // スプライト
 	std::unique_ptr<DebugCamera> debugCamera_ = nullptr;
-	std::unique_ptr<Model> model_ = nullptr; // 3Dモデル
 	std::unique_ptr<Model> modelSkyDome_ = nullptr; // 3Dモデル
 	std::unique_ptr<Model> modelGround_ = nullptr; // 3Dモデル
+	std::vector<std::unique_ptr<Model>> modelFighterParts;
+	//std::unique_ptr<Model> modelFighterBody_ = nullptr;        // 3Dモデル
+	//std::unique_ptr<Model> modelFighterHead_ = nullptr; // 3Dモデル
+	//std::unique_ptr<Model> modelFighterLeftArm_ = nullptr;        // 3Dモデル
+	//std::unique_ptr<Model> modelFighterRightArm_ = nullptr; // 3Dモデル
 	/// <summary>
 	/// 包含
 	/// </summary>

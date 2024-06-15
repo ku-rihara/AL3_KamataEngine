@@ -15,7 +15,10 @@ void GameScene::Initialize() {
 	debugCamera_ = std::make_unique<DebugCamera>(1280, 720);
 	modelSkyDome_.reset(Model::CreateFromOBJ("skydome", true));
 	modelGround_.reset(Model::CreateFromOBJ("Ground", true));
-	model_.reset(Model::CreateFromOBJ("Player", true));
+	modelFighterParts.push_back(std::unique_ptr<Model>(Model::CreateFromOBJ("playerBody", true)));
+	modelFighterParts.push_back(std::unique_ptr<Model>(Model::CreateFromOBJ("PlayerFace", true)));
+	modelFighterParts.push_back(std::unique_ptr<Model>(Model::CreateFromOBJ("PlayerLeftArm", true)));
+	modelFighterParts.push_back(std::unique_ptr<Model>(Model::CreateFromOBJ("PlayerRightArm", true)));
 	/// <summary>
 	/// 生成
 	/// </summary>
@@ -26,7 +29,9 @@ void GameScene::Initialize() {
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	player_->Init(model_.get(), textureHandle_); // 自キャラ初期化
+	for (std::unique_ptr<Model> parts : modelFighterParts) {
+		player_->Init(modelFighterParts.get\, textureHandle_); // 自キャラ初期化
+	}
 	skyDome_->Init(modelSkyDome_.get());
 	ground_->Init(modelGround_.get());
 	followCamera_->Init();
@@ -44,12 +49,7 @@ void GameScene::Initialize() {
 }
 
 void GameScene::Update() {
-	skyDome_->Update();
-	ground_->Update();
-	followCamera_->Update();
-	player_->Update();
-
-	#ifdef _DEBUG
+#ifdef _DEBUG
 	// デバッグカメラモード切り替え------------------------------
 	if (input_->TriggerKey(DIK_SPACE)) {
 		if (isDebugCameraActive_ == false) {
@@ -60,6 +60,7 @@ void GameScene::Update() {
 	}
 	// デバッグカメラモード切り替え------------------------------
 #endif
+
 	if (isDebugCameraActive_ == true) { // デバッグカメラがアクティブなら
 		// デバッグカメラの更新
 		debugCamera_->Update();
@@ -68,12 +69,19 @@ void GameScene::Update() {
 
 		viewProjection_.TransferMatrix();
 		// アクティブでない
-	} else { 
-			viewProjection_.matView = followCamera_->GetViewProjection().matView;
+	} 
+	skyDome_->Update();
+	ground_->Update();
+	followCamera_->Update();
+	player_->Update();
+
+	if (isDebugCameraActive_ == false) { // デバッグカメラがアクティブでない
+		viewProjection_.matView = followCamera_->GetViewProjection().matView;
 		viewProjection_.matProjection = followCamera_->GetViewProjection().matProjection;
 
-	viewProjection_.TransferMatrix();
+		viewProjection_.TransferMatrix();
 	}
+	
 }
 
 void GameScene::Draw() {
