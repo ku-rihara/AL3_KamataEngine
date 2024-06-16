@@ -28,7 +28,7 @@ void GameScene::Initialize() {
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	player_->Init(modelFighterBody_.get(), modelFighterHead_.get(), modelFighterLeftArm_.get(), modelFighterRightArm_.get(),textureHandle_); // 自キャラ初期化
+	player_->Init(modelFighterBody_.get(), modelFighterHead_.get(), modelFighterLeftArm_.get(), modelFighterRightArm_.get()); // 自キャラ初期化
 	
 	skyDome_->Init(modelSkyDome_.get());
 	ground_->Init(modelGround_.get());
