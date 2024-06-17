@@ -1,5 +1,6 @@
 #include "Player.h"
 #include "Geometry/fMatrix4x4.h"
+#include<imgui.h>
 #include "cassert"
 
 Player::Player() {}
@@ -23,6 +24,13 @@ void Player::Init(Model* modelBody, Model* modelHead, Model* modelLeftArm, Model
 	worldTransformHead_.parent_ = &worldTransformBody_;
 	worldTransformformleftArm_.parent_ = &worldTransformBody_;
 	worldTransformformRightArm_.parent_ = &worldTransformBody_;
+
+	worldTransformformBase_.translation_.y = 0.9f;
+	worldTransformHead_.translation_.y = 1.7f;
+	worldTransformformleftArm_.translation_.x = 0.6f;
+	worldTransformformleftArm_.translation_.y = 1.0f;
+	worldTransformformRightArm_.translation_.x = -0.6f;
+	worldTransformformRightArm_.translation_.y = 1.0f;
 	InitializeFloatingGimmick();
 }
 
@@ -68,16 +76,22 @@ void Player::InitializeFloatingGimmick() { floatingParameter_ = 0.0f; }
 void Player::UpdateFloatingGimmick(){
 	float pi = 3.14159265358f;
 	// 浮遊移動のサイクル
-	const uint16_t cycle = 60;
+	const uint16_t cycle = 70;
 	//1フレームでのパラメータ加算値
 	const float step = 2.0f * float(pi) / cycle;
 	//パラメータを1ステップ分加算
 	floatingParameter_ += step;
 	floatingParameter_ = std::fmod(floatingParameter_, 2.0f * pi);
 	//浮遊の振幅＜m＞
-	const float floatingAmplitude = 1.2f;
+	const float floatingAmplitude = 0.2f;
 	//浮遊を座標に反映
 	worldTransformBody_.translation_.y = std::sin(floatingParameter_) * floatingAmplitude;
+
+	ImGui::Begin("Player");
+	ImGui::SliderFloat3("Head Translation", &worldTransformHead_.translation_.x, 0, 2.0f);
+	ImGui::SliderFloat3("ArmL Translation", &worldTransformformleftArm_.translation_.x, 0, 2.0f);
+	ImGui::SliderFloat3("ArmR Translation", &worldTransformformRightArm_.translation_.x, -1, 2.0f);
+	ImGui::End();
 }
 
 Vector3 Player::GetWorldPos() {
