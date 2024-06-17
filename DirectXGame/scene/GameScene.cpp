@@ -16,7 +16,7 @@ void GameScene::Initialize() {
 	modelSkyDome_.reset(Model::CreateFromOBJ("skydome", true));
 	modelGround_.reset(Model::CreateFromOBJ("Ground", true));
 	modelFighterBody_.reset(Model::CreateFromOBJ("PlayerBody", true));
-	modelFighterHead_.reset(Model::CreateFromOBJ("PlayerFace", true));
+	modelFighterHead_.reset(Model::CreateFromOBJ("PlayerHead", true));
 	modelFighterLeftArm_.reset(Model::CreateFromOBJ("PlayerLeftArm", true));
 	modelFighterRightArm_.reset(Model::CreateFromOBJ("PlayerRightArm", true)); /// <summary>
 	/// 生成
