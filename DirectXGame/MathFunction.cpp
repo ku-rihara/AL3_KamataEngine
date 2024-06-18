@@ -9,7 +9,7 @@ float LerpShortAngle(float a, float b, float t) {
 	diff = std::fmodf(diff, 2.0f * pi);
 	// 角度を[-PI,PI]に補正する
 	if (diff > pi) {
-		diff -= -2.0f * pi;
+		diff -= 2.0f * pi;
 	}
 	else if (diff < -pi) {
 		diff += 2.0f * pi;

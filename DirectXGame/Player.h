@@ -13,6 +13,7 @@ private:
 	const ViewProjection* viewProjection_ = nullptr;
 	// 3Dモデル
 	 Model* model_ = nullptr;
+	float objectiveAngle_;
 	// テクスチャハンドル
 	uint32_t textureHandle_ = 0u;
 

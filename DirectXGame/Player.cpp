@@ -19,7 +19,6 @@ void Player::Update() {
 		//速さ
 		const float speed = 0.3f;
 		const float thresholdValue = 0.7f;
-		float objectiveAngle = 0;
 		bool isMoving = false;
 		//移動量
 		Vector3 move = {(float)joyState.Gamepad.sThumbLX / SHRT_MAX, 0, (float)joyState.Gamepad.sThumbLY / SHRT_MAX};
@@ -35,16 +34,16 @@ void Player::Update() {
 			// 移動
 			worldTransform_.translation_ += move;
 			// 目標角度
-			 objectiveAngle = std::atan2(move.x, move.z);
+			objectiveAngle_ = std::atan2(move.x, move.z);
 		
 		}
 			//最短角度補間
-			worldTransform_.rotation_.y =LerpShortAngle(worldTransform_.rotation_.y,objectiveAngle,0.05f);		
+		worldTransform_.rotation_.y = LerpShortAngle(worldTransform_.rotation_.y, objectiveAngle_, 0.05f);		
 			
 	}
 	worldTransform_.UpdateMatrix(); 
 }
-void Player::Draw(ViewProjection& viewProjection) { model_->Draw(worldTransform_, viewProjection, textureHandle_); }
+void Player::Draw(ViewProjection& viewProjection) { model_->Draw(worldTransform_, viewProjection); }
 
 
 Vector3 Player::GetWorldPos() {
