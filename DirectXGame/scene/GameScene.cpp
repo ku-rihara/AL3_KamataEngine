@@ -46,8 +46,8 @@ void GameScene::Initialize() {
 void GameScene::Update() {
 	skyDome_->Update();
 	ground_->Update();
-	followCamera_->Update();
 	player_->Update();
+	followCamera_->Update();
 
 	#ifdef _DEBUG
 	// デバッグカメラモード切り替え------------------------------
