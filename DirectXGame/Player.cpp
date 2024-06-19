@@ -5,32 +5,22 @@
 
 Player::Player() {}
 
-void Player::Init(Model* modelBody, Model* modelHead, Model* modelLeftArm, Model* modelRightArm) {
-	// NULLポインタチェック
-	assert(modelBody);
-	assert(modelHead);
-	assert(modelLeftArm);
-	assert(modelRightArm);
-	modelBody_ = modelBody;
-	modelHead_ = modelHead;
-	modelLeftArm_ = modelLeftArm;
-	modelRightArm_ = modelRightArm;
-	worldTransformformBase_.Initialize();
-	worldTransformBody_. Initialize();
-	worldTransformHead_. Initialize();
-	worldTransformformleftArm_.Initialize();
-	worldTransformformRightArm_.Initialize();
-	worldTransformBody_.parent_ = &worldTransformformBase_;
-	worldTransformHead_.parent_ = &worldTransformBody_;
-	worldTransformformleftArm_.parent_ = &worldTransformBody_;
-	worldTransformformRightArm_.parent_ = &worldTransformBody_;
-
-	worldTransformformBase_.translation_.y = 0.9f;
-	worldTransformHead_.translation_.y = 1.7f;
-	worldTransformformleftArm_.translation_.x = 0.6f;
-	worldTransformformleftArm_.translation_.y = 1.0f;
-	worldTransformformRightArm_.translation_.x = -0.6f;
-	worldTransformformRightArm_.translation_.y = 1.0f;
+void Player::Init(const std::vector<Model*>& models) {
+	// 基底クラスの初期化
+	partsWorldTransforms_.resize(4);
+	BaseCharacter::Init(models);
+	//パーツの親子関係
+	partsWorldTransforms_[IndexBody].parent_ = &baseWorldTransform_;
+	partsWorldTransforms_[IndexHead].parent_ = &partsWorldTransforms_[IndexBody];
+	partsWorldTransforms_[IndexLeftArm].parent_ = &partsWorldTransforms_[IndexBody];
+	partsWorldTransforms_[IndexRightArm].parent_ = &partsWorldTransforms_[IndexBody];
+	//パーツの変位の値
+	baseWorldTransform_.translation_.y = 0.9f;
+	partsWorldTransforms_[IndexHead].translation_.y = 1.7f;
+	partsWorldTransforms_[IndexLeftArm].translation_.x = 0.6f;
+	partsWorldTransforms_[IndexLeftArm].translation_.y = 1.0f;
+	partsWorldTransforms_[IndexRightArm].translation_.x = -0.6f;
+	partsWorldTransforms_[IndexRightArm].translation_.y = 1.0f;
 	InitializeFloatingGimmick();
 }
 
@@ -48,27 +38,20 @@ void Player::Update() {
 		Matrix4x4 rotateMatrix = MakeRotateYMatrix(viewProjection_->rotation_.y);
 		move = TransformNormal(move, rotateMatrix);
 		// Y軸周り角度(θy)
-		worldTransformformBase_.rotation_.y = std::atan2(move.x, move.z);
+		baseWorldTransform_.rotation_.y = std::atan2(move.x, move.z);
 		// Y軸周りに-θy回す回転行列を計算
-		Matrix4x4 matrix = MakeRotateYMatrix(-worldTransformformBase_.rotation_.y);
+		Matrix4x4 matrix = MakeRotateYMatrix(-baseWorldTransform_.rotation_.y);
 		// velocity_に回転行列を掛け算してvelocityZを求める
 		Vector3 velocityZ = Multiply(move, matrix);
 		// X軸周り角度(θX)
-		worldTransformformBase_.rotation_.x = std::atan2(-velocityZ.y, velocityZ.z);
+		baseWorldTransform_.rotation_.x = std::atan2(-velocityZ.y, velocityZ.z);
 		// 移動
-		worldTransformformBase_.translation_ += move;
+		baseWorldTransform_.translation_ += move;
 	}
-	worldTransformformBase_.UpdateMatrix();
-	worldTransformBody_.UpdateMatrix();
-	worldTransformHead_.UpdateMatrix();
-	worldTransformformleftArm_.UpdateMatrix();
-	worldTransformformRightArm_.UpdateMatrix();
+	BaseCharacter::Update();
 }
-void Player::Draw(ViewProjection& viewProjection) {
-	modelBody_->Draw(worldTransformBody_, viewProjection); 
-	modelHead_->Draw(worldTransformHead_, viewProjection );
-	modelLeftArm_->Draw(worldTransformformleftArm_, viewProjection );
-	modelRightArm_->Draw(worldTransformformRightArm_, viewProjection);
+void Player::Draw(const ViewProjection& viewProjection) {
+	BaseCharacter::Draw(viewProjection); 
 }
 
 void Player::InitializeFloatingGimmick() { floatingParameter_ = 0.0f; }
@@ -85,21 +68,21 @@ void Player::UpdateFloatingGimmick(){
 	//浮遊の振幅＜m＞
 	const float floatingAmplitude = 0.2f;
 	//浮遊を座標に反映
-	worldTransformBody_.translation_.y = std::sin(floatingParameter_) * floatingAmplitude;
+	partsWorldTransforms_[IndexBody].translation_.y = std::sin(floatingParameter_) * floatingAmplitude;
 
 	ImGui::Begin("Player");
-	ImGui::SliderFloat3("Head Translation", &worldTransformHead_.translation_.x, 0, 2.0f);
-	ImGui::SliderFloat3("ArmL Translation", &worldTransformformleftArm_.translation_.x, 0, 2.0f);
-	ImGui::SliderFloat3("ArmR Translation", &worldTransformformRightArm_.translation_.x, -1, 2.0f);
+	ImGui::SliderFloat3("Head Translation", &partsWorldTransforms_[IndexHead].translation_.x, 0, 2.0f);
+	ImGui::SliderFloat3("ArmL Translation", &partsWorldTransforms_[IndexLeftArm].translation_.x, 0, 2.0f);
+	ImGui::SliderFloat3("ArmR Translation", &partsWorldTransforms_[IndexRightArm].translation_.x, -1, 2.0f);
 	ImGui::End();
 }
 
 Vector3 Player::GetWorldPos() {
 	Vector3 worldPos;
 	// ワールド行列の平行移動成分を取得
-	worldPos.x = worldTransformformBase_.matWorld_.m[3][0];
-	worldPos.y = worldTransformformBase_.matWorld_.m[3][1];
-	worldPos.z = worldTransformformBase_.matWorld_.m[3][2];
+	worldPos.x = baseWorldTransform_.matWorld_.m[3][0];
+	worldPos.y = baseWorldTransform_.matWorld_.m[3][1];
+	worldPos.z = baseWorldTransform_.matWorld_.m[3][2];
 
 	return worldPos;
 }

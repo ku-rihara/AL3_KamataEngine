@@ -1,11 +1,9 @@
 #include "GameScene.h"
-#include "TextureManager.h"
 #include "AxisIndicator.h"
+#include "TextureManager.h"
 #include <cassert>
 
 GameScene::GameScene() {}
-
-
 
 void GameScene::Initialize() {
 	dxCommon_ = DirectXCommon::GetInstance();
@@ -18,25 +16,27 @@ void GameScene::Initialize() {
 	modelFighterBody_.reset(Model::CreateFromOBJ("PlayerBody", true));
 	modelFighterHead_.reset(Model::CreateFromOBJ("PlayerHead", true));
 	modelFighterLeftArm_.reset(Model::CreateFromOBJ("PlayerLeftArm", true));
-	modelFighterRightArm_.reset(Model::CreateFromOBJ("PlayerRightArm", true)); /// <summary>
+	modelFighterRightArm_.reset(Model::CreateFromOBJ("PlayerRightArm", true));
+	/// <summary>
 	/// 生成
 	/// </summary>
-	player_ = std::make_unique<Player>(); 
+	player_ = std::make_unique<Player>();
 	skyDome_ = std::make_unique<Skydome>();
 	ground_ = std::make_unique<Ground>();
 	followCamera_ = std::make_unique<FollowCamera>();
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	player_->Init(modelFighterBody_.get(), modelFighterHead_.get(), modelFighterLeftArm_.get(), modelFighterRightArm_.get()); // 自キャラ初期化
-	
+	std::vector<Model*> playerModels = {modelFighterBody_.get(), modelFighterHead_.get(), modelFighterLeftArm_.get(), modelFighterRightArm_.get()};
+	// 自キャラ初期化
+	player_->Init(playerModels);
 	skyDome_->Init(modelSkyDome_.get());
 	ground_->Init(modelGround_.get());
 	followCamera_->Init();
 
 	worldTransform_.Initialize();
 	viewProjection_.Initialize();
-	//自キャラのワールドトランスフォームを追従カメラにセット
+	// 自キャラのワールドトランスフォームを追従カメラにセット
 	followCamera_->SetTarget(&player_->GetWorldTransform());
 	player_->SetViewProjection(&followCamera_->GetViewProjection());
 
@@ -67,7 +67,7 @@ void GameScene::Update() {
 
 		viewProjection_.TransferMatrix();
 		// アクティブでない
-	} 
+	}
 	skyDome_->Update();
 	ground_->Update();
 	followCamera_->Update();
@@ -79,7 +79,6 @@ void GameScene::Update() {
 
 		viewProjection_.TransferMatrix();
 	}
-	
 }
 
 void GameScene::Draw() {
