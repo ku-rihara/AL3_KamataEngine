@@ -3,24 +3,28 @@
 #include<imgui.h>
 #include "cassert"
 
+
 Player::Player() {}
 
 void Player::Init(const std::vector<Model*>& models) {
 	// 基底クラスの初期化
-	partsWorldTransforms_.resize(4);
+	partsWorldTransforms_.reserve(4); // メモリを確保
+	for (int i = 0; i < 4; ++i) {
+		partsWorldTransforms_.emplace_back(std::make_unique<WorldTransform>()); // デフォルトコンストラクタで初期化
+	}
 	BaseCharacter::Init(models);
 	//パーツの親子関係
-	partsWorldTransforms_[IndexBody].parent_ = &baseWorldTransform_;
-	partsWorldTransforms_[IndexHead].parent_ = &partsWorldTransforms_[IndexBody];
-	partsWorldTransforms_[IndexLeftArm].parent_ = &partsWorldTransforms_[IndexBody];
-	partsWorldTransforms_[IndexRightArm].parent_ = &partsWorldTransforms_[IndexBody];
+	partsWorldTransforms_[IndexBody]->parent_ = &baseWorldTransform_;
+	partsWorldTransforms_[IndexHead]->parent_ = partsWorldTransforms_[IndexBody].get();
+	partsWorldTransforms_[IndexLeftArm]->parent_ = partsWorldTransforms_[IndexBody].get();
+	partsWorldTransforms_[IndexRightArm]->parent_ = partsWorldTransforms_[IndexBody].get();
 	//パーツの変位の値
 	baseWorldTransform_.translation_.y = 0.9f;
-	partsWorldTransforms_[IndexHead].translation_.y = 1.7f;
-	partsWorldTransforms_[IndexLeftArm].translation_.x = 0.6f;
-	partsWorldTransforms_[IndexLeftArm].translation_.y = 1.0f;
-	partsWorldTransforms_[IndexRightArm].translation_.x = -0.6f;
-	partsWorldTransforms_[IndexRightArm].translation_.y = 1.0f;
+	partsWorldTransforms_[IndexHead]->translation_.y = 1.7f;
+	partsWorldTransforms_[IndexLeftArm]->translation_.x = 0.6f;
+	partsWorldTransforms_[IndexLeftArm]->translation_.y = 1.0f;
+	partsWorldTransforms_[IndexRightArm]->translation_.x = -0.6f;
+	partsWorldTransforms_[IndexRightArm]->translation_.y = 1.0f;
 	InitializeFloatingGimmick();
 }
 
@@ -68,12 +72,12 @@ void Player::UpdateFloatingGimmick(){
 	//浮遊の振幅＜m＞
 	const float floatingAmplitude = 0.2f;
 	//浮遊を座標に反映
-	partsWorldTransforms_[IndexBody].translation_.y = std::sin(floatingParameter_) * floatingAmplitude;
+	partsWorldTransforms_[IndexBody]->translation_.y = std::sin(floatingParameter_) * floatingAmplitude;
 
 	ImGui::Begin("Player");
-	ImGui::SliderFloat3("Head Translation", &partsWorldTransforms_[IndexHead].translation_.x, 0, 2.0f);
-	ImGui::SliderFloat3("ArmL Translation", &partsWorldTransforms_[IndexLeftArm].translation_.x, 0, 2.0f);
-	ImGui::SliderFloat3("ArmR Translation", &partsWorldTransforms_[IndexRightArm].translation_.x, -1, 2.0f);
+	ImGui::SliderFloat3("Head Translation", &partsWorldTransforms_[IndexHead]->translation_.x, 0, 2.0f);
+	ImGui::SliderFloat3("ArmL Translation", &partsWorldTransforms_[IndexLeftArm]->translation_.x, 0, 2.0f);
+	ImGui::SliderFloat3("ArmR Translation", &partsWorldTransforms_[IndexRightArm]->translation_.x, -1, 2.0f);
 	ImGui::End();
 }
 

@@ -1,5 +1,6 @@
 #pragma once
 #include"Model.h"
+#include<memory>
 #include "WorldTransform.h"
 #include "ViewProjection.h"
 #include "vector"
@@ -10,7 +11,7 @@ protected:
 	std::vector<Model*> models_;
 	//ワールド変換データ
 	WorldTransform baseWorldTransform_;
-	std::vector<WorldTransform> partsWorldTransforms_;
+	std::vector<std::unique_ptr<WorldTransform>> partsWorldTransforms_;
 
 
 protected:
@@ -19,5 +20,5 @@ protected:
 	virtual void Draw(const ViewProjection&viewProjection);
 
 	const WorldTransform& GetWorldTransform() { return baseWorldTransform_; }
-	const std::vector<WorldTransform>& GetPartsWorldTransforms() { return partsWorldTransforms_; }
+	const std::vector<std::unique_ptr<WorldTransform>>& GetPartsWorldTransforms() { return partsWorldTransforms_; }
 };

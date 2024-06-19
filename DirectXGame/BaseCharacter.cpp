@@ -2,21 +2,23 @@
 
 void BaseCharacter::Init(const std::vector<Model*>& models) {
 	models_ = models; 
-	for (WorldTransform& worldTransform : partsWorldTransforms_) {
-		worldTransform.Initialize();
+	baseWorldTransform_.Initialize();
+		for (auto& worldTransform : partsWorldTransforms_) {
+		worldTransform->Initialize();
 	}
 }
 
 void BaseCharacter::Update() {
-	for (WorldTransform& worldTransform : partsWorldTransforms_) {
-		worldTransform.UpdateMatrix();
+	baseWorldTransform_.UpdateMatrix();
+	for (auto& worldTransform : partsWorldTransforms_) {
+		worldTransform->UpdateMatrix();
 	}
 }
 
 void BaseCharacter::Draw(const ViewProjection&viewProjecion) { 
 
-for (int i = 0; i < models_.size();i++) {
-		models_[i]->Draw(partsWorldTransforms_[i], viewProjecion);
+for (int i = 0; i < models_.size(); i++) {
+		models_[i]->Draw(*partsWorldTransforms_[i].get(), viewProjecion);
 	}
 
 }
