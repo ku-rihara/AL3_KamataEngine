@@ -14,10 +14,11 @@ protected:
 	std::vector<std::unique_ptr<WorldTransform>> partsWorldTransforms_;
 
 
-protected:
+public:
 	virtual void Init(const std::vector<Model*>& models);
 	virtual void Update();
 	virtual void Draw(const ViewProjection&viewProjection);
+	virtual Vector3 GetBaseWorldPos();
 
 	const WorldTransform& GetWorldTransform() { return baseWorldTransform_; }
 	const std::vector<std::unique_ptr<WorldTransform>>& GetPartsWorldTransforms() { return partsWorldTransforms_; }

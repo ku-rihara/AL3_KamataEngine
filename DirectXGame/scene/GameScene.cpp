@@ -17,23 +17,28 @@ void GameScene::Initialize() {
 	modelFighterHead_.reset(Model::CreateFromOBJ("PlayerHead", true));
 	modelFighterLeftArm_.reset(Model::CreateFromOBJ("PlayerLeftArm", true));
 	modelFighterRightArm_.reset(Model::CreateFromOBJ("PlayerRightArm", true));
+	modelEnemyBody_.reset(Model::CreateFromOBJ("EnemyBody", true));
+	modelEnemyThurn_.reset(Model::CreateFromOBJ("EnemyThurn", true));
 	/// <summary>
 	/// 生成
 	/// </summary>
 	player_ = std::make_unique<Player>();
+	enemy_ = std::make_unique<Enemy>();
 	skyDome_ = std::make_unique<Skydome>();
 	ground_ = std::make_unique<Ground>();
 	followCamera_ = std::make_unique<FollowCamera>();
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	std::vector<Model*> playerModels = {modelFighterBody_.get(), modelFighterHead_.get(), modelFighterLeftArm_.get(), modelFighterRightArm_.get()};
 	// 自キャラ初期化
+	std::vector<Model*> playerModels = {modelFighterBody_.get(), modelFighterHead_.get(), modelFighterLeftArm_.get(), modelFighterRightArm_.get()};
 	player_->Init(playerModels);
 	skyDome_->Init(modelSkyDome_.get());
 	ground_->Init(modelGround_.get());
 	followCamera_->Init();
-
+	//敵キャラ初期化
+	std::vector<Model*> enemyModels = {modelEnemyBody_.get(), modelEnemyThurn_.get()};
+	enemy_->Init(enemyModels);
 	worldTransform_.Initialize();
 	viewProjection_.Initialize();
 	// 自キャラのワールドトランスフォームを追従カメラにセット
@@ -72,6 +77,7 @@ void GameScene::Update() {
 	ground_->Update();
 	followCamera_->Update();
 	player_->Update();
+	enemy_->Update();
 
 	if (isDebugCameraActive_ == false) { // デバッグカメラがアクティブでない
 		viewProjection_.matView = followCamera_->GetViewProjection().matView;
@@ -110,6 +116,7 @@ void GameScene::Draw() {
 	skyDome_->Draw(viewProjection_);
 	ground_->Draw(viewProjection_);
 	player_->Draw(viewProjection_);
+	enemy_->Draw(viewProjection_);
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
 #pragma endregion

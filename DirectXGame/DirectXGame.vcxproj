@@ -110,6 +110,7 @@
     <ClCompile Include="BaseCharacter.cpp" />
     <ClCompile Include="base\DirectXCommon.cpp" />
     <ClCompile Include="base\WinApp.cpp" />
+    <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="FollowCamera.cpp" />
     <ClCompile Include="Geometry\Matrix4x4.cpp" />
     <ClCompile Include="Geometry\Vector3.cpp" />
@@ -145,6 +146,7 @@
     <ClInclude Include="base\StringUtility.h" />
     <ClInclude Include="base\TextureManager.h" />
     <ClInclude Include="base\WinApp.h" />
+    <ClInclude Include="Enemy.h" />
     <ClInclude Include="FollowCamera.h" />
     <ClInclude Include="Geometry\fMatrix4x4.h" />
     <ClInclude Include="Ground.h" />

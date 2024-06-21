@@ -24,12 +24,6 @@ private:
 	Model* modelLeftArm_ = nullptr;
 	Model* modelRightArm_ = nullptr;
 
-	/*WorldTransform worldTransform_;
-	WorldTransform worldTransformBody_;
-	WorldTransform worldTransformHead_;
-	WorldTransform worldTransformformleftArm_;
-	WorldTransform worldTransformformRightArm_;*/
-
 	//浮遊ギミックの媒介変数
 	float floatingParameter_ = 0.0f;
 	// テクスチャハンドル
@@ -42,12 +36,10 @@ public:
 	void Init(const std::vector<Model*>& models)override;
 	void Update()override;
 	void Draw(const ViewProjection& viewProjection) override;
+	Vector3 GetBaseWorldPos()override;
 	//浮遊ギミック
 	void InitializeFloatingGimmick();
 	void UpdateFloatingGimmick();
-	Vector3 GetWorldPos();
-
-	const WorldTransform& GetWorldTransform()  { return baseWorldTransform_; }
 
 	//setter
 	void SetViewProjection(const ViewProjection* viewProjection) { viewProjection_ = viewProjection;}

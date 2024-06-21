@@ -13,6 +13,7 @@
 #include "WorldTransform.h"
 //class
 #include "player.h"
+#include "Enemy.h"
 #include "SkyDome.h"
 #include "Ground.h"
 #include "FollowCamera.h"
@@ -36,15 +37,19 @@ private: // メンバ変数
 	std::unique_ptr<DebugCamera> debugCamera_ = nullptr;
 	std::unique_ptr<Model> modelSkyDome_ = nullptr; // 3Dモデル
 	std::unique_ptr<Model> modelGround_ = nullptr; // 3Dモデル
-	/*std::vector<std::unique_ptr<Model>> modelFighterParts;*/
+	//プレイヤーモデル
 	std::unique_ptr<Model> modelFighterBody_ = nullptr;        // 3Dモデル
 	std::unique_ptr<Model> modelFighterHead_ = nullptr; // 3Dモデル
 	std::unique_ptr<Model> modelFighterLeftArm_ = nullptr;        // 3Dモデル
 	std::unique_ptr<Model> modelFighterRightArm_ = nullptr; // 3Dモデル
+	//敵モデル
+	std::unique_ptr<Model> modelEnemyBody_ = nullptr;    // 3Dモデル
+	std::unique_ptr<Model> modelEnemyThurn_ = nullptr; // 3Dモデル
 	/// <summary>
 	/// 包含
 	/// </summary>
 	std::unique_ptr<Player> player_;
+	std::unique_ptr<Enemy> enemy_;
 	std::unique_ptr<Skydome> skyDome_;
 	std::unique_ptr<Ground> ground_;
 	std::unique_ptr<FollowCamera> followCamera_;
