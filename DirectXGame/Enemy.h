@@ -9,8 +9,10 @@ class Enemy:public BaseCharacter {
 private:
 	enum Parts {
 		IndexHead,
-		IndexThorn,
+		IndexLeftThorn,
+		IndexRightThorn,
 	};
+	const int partsnum = 3;
 	// カメラのビュープロジェクション
 	const ViewProjection* viewProjection_ = nullptr;
 	// 3Dモデル

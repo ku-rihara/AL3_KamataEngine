@@ -17,7 +17,7 @@ void GameScene::Initialize() {
 	modelFighterHead_.reset(Model::CreateFromOBJ("PlayerHead", true));
 	modelFighterLeftArm_.reset(Model::CreateFromOBJ("PlayerLeftArm", true));
 	modelFighterRightArm_.reset(Model::CreateFromOBJ("PlayerRightArm", true));
-	modelEnemyBody_.reset(Model::CreateFromOBJ("EnemyBody", true));
+	modelEnemyBody_.reset(Model::CreateFromOBJ("EnemyHead", true));
 	modelEnemyThurn_.reset(Model::CreateFromOBJ("EnemyThurn", true));
 	/// <summary>
 	/// 生成
@@ -37,7 +37,7 @@ void GameScene::Initialize() {
 	ground_->Init(modelGround_.get());
 	followCamera_->Init();
 	//敵キャラ初期化
-	std::vector<Model*> enemyModels = {modelEnemyBody_.get(), modelEnemyThurn_.get()};
+	std::vector<Model*> enemyModels = {modelEnemyBody_.get(), modelEnemyThurn_.get(), modelEnemyThurn_.get()};
 	enemy_->Init(enemyModels);
 	worldTransform_.Initialize();
 	viewProjection_.Initialize();

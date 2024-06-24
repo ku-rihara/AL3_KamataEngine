@@ -15,6 +15,7 @@ private:
 		IndexLeftArm,
 		IndexRightArm,
 	};
+	const int partsnum = 4;
 	// カメラのビュープロジェクション
 	const ViewProjection* viewProjection_ = nullptr;
 	// 3Dモデル

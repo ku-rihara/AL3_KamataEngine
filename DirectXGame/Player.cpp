@@ -8,8 +8,8 @@ Player::Player() {}
 
 void Player::Init(const std::vector<Model*>& models) {
 
-	partsWorldTransforms_.reserve(4); // メモリを確保
-	for (int i = 0; i < 4; ++i) {
+	partsWorldTransforms_.reserve(partsnum); // メモリを確保
+	for (int i = 0; i < partsnum; ++i) {
 		partsWorldTransforms_.emplace_back(std::make_unique<WorldTransform>());
 	}	
 	// 基底クラスの初期化
