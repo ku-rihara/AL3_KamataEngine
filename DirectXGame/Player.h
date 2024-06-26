@@ -27,8 +27,7 @@ private:
 
 	//浮遊ギミックの媒介変数
 	float floatingParameter_ = 0.0f;
-	// テクスチャハンドル
-	uint32_t textureHandle_ = 0u;
+	
 
 public:
 	Player();
@@ -39,8 +38,8 @@ public:
 	void Draw(const ViewProjection& viewProjection) override;
 	Vector3 GetBaseWorldPos()override;
 	//浮遊ギミック
-	void InitializeFloatingGimmick();
-	void UpdateFloatingGimmick();
+	void AnimationInit() override;
+	void AnimationUpdate() override;
 
 	//setter
 	void SetViewProjection(const ViewProjection* viewProjection) { viewProjection_ = viewProjection;}

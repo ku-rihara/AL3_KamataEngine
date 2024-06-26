@@ -19,6 +19,8 @@ public:
 	virtual void Update();
 	virtual void Draw(const ViewProjection&viewProjection);
 	virtual Vector3 GetBaseWorldPos();
+	virtual void AnimationInit() = 0;
+	virtual void AnimationUpdate() = 0;
 
 	const WorldTransform& GetWorldTransform() { return baseWorldTransform_; }
 	const std::vector<std::unique_ptr<WorldTransform>>& GetPartsWorldTransforms() { return partsWorldTransforms_; }

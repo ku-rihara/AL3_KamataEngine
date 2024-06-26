@@ -26,11 +26,11 @@ void Player::Init(const std::vector<Model*>& models) {
 	partsWorldTransforms_[IndexLeftArm]->translation_.y = 1.0f;
 	partsWorldTransforms_[IndexRightArm]->translation_.x = -0.6f;
 	partsWorldTransforms_[IndexRightArm]->translation_.y = 1.0f;
-	InitializeFloatingGimmick();
+	AnimationInit();
 }
 
 void Player::Update() {
-	UpdateFloatingGimmick();
+	AnimationUpdate();
 	XINPUT_STATE joyState;
 	if (Input::GetInstance()->GetJoystickState(0, joyState)) {
 		// 速さ
@@ -59,9 +59,9 @@ void Player::Draw(const ViewProjection& viewProjection) {
 	BaseCharacter::Draw(viewProjection); 
 }
 
-void Player::InitializeFloatingGimmick() { floatingParameter_ = 0.0f; }
+void Player::AnimationInit() { floatingParameter_ = 0.0f; }
 
-void Player::UpdateFloatingGimmick(){
+void Player::AnimationUpdate() {
 	float pi = 3.14159265358f;
 	// 浮遊移動のサイクル
 	const uint16_t cycle = 70;

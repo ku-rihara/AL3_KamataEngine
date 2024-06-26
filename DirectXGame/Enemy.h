@@ -20,6 +20,8 @@ private:
 	Vector3 velocity_;
 	Model* modelHead_ = nullptr;
 	Model* modelThorn_ = nullptr;
+	// 浮遊ギミックの媒介変数
+	float animeParamater_ = 0.0f;
 
 public:
 	Enemy();
@@ -28,6 +30,8 @@ public:
 	void Update() override;
 	void Draw(const ViewProjection& viewProjection) override;
 	Vector3 GetBaseWorldPos()override;
+	void AnimationInit()override;
+	void AnimationUpdate()override;
 
 	// setter
 	void SetViewProjection(const ViewProjection* viewProjection) { viewProjection_ = viewProjection; }
