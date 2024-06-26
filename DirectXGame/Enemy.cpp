@@ -13,8 +13,8 @@ void Enemy::Init(const std::vector<Model*>& models) {
 	}
 	// 基底クラスの初期化
 	BaseCharacter::Init(models);
-	baseWorldTransform_.translation_.x = 2;
-	baseWorldTransform_.translation_.y = 2;
+	baseWorldTransform_.translation_.x = -20;
+	baseWorldTransform_.translation_.z = 20;
 	partsWorldTransforms_[IndexLeftThorn]->translation_.x = 0.7f;
 	partsWorldTransforms_[IndexRightThorn]->translation_.x = -0.7f;
 	partsWorldTransforms_[IndexLeftThorn]->translation_.y = 0.25f;
@@ -26,13 +26,20 @@ void Enemy::Init(const std::vector<Model*>& models) {
 }
 
 void Enemy::Update() {
+	const float speed = 0.1f;
 	
+	baseWorldTransform_.rotation_.y += 0.01f;
+	Vector3 forwardDirection = { std::sinf(baseWorldTransform_.rotation_.y), 0, std::cosf(baseWorldTransform_.rotation_.y)};
+	velocity_ = forwardDirection * speed;
+	baseWorldTransform_.translation_ += velocity_;
+
 	BaseCharacter::Update();
 	ImGui::Begin("Enemy");
 	ImGui::DragFloat3("Head Translation", &partsWorldTransforms_[IndexHead]->translation_.x, 0.01f);
 	ImGui::DragFloat3("ArmL Translation", &partsWorldTransforms_[IndexLeftThorn]->translation_.x, 0.01f);
 	ImGui::DragFloat3("ArmR Translation", &partsWorldTransforms_[IndexRightThorn]->translation_.x, 0.01f);
 	ImGui::End();
+	
 }
 void Enemy::Draw(const ViewProjection& viewProjection) {
 	BaseCharacter::Draw(viewProjection);

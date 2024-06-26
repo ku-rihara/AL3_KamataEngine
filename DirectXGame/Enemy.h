@@ -17,6 +17,7 @@ private:
 	const ViewProjection* viewProjection_ = nullptr;
 	// 3Dモデル
 	std::vector<Model*> modelParts_;
+	Vector3 velocity_;
 	Model* modelHead_ = nullptr;
 	Model* modelThorn_ = nullptr;
 
