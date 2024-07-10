@@ -6,6 +6,8 @@
 #include "WorldTransform.h"
 #include "ViewProjection.h"
 #include "input/input.h"
+#include <optional>
+
 
 class Player:public BaseCharacter {
 private:
@@ -16,6 +18,11 @@ private:
 		IndexRightArm,
 		IndexWeapon,
 	};
+	enum class Behavior {
+		kRoot,   // 通常状態
+		kAttack, // 攻撃中
+	};
+
 	const int partsnum = 5;
 	// カメラのビュープロジェクション
 	const ViewProjection* viewProjection_ = nullptr;
@@ -26,6 +33,12 @@ private:
 	Model* modelLeftArm_ = nullptr;
 	Model* modelRightArm_ = nullptr;
 	Model* modelWeapon_ = nullptr;
+	float stiffeningTime_ = 0;
+
+	//ふるまい
+	Behavior behavior_ = Behavior::kRoot;
+	//次の振る舞いのリクエスト
+	std::optional<Behavior> behaviorRequest_ = std::nullopt;
 
 	//浮遊ギミックの媒介変数
 	float floatingParameter_ = 0.0f;
@@ -38,7 +51,11 @@ public:
 	void Update()override;
 	void Draw(const ViewProjection& viewProjection) override;
 	Vector3 GetBaseWorldPos()override;
-	//ふるまい
+	//ふるまい************************************************
+	//初期化----------------------------
+	void BehaviorRootInitialize();
+	void BehaviorAttackInitialize();
+	//更新-------------------------------
 	void BehaviorRootUpdate();
 	void BehaviorAttackUpdate();
 

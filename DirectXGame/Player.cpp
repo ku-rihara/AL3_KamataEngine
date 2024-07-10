@@ -27,19 +27,46 @@ void Player::Init(const std::vector<Model*>& models) {
 	partsWorldTransforms_[IndexLeftArm]->translation_.y = 1.0f;
 	partsWorldTransforms_[IndexRightArm]->translation_.x = -0.6f;
 	partsWorldTransforms_[IndexRightArm]->translation_.y = 1.0f;
-	AnimationInit();
+	BehaviorRootInitialize();
 }
 
 void Player::Update() {
-	BehaviorAttackUpdate();
+
+	if (behaviorRequest_) {
+	//振る舞いを変更する
+		behavior_ = behaviorRequest_.value();
+		//各振る舞いごとの初期化を実行
+		switch (behavior_) { 
+		case Behavior::kRoot:
+		default:
+			BehaviorRootInitialize();			
+			break;
+		
+		case Behavior::kAttack:
+			BehaviorAttackInitialize();		
+			break;
+		}
+		//振る舞いリクエストをリセット
+		behaviorRequest_ = std::nullopt;
+	}
+
+	switch (behavior_) {
+	case Behavior::kRoot:
+	default:	
+		BehaviorRootUpdate();
+		break;
+
+	case Behavior::kAttack:
+		BehaviorAttackUpdate();
+		break;
+	}
+
 	BaseCharacter::Update();
 }
 void Player::Draw(const ViewProjection& viewProjection) {
 	BaseCharacter::Draw(viewProjection); 
 }
-
-void Player::AnimationInit() { floatingParameter_ = 0.0f; }
-
+/*関数*/
 void Player::AnimationUpdate() {
 	
 	// 浮遊移動のサイクル
@@ -85,6 +112,10 @@ void Player::BehaviorRootUpdate() {
 		// 移動
 		baseWorldTransform_.translation_ += move;
 	}
+
+	if (Input::GetInstance()->TriggerKey(DIK_T)) {
+		behaviorRequest_ = Behavior::kAttack;
+	}
 }
 
 void Player::BehaviorAttackUpdate() {
@@ -93,6 +124,10 @@ void Player::BehaviorAttackUpdate() {
 	AttackEaseT_ += 0.05f;
 	if (AttackEaseT_ >= 1.0f) {
 		AttackEaseT_ = 1.0f;
+		stiffeningTime_++;
+		if (stiffeningTime_ >= 10) {
+			behaviorRequest_ = Behavior::kRoot;
+		}
 	}
 
 	// 回転する
@@ -107,5 +142,21 @@ void Player::BehaviorAttackUpdate() {
 	ImGui::DragFloat3("Right", &partsWorldTransforms_[IndexRightArm]->rotation_.x, 0.01f);
 	ImGui::End();
 }
+
+//通常初期化
+void Player::BehaviorRootInitialize() { 
+	partsWorldTransforms_[IndexWeapon]->scale_ = {};
+	partsWorldTransforms_[IndexLeftArm]->rotation_ = {0,0,0};
+	partsWorldTransforms_[IndexRightArm]->rotation_ = {0, 0, 0};
+	AnimationInit();
+}
+//アタック初期化
+void Player::BehaviorAttackInitialize() { 
+	partsWorldTransforms_[IndexWeapon]->scale_ = {1,1,1};
+	stiffeningTime_ = 0;
+	AttackEaseT_ = 0; 
+}
+
+void Player::AnimationInit() { floatingParameter_ = 0.0f; }
 
 Vector3 Player::GetBaseWorldPos() { return BaseCharacter::GetBaseWorldPos(); }
