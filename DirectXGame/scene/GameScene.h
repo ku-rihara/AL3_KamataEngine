@@ -38,13 +38,15 @@ private: // メンバ変数
 	std::unique_ptr<Model> modelSkyDome_ = nullptr; // 3Dモデル
 	std::unique_ptr<Model> modelGround_ = nullptr; // 3Dモデル
 	//プレイヤーモデル
-	std::unique_ptr<Model> modelFighterBody_ = nullptr;        // 3Dモデル
-	std::unique_ptr<Model> modelFighterHead_ = nullptr; // 3Dモデル
-	std::unique_ptr<Model> modelFighterLeftArm_ = nullptr;        // 3Dモデル
-	std::unique_ptr<Model> modelFighterRightArm_ = nullptr; // 3Dモデル
+	std::unique_ptr<Model> modelFighterBody_ = nullptr;
+	std::unique_ptr<Model> modelFighterHead_ = nullptr;
+	std::unique_ptr<Model> modelFighterLeftArm_ = nullptr;  
+	std::unique_ptr<Model> modelFighterRightArm_ = nullptr; 
+	std::unique_ptr<Model> modelPlayerWeapon_ = nullptr;
 	//敵モデル
-	std::unique_ptr<Model> modelEnemyBody_ = nullptr;    // 3Dモデル
-	std::unique_ptr<Model> modelEnemyThurn_ = nullptr; // 3Dモデル
+	std::unique_ptr<Model> modelEnemyBody_ = nullptr; 
+	std::unique_ptr<Model> modelEnemyThurn_ = nullptr;
+
 	/// <summary>
 	/// 包含
 	/// </summary>
@@ -71,8 +73,6 @@ public: // メンバ関数
 	/// コンストクラタ
 	/// </summary>
 	GameScene();
-
-
 
 	/// <summary>
 	/// 初期化

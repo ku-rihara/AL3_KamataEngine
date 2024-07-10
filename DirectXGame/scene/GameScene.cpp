@@ -17,6 +17,7 @@ void GameScene::Initialize() {
 	modelFighterHead_.reset(Model::CreateFromOBJ("PlayerHead", true));
 	modelFighterLeftArm_.reset(Model::CreateFromOBJ("PlayerLeftArm", true));
 	modelFighterRightArm_.reset(Model::CreateFromOBJ("PlayerRightArm", true));
+	modelPlayerWeapon_.reset(Model::CreateFromOBJ("Hunmer", true));
 	modelEnemyBody_.reset(Model::CreateFromOBJ("EnemyHead", true));
 	modelEnemyThurn_.reset(Model::CreateFromOBJ("EnemyThurn", true));
 	/// <summary>
@@ -31,7 +32,7 @@ void GameScene::Initialize() {
 	/// 初期化
 	/// </summary>
 	// 自キャラ初期化
-	std::vector<Model*> playerModels = {modelFighterBody_.get(), modelFighterHead_.get(), modelFighterLeftArm_.get(), modelFighterRightArm_.get()};
+	std::vector<Model*> playerModels = {modelFighterBody_.get(), modelFighterHead_.get(), modelFighterLeftArm_.get(), modelFighterRightArm_.get(), modelPlayerWeapon_.get()};
 	player_->Init(playerModels);
 	skyDome_->Init(modelSkyDome_.get());
 	ground_->Init(modelGround_.get());

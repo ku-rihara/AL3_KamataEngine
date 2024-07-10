@@ -14,8 +14,9 @@ private:
 		IndexHead,
 		IndexLeftArm,
 		IndexRightArm,
+		IndexWeapon,
 	};
-	const int partsnum = 4;
+	const int partsnum = 5;
 	// カメラのビュープロジェクション
 	const ViewProjection* viewProjection_ = nullptr;
 	// 3Dモデル
@@ -24,20 +25,24 @@ private:
 	Model* modelHead_ = nullptr;
 	Model* modelLeftArm_ = nullptr;
 	Model* modelRightArm_ = nullptr;
+	Model* modelWeapon_ = nullptr;
 
 	//浮遊ギミックの媒介変数
 	float floatingParameter_ = 0.0f;
+	float AttackEaseT_ = 0;
 	
-
 public:
 	Player();
 	
-
 	void Init(const std::vector<Model*>& models)override;
 	void Update()override;
 	void Draw(const ViewProjection& viewProjection) override;
 	Vector3 GetBaseWorldPos()override;
-	//浮遊ギミック
+	//ふるまい
+	void BehaviorRootUpdate();
+	void BehaviorAttackUpdate();
+
+	//アニメーション
 	void AnimationInit() override;
 	void AnimationUpdate() override;
 

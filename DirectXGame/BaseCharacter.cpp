@@ -1,11 +1,11 @@
 #include "BaseCharacter.h"
 
 void BaseCharacter::Init(const std::vector<Model*>& models) {
-	models_ = models; //モデル
-	//ベースとなるワールドトランスフォームの初期化
+	models_ = models; // モデル
+	// ベースとなるワールドトランスフォームの初期化
 	baseWorldTransform_.Initialize();
-	//各パーツのワールドトランスフォームの初期化
-		for (auto& worldTransform : partsWorldTransforms_) {
+	// 各パーツのワールドトランスフォームの初期化
+	for (auto& worldTransform : partsWorldTransforms_) {
 		worldTransform->Initialize();
 	}
 }
@@ -17,12 +17,11 @@ void BaseCharacter::Update() {
 	}
 }
 
-void BaseCharacter::Draw(const ViewProjection&viewProjecion) { 
-	//モデルの個数分配列にして描画する
-for (int i = 0; i < models_.size(); i++) {
+void BaseCharacter::Draw(const ViewProjection& viewProjecion) {
+	// モデルの個数分配列にして描画する
+	for (int i = 0; i < models_.size(); i++) {
 		models_[i]->Draw(*partsWorldTransforms_[i].get(), viewProjecion);
 	}
-
 }
 
 Vector3 BaseCharacter::GetBaseWorldPos() {

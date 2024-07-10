@@ -5,7 +5,7 @@
 
 
 Player::Player() {}
-
+float pi = 3.14159265358f;
 void Player::Init(const std::vector<Model*>& models) {
 
 	partsWorldTransforms_.reserve(partsnum); // メモリを確保
@@ -19,6 +19,7 @@ void Player::Init(const std::vector<Model*>& models) {
 	partsWorldTransforms_[IndexHead]->parent_ = partsWorldTransforms_[IndexBody].get();
 	partsWorldTransforms_[IndexLeftArm]->parent_ = partsWorldTransforms_[IndexBody].get();
 	partsWorldTransforms_[IndexRightArm]->parent_ = partsWorldTransforms_[IndexBody].get();
+	partsWorldTransforms_[IndexWeapon]->parent_ = partsWorldTransforms_[IndexBody].get();
 	//パーツの変位の値
 	baseWorldTransform_.translation_.y = 0.9f;
 	partsWorldTransforms_[IndexHead]->translation_.y = 1.7f;
@@ -30,6 +31,37 @@ void Player::Init(const std::vector<Model*>& models) {
 }
 
 void Player::Update() {
+	BehaviorAttackUpdate();
+	BaseCharacter::Update();
+}
+void Player::Draw(const ViewProjection& viewProjection) {
+	BaseCharacter::Draw(viewProjection); 
+}
+
+void Player::AnimationInit() { floatingParameter_ = 0.0f; }
+
+void Player::AnimationUpdate() {
+	
+	// 浮遊移動のサイクル
+	const uint16_t cycle = 70;
+	//1フレームでのパラメータ加算値
+	const float step = 2.0f * float(pi) / cycle;
+	//パラメータを1ステップ分加算
+	floatingParameter_ += step;
+	floatingParameter_ = std::fmod(floatingParameter_, 2.0f * pi);
+	//浮遊の振幅＜m＞
+	const float floatingAmplitude = 0.2f;
+	//浮遊を座標に反映
+	partsWorldTransforms_[IndexBody]->translation_.y = std::sin(floatingParameter_) * floatingAmplitude;
+
+	ImGui::Begin("Player");
+	ImGui::SliderFloat3("Head Translation", &partsWorldTransforms_[IndexHead]->translation_.x, 0, 2.0f);
+	ImGui::SliderFloat3("ArmL Translation", &partsWorldTransforms_[IndexLeftArm]->translation_.x, 0, 2.0f);
+	ImGui::SliderFloat3("ArmR Translation", &partsWorldTransforms_[IndexRightArm]->translation_.x, -1, 2.0f);
+	ImGui::End();
+}
+
+void Player::BehaviorRootUpdate() {
 	AnimationUpdate();
 	XINPUT_STATE joyState;
 	if (Input::GetInstance()->GetJoystickState(0, joyState)) {
@@ -53,33 +85,19 @@ void Player::Update() {
 		// 移動
 		baseWorldTransform_.translation_ += move;
 	}
-	BaseCharacter::Update();
-}
-void Player::Draw(const ViewProjection& viewProjection) {
-	BaseCharacter::Draw(viewProjection); 
 }
 
-void Player::AnimationInit() { floatingParameter_ = 0.0f; }
+void Player::BehaviorAttackUpdate() {
 
-void Player::AnimationUpdate() {
-	float pi = 3.14159265358f;
 	// 浮遊移動のサイクル
-	const uint16_t cycle = 70;
-	//1フレームでのパラメータ加算値
-	const float step = 2.0f * float(pi) / cycle;
-	//パラメータを1ステップ分加算
-	floatingParameter_ += step;
-	floatingParameter_ = std::fmod(floatingParameter_, 2.0f * pi);
-	//浮遊の振幅＜m＞
+	AttackEaseT_ += 0.05f;
+	AttackEaseT_ = max(AttackEaseT_, 1);
+	// 浮遊の振幅＜m＞
 	const float floatingAmplitude = 0.2f;
-	//浮遊を座標に反映
-	partsWorldTransforms_[IndexBody]->translation_.y = std::sin(floatingParameter_) * floatingAmplitude;
-
-	ImGui::Begin("Player");
-	ImGui::SliderFloat3("Head Translation", &partsWorldTransforms_[IndexHead]->translation_.x, 0, 2.0f);
-	ImGui::SliderFloat3("ArmL Translation", &partsWorldTransforms_[IndexLeftArm]->translation_.x, 0, 2.0f);
-	ImGui::SliderFloat3("ArmR Translation", &partsWorldTransforms_[IndexRightArm]->translation_.x, -1, 2.0f);
-	ImGui::End();
+	// 回転する
+	partsWorldTransforms_[IndexLeftArm]->rotation_.x=L()
+	partsWorldTransforms_[IndexRightArm]->rotation_.x = std::sin(floatingParameter_) * floatingAmplitude;
+	partsWorldTransforms_[IndexWeapon]->rotation_.x = std::sin(floatingParameter_) * floatingAmplitude;
 }
 
 Vector3 Player::GetBaseWorldPos() { return BaseCharacter::GetBaseWorldPos(); }
