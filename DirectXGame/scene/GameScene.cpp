@@ -65,6 +65,13 @@ void GameScene::Update() {
 	// デバッグカメラモード切り替え------------------------------
 #endif
 
+	
+	skyDome_->Update();
+	ground_->Update();
+	followCamera_->Update();
+	player_->Update();
+	enemy_->Update();
+
 	if (isDebugCameraActive_ == true) { // デバッグカメラがアクティブなら
 		// デバッグカメラの更新
 		debugCamera_->Update();
@@ -72,15 +79,10 @@ void GameScene::Update() {
 		viewProjection_.matProjection = debugCamera_->GetViewProjection().matProjection;
 
 		viewProjection_.TransferMatrix();
-		// アクティブでない
+		
 	}
-	skyDome_->Update();
-	ground_->Update();
-	followCamera_->Update();
-	player_->Update();
-	enemy_->Update();
-
-	if (isDebugCameraActive_ == false) { // デバッグカメラがアクティブでない
+	// アクティブでない
+	else if (isDebugCameraActive_ == false) { // デバッグカメラがアクティブでない
 		viewProjection_.matView = followCamera_->GetViewProjection().matView;
 		viewProjection_.matProjection = followCamera_->GetViewProjection().matProjection;
 

@@ -2,7 +2,7 @@
 #include "Geometry/fMatrix4x4.h"
 #include<imgui.h>
 #include "cassert"
-
+#include"Easing.h"
 
 Player::Player() {}
 float pi = 3.14159265358f;
@@ -89,15 +89,23 @@ void Player::BehaviorRootUpdate() {
 
 void Player::BehaviorAttackUpdate() {
 
-	// 浮遊移動のサイクル
+	 /*浮遊移動のサイクル*/
 	AttackEaseT_ += 0.05f;
-	AttackEaseT_ = max(AttackEaseT_, 1);
-	// 浮遊の振幅＜m＞
-	const float floatingAmplitude = 0.2f;
+	if (AttackEaseT_ >= 1.0f) {
+		AttackEaseT_ = 1.0f;
+	}
+
 	// 回転する
-	partsWorldTransforms_[IndexLeftArm]->rotation_.x=L()
-	partsWorldTransforms_[IndexRightArm]->rotation_.x = std::sin(floatingParameter_) * floatingAmplitude;
-	partsWorldTransforms_[IndexWeapon]->rotation_.x = std::sin(floatingParameter_) * floatingAmplitude;
+	partsWorldTransforms_[IndexWeapon]->rotation_.x = Lerp(-pi / 3, pi / 2, AttackEaseT_);
+	partsWorldTransforms_[IndexRightArm]->rotation_.x = Lerp(2.4f, 5.0f, AttackEaseT_);
+	partsWorldTransforms_[IndexLeftArm]->rotation_.x = Lerp(2.4f, 5.0f, AttackEaseT_);
+
+	ImGui::Begin("ATK");
+	ImGui::DragFloat("EaseT", &AttackEaseT_, 0.01f);
+	ImGui::DragFloat3("Weapon", &partsWorldTransforms_[IndexWeapon]->rotation_.x, 0.01f);
+	ImGui::DragFloat3("Left", &partsWorldTransforms_[IndexLeftArm]->rotation_.x, 0.01f);
+	ImGui::DragFloat3("Right", &partsWorldTransforms_[IndexRightArm]->rotation_.x, 0.01f);
+	ImGui::End();
 }
 
 Vector3 Player::GetBaseWorldPos() { return BaseCharacter::GetBaseWorldPos(); }
