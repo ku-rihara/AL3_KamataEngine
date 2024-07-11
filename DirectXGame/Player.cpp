@@ -3,6 +3,7 @@
 #include<imgui.h>
 #include "cassert"
 #include"Easing.h"
+#include"MathFunction.h"
 
 Player::Player() {}
 float pi = 3.14159265358f;
@@ -49,7 +50,7 @@ void Player::Update() {
 		//振る舞いリクエストをリセット
 		behaviorRequest_ = std::nullopt;
 	}
-
+	//振る舞い更新
 	switch (behavior_) {
 	case Behavior::kRoot:
 	default:	
@@ -94,23 +95,26 @@ void Player::BehaviorRootUpdate() {
 	if (Input::GetInstance()->GetJoystickState(0, joyState)) {
 		// 速さ
 		const float speed = 0.3f;
+		const float thresholdValue = 0.7f;
+		bool isMoving = false;
 		// 移動量
 		Vector3 move = {(float)joyState.Gamepad.sThumbLX / SHRT_MAX, 0, (float)joyState.Gamepad.sThumbLY / SHRT_MAX};
-		// 移動量に速さを反映
-		move = Normnalize(move) * speed;
-		// 移動ベクトルをカメラの角度だけ回転する
-		Matrix4x4 rotateMatrix = MakeRotateYMatrix(viewProjection_->rotation_.y);
-		move = TransformNormal(move, rotateMatrix);
-		// Y軸周り角度(θy)
-		baseWorldTransform_.rotation_.y = std::atan2(move.x, move.z);
-		// Y軸周りに-θy回す回転行列を計算
-		Matrix4x4 matrix = MakeRotateYMatrix(-baseWorldTransform_.rotation_.y);
-		// velocity_に回転行列を掛け算してvelocityZを求める
-		Vector3 velocityZ = Multiply(move, matrix);
-		// X軸周り角度(θX)
-		baseWorldTransform_.rotation_.x = std::atan2(-velocityZ.y, velocityZ.z);
-		// 移動
-		baseWorldTransform_.translation_ += move;
+		if (Length(move) > thresholdValue) {
+			isMoving = true;
+		}
+		if (isMoving) {
+			// 移動量に速さを反映
+			move = Normnalize(move) * speed;
+			// 移動ベクトルをカメラの角度だけ回転する
+			Matrix4x4 rotateMatrix = MakeRotateYMatrix(viewProjection_->rotation_.y);
+			move = TransformNormal(move, rotateMatrix);
+			// 移動
+			baseWorldTransform_.translation_ += move;
+			// 目標角度
+			objectiveAngle_ = std::atan2(move.x, move.z);
+		}
+		// 最短角度補間
+		baseWorldTransform_.rotation_.y = LerpShortAngle(baseWorldTransform_.rotation_.y, objectiveAngle_, 0.05f);
 	}
 
 if(joyState.Gamepad.wButtons& XINPUT_GAMEPAD_RIGHT_SHOULDER){

@@ -34,7 +34,7 @@ private:
 	Model* modelRightArm_ = nullptr;
 	Model* modelWeapon_ = nullptr;
 	float stiffeningTime_ = 0;
-
+	float objectiveAngle_;
 	//ふるまい
 	Behavior behavior_ = Behavior::kRoot;
 	//次の振る舞いのリクエスト
