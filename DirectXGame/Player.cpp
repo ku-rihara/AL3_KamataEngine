@@ -113,7 +113,7 @@ void Player::BehaviorRootUpdate() {
 		baseWorldTransform_.translation_ += move;
 	}
 
-	if (Input::GetInstance()->GetNumberOfJoysticks()) {
+if(joyState.Gamepad.wButtons& XINPUT_GAMEPAD_RIGHT_SHOULDER){
 		behaviorRequest_ = Behavior::kAttack;
 	}
 }
