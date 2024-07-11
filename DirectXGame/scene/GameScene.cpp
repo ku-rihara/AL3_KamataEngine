@@ -68,8 +68,9 @@ void GameScene::Update() {
 	
 	skyDome_->Update();
 	ground_->Update();
-	followCamera_->Update();
 	player_->Update();
+	followCamera_->Update();
+
 	enemy_->Update();
 
 	if (isDebugCameraActive_ == true) { // デバッグカメラがアクティブなら
