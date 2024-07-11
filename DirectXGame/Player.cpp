@@ -113,7 +113,7 @@ void Player::BehaviorRootUpdate() {
 		baseWorldTransform_.translation_ += move;
 	}
 
-	if (Input::GetInstance()->TriggerKey(DIK_T)) {
+	if (Input::GetInstance()->GetNumberOfJoysticks()) {
 		behaviorRequest_ = Behavior::kAttack;
 	}
 }
