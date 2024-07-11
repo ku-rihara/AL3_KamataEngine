@@ -21,6 +21,12 @@ private:
 	enum class Behavior {
 		kRoot,   // 通常状態
 		kAttack, // 攻撃中
+		kDash,//ダッシュ中
+	};
+	//ダッシュ用ワーク
+	struct WorkDash {
+		//ダッシュ用の媒介変数
+		uint32_t dashPrameter_ = 0;
 	};
 
 	const int partsnum = 5;
@@ -28,13 +34,10 @@ private:
 	const ViewProjection* viewProjection_ = nullptr;
 	// 3Dモデル
 	std::vector<Model*> modelParts_;
-	Model* modelBody_ = nullptr;
-	Model* modelHead_ = nullptr;
-	Model* modelLeftArm_ = nullptr;
-	Model* modelRightArm_ = nullptr;
-	Model* modelWeapon_ = nullptr;
+
 	float stiffeningTime_ = 0;
-	float objectiveAngle_;
+	float objectiveAngle_=0;
+	WorkDash workDash_;
 	//ふるまい
 	Behavior behavior_ = Behavior::kRoot;
 	//次の振る舞いのリクエスト
@@ -55,14 +58,16 @@ public:
 	//初期化----------------------------
 	void BehaviorRootInitialize();
 	void BehaviorAttackInitialize();
+	void BehaviorDashInitialize();
 	//更新-------------------------------
 	void BehaviorRootUpdate();
 	void BehaviorAttackUpdate();
-
+	void BehabiorDashUpdate();
+	void Move(const float& speed);
 	//アニメーション
 	void AnimationInit() override;
 	void AnimationUpdate() override;
-
+	
 	//setter
 	void SetViewProjection(const ViewProjection* viewProjection) { viewProjection_ = viewProjection;}
 };
