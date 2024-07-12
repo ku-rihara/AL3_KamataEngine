@@ -3,6 +3,7 @@
 #include "Geometry/fMatrix4x4.h"
 #include "MathFunction.h"
 #include "cassert"
+#include "GlobalParameter.h"
 #include <imgui.h>
 
 float pi = 3.14159265358f;
@@ -31,6 +32,12 @@ void Player::Init(const std::vector<Model*>& models) {
 	partsWorldTransforms_[IndexRightArm]->translation_.x = -0.6f;
 	partsWorldTransforms_[IndexRightArm]->translation_.y = 1.0f;
 	BehaviorRootInitialize();
+
+	GlobalParameter* globalParameter = GlobalParameter::GetInstance();
+	const char* groupName = "Player";
+	//グループを追加
+	globalParameter->CreateGroup(groupName);
+	globalParameter->SetValue(groupName, "Test",90);
 }
 
 void Player::Update() {
