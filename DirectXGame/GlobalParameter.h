@@ -4,7 +4,7 @@
 #include <map>
 #include <string>
 #include <variant>
-
+#include<json.hpp>
 
 class GlobalParameter {
 private:
@@ -16,9 +16,12 @@ private:
 		std::map<std::string, Item> items;
 	};
 
-public:
 	// 全データ
 	std::map<std::string, Group> datas_;
+	//Json
+	using json=nlohmann::json;
+	//グローバル変数の保存先ファイルパス
+	const std::string kDirectoryPath = "Resources/GlobalParameter/";
 
 public:
 	// シングルトン
@@ -26,10 +29,19 @@ public:
 	void Update();
 	void CreateGroup(const std::string& groupName);
 
-	// 値のセット
+	/// <summary>
+	/// 値のセット
+	/// </summary>
+	/// <typeparam name="T"></typeparam>
+	/// <param name="グループ名"></param>
+	/// <param name="key"></param>
+	/// <param name="値"></param>
+	template<typename T> void SetValue(const std::string& groupName, const std::string& key, T value);
 
-	template<typename T> 
-	void SetValue(const std::string& groupName, const std::string& key, T value);
+	/// <summary>
+	/// ファイルに書き出し
+	/// </summary>
+	void SaveFile(const std::string& groupName);
 
 private:
 	GlobalParameter() = default;

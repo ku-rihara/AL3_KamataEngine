@@ -6,6 +6,7 @@
 #include "WorldTransform.h"
 #include "ViewProjection.h"
 #include "input/input.h"
+#include "GlobalParameter.h"
 #include <optional>
 
 
@@ -40,6 +41,7 @@ private:
 	WorkDash workDash_;
 	//ふるまい
 	Behavior behavior_ = Behavior::kRoot;
+	GlobalParameter* globalParameter_;
 	//次の振る舞いのリクエスト
 	std::optional<Behavior> behaviorRequest_ = std::nullopt;
 
