@@ -99,11 +99,11 @@ void Player::AnimationUpdate() {
 	// 浮遊を座標に反映
 	partsWorldTransforms_[IndexBody]->translation_.y = std::sin(floatingParameter_) * floatingAmplitude_;
 
-	ImGui::Begin("Player");
+	/*ImGui::Begin("Playe");
 	ImGui::SliderFloat3("Head Translation", &partsWorldTransforms_[IndexHead]->translation_.x, 0, 2.0f);
 	ImGui::SliderFloat3("ArmL Translation", &partsWorldTransforms_[IndexLeftArm]->translation_.x, 0, 2.0f);
 	ImGui::SliderFloat3("ArmR Translation", &partsWorldTransforms_[IndexRightArm]->translation_.x, -1, 2.0f);
-	ImGui::End();
+	ImGui::End();*/
 }
 
 void Player::BehaviorRootUpdate() {
