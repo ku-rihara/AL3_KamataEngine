@@ -34,11 +34,11 @@ void Enemy::Update() {
 	baseWorldTransform_.translation_ += velocity_;
 
 	BaseCharacter::Update();
-	ImGui::Begin("Enemy");
+	/*ImGui::Begin("Enemy");
 	ImGui::DragFloat3("Head Translation", &partsWorldTransforms_[IndexHead]->translation_.x, 0.01f);
 	ImGui::DragFloat3("ArmL Translation", &partsWorldTransforms_[IndexLeftThorn]->translation_.x, 0.01f);
 	ImGui::DragFloat3("ArmR Translation", &partsWorldTransforms_[IndexRightThorn]->translation_.x, 0.01f);
-	ImGui::End();
+	ImGui::End();*/
 	
 }
 void Enemy::Draw(const ViewProjection& viewProjection) {

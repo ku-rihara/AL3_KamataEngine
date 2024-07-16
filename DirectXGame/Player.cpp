@@ -42,11 +42,11 @@ void Player::Init(const std::vector<Model*>& models) {
 	globalParameter_->AddItem(groupName, "ArmR Translation", partsWorldTransforms_[IndexRightArm]->translation_);
 	globalParameter_->AddItem(groupName, "floatingCycle", floatingCycle_);
 	globalParameter_->AddItem(groupName, "floatingAmplitude", floatingAmplitude_);
-	/*ApplyGlobalParameter();*/
+
 }
 
 void Player::Update() {
-
+	ApplyGlobalParameter();
 	if (behaviorRequest_) {
 		// 振る舞いを変更する
 		behavior_ = behaviorRequest_.value();
@@ -88,14 +88,14 @@ void Player::Draw(const ViewProjection& viewProjection) { BaseCharacter::Draw(vi
 void Player::AnimationUpdate() {
 
 	// 浮遊移動のサイクル
-	floatingCycle_ = 70;
+	//floatingCycle_ = 70;
 	// 1フレームでのパラメータ加算値
 	const float step = 2.0f * float(pi) / floatingCycle_;
 	// パラメータを1ステップ分加算
 	floatingParameter_ += step;
 	floatingParameter_ = std::fmod(floatingParameter_, 2.0f * pi);
 	// 浮遊の振幅＜m＞
-	floatingAmplitude_ = 0.2f;
+	/*floatingAmplitude_ = 0.2f;*/
 	// 浮遊を座標に反映
 	partsWorldTransforms_[IndexBody]->translation_.y = std::sin(floatingParameter_) * floatingAmplitude_;
 
