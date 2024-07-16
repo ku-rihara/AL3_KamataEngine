@@ -34,13 +34,19 @@ void Player::Init(const std::vector<Model*>& models) {
 	BehaviorRootInitialize();
 	globalParameter_ = GlobalParameter::GetInstance();
 	const char* groupName = "Player";
-	//グループを追加
+	// グループを追加
 	globalParameter_->CreateGroup(groupName);
-	globalParameter_->SetValue(groupName, "Test", 90);
+	/*globalParameter_->AddItem(groupName, "Test", 90);*/
+	globalParameter_->AddItem(groupName, "Head Translation", partsWorldTransforms_[IndexHead]->translation_);
+	globalParameter_->AddItem(groupName, "ArmL Translation", partsWorldTransforms_[IndexLeftArm]->translation_);
+	globalParameter_->AddItem(groupName, "ArmR Translation", partsWorldTransforms_[IndexRightArm]->translation_);
+	globalParameter_->AddItem(groupName, "floatingCycle", floatingCycle_);
+	globalParameter_->AddItem(groupName, "floatingAmplitude", floatingAmplitude_);
+	/*ApplyGlobalParameter();*/
 }
 
 void Player::Update() {
-	
+
 	if (behaviorRequest_) {
 		// 振る舞いを変更する
 		behavior_ = behaviorRequest_.value();
@@ -82,16 +88,16 @@ void Player::Draw(const ViewProjection& viewProjection) { BaseCharacter::Draw(vi
 void Player::AnimationUpdate() {
 
 	// 浮遊移動のサイクル
-	const uint16_t cycle = 70;
+	floatingCycle_ = 70;
 	// 1フレームでのパラメータ加算値
-	const float step = 2.0f * float(pi) / cycle;
+	const float step = 2.0f * float(pi) / floatingCycle_;
 	// パラメータを1ステップ分加算
 	floatingParameter_ += step;
 	floatingParameter_ = std::fmod(floatingParameter_, 2.0f * pi);
 	// 浮遊の振幅＜m＞
-	const float floatingAmplitude = 0.2f;
+	floatingAmplitude_ = 0.2f;
 	// 浮遊を座標に反映
-	partsWorldTransforms_[IndexBody]->translation_.y = std::sin(floatingParameter_) * floatingAmplitude;
+	partsWorldTransforms_[IndexBody]->translation_.y = std::sin(floatingParameter_) * floatingAmplitude_;
 
 	ImGui::Begin("Player");
 	ImGui::SliderFloat3("Head Translation", &partsWorldTransforms_[IndexHead]->translation_.x, 0, 2.0f);
@@ -101,14 +107,14 @@ void Player::AnimationUpdate() {
 }
 
 void Player::BehaviorRootUpdate() {
-	
+
 	Move(0.3f);
 
 	// Rで攻撃
 	if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) {
 		behaviorRequest_ = Behavior::kAttack;
 	}
-	//Lでダッシュ
+	// Lでダッシュ
 	if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_LEFT_SHOULDER) {
 		behaviorRequest_ = Behavior::kDash;
 	}
@@ -130,22 +136,20 @@ void Player::BehaviorAttackUpdate() {
 	partsWorldTransforms_[IndexWeapon]->rotation_.x = Lerp(-pi / 3, pi / 2, AttackEaseT_);
 	partsWorldTransforms_[IndexRightArm]->rotation_.x = Lerp(2.4f, 5.0f, AttackEaseT_);
 	partsWorldTransforms_[IndexLeftArm]->rotation_.x = Lerp(2.4f, 5.0f, AttackEaseT_);
-
-	
 }
 // ダッシュ更新
 void Player::BehabiorDashUpdate() {
 	Move(2.7f);
-	    //ダッシュの時間
+	// ダッシュの時間
 	const uint32_t behaviorDashTime = 120;
 
-	//既定の時間経過で通常行動に戻る
+	// 既定の時間経過で通常行動に戻る
 	if (++workDash_.dashPrameter_ >= behaviorDashTime) {
 		behaviorRequest_ = Behavior::kRoot;
 	}
 }
 
-void Player::Move(const float &speed) {
+void Player::Move(const float& speed) {
 	AnimationUpdate();
 	if (Input::GetInstance()->GetJoystickState(0, joyState)) {
 		// 速さ
@@ -194,3 +198,14 @@ void Player::BehaviorDashInitialize() {
 void Player::AnimationInit() { floatingParameter_ = 0.0f; }
 
 Vector3 Player::GetBaseWorldPos() { return BaseCharacter::GetBaseWorldPos(); }
+
+void Player::ApplyGlobalParameter() {
+
+	GlobalParameter* globalParameter = GlobalParameter::GetInstance();
+	const char* groupName = "Player";
+	partsWorldTransforms_[IndexHead]->translation_ = globalParameter->GetValue<Vector3>(groupName, "Head Translation");
+	partsWorldTransforms_[IndexLeftArm]->translation_ = globalParameter->GetValue<Vector3>(groupName, "ArmL Translation");
+	partsWorldTransforms_[IndexRightArm]->translation_ = globalParameter->GetValue<Vector3>(groupName, "ArmR Translation");
+	floatingCycle_ = globalParameter->GetValue<int32_t>(groupName, "floatingCycle");
+	floatingAmplitude_ = globalParameter->GetValue<float>(groupName, "floatingAmplitude");
+}

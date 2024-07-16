@@ -8,13 +8,14 @@
 
 class GlobalParameter {
 private:
-	struct Item { // 項目の値
-		std::variant<int32_t, float, Vector3> value;
-	};
+	//項目
+	using Item =std::variant<int32_t, float, Vector3>;
+	
+	Item value_;
+	//グループ
+	using Group =std::map<std::string, Item>;
+	Group items_;
 
-	struct Group { // グループ
-		std::map<std::string, Item> items;
-	};
 
 	// 全データ
 	std::map<std::string, Group> datas_;
@@ -37,11 +38,33 @@ public:
 	/// <param name="key"></param>
 	/// <param name="値"></param>
 	template<typename T> void SetValue(const std::string& groupName, const std::string& key, T value);
+	/// <summary>
+	/// 項目の追加
+	/// </summary>
+	/// <typeparam name="T"></typeparam>
+	/// <param name="groupName"></param>
+	/// <param name="key"></param>
+	/// <param name="value"></param>
+	template<typename T> void AddItem(const std::string& groupName, const std::string& key, T value);
+
 
 	/// <summary>
 	/// ファイルに書き出し
 	/// </summary>
 	void SaveFile(const std::string& groupName);
+
+	/// <summary>
+	/// ディレクトリの全ファイル読み込み
+	/// </summary>
+	void LoadFiles();
+
+	/// <summary>
+	/// ファイルから読み込む
+	/// </summary>
+	/// <param name="グループ名"></param>
+	void LoadFile(const std::string& groupName);
+
+ template<typename T>T GetValue(const std::string& groupName, const std::string& key) const;
 
 private:
 	GlobalParameter() = default;

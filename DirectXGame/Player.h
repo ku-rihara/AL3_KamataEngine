@@ -48,7 +48,9 @@ private:
 	//浮遊ギミックの媒介変数
 	float floatingParameter_ = 0.0f;
 	float AttackEaseT_ = 0;
-	
+	int32_t floatingCycle_;
+	 float floatingAmplitude_;
+
 public:
 	Player();
 	
@@ -69,6 +71,9 @@ public:
 	//アニメーション
 	void AnimationInit() override;
 	void AnimationUpdate() override;
+
+	//調節項目を適用
+	void ApplyGlobalParameter();
 	
 	//setter
 	void SetViewProjection(const ViewProjection* viewProjection) { viewProjection_ = viewProjection;}
