@@ -11,10 +11,10 @@ private:
 	//項目
 	using Item =std::variant<int32_t, float, Vector3>;
 	
-	Item value_;
+	/*Item value_;*/
 	//グループ
 	using Group =std::map<std::string, Item>;
-	Group items_;
+	/*Group items_;*/
 
 	
 	// 全データ

@@ -96,8 +96,8 @@ template<typename T> void GlobalParameter::AddItem(const std::string& groupName,
 	json root;
 	// グループを検索
 	json::iterator itGroup = root.find(groupName);
-
-	if (itGroup != root.end()) {
+	// 未登録チェック
+	if(itGroup != root.end()){
 		SetValue(groupName, key, value);
 	}
 }
