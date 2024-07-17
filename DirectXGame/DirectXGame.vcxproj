@@ -117,6 +117,7 @@
     <ClCompile Include="Geometry\Vector3.cpp" />
     <ClCompile Include="GlobalParameter.cpp" />
     <ClCompile Include="Ground.cpp" />
+    <ClCompile Include="LockOn.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MathFunction.cpp" />
     <ClCompile Include="Player.cpp" />
@@ -156,6 +157,7 @@
     <ClInclude Include="GlobalParameter.h" />
     <ClInclude Include="Ground.h" />
     <ClInclude Include="input\Input.h" />
+    <ClInclude Include="LockOn.h" />
     <ClInclude Include="MathFunction.h" />
     <ClInclude Include="math\Matrix4x4.h" />
     <ClInclude Include="math\Vector2.h" />

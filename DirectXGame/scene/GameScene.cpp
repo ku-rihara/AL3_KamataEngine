@@ -28,20 +28,21 @@ void GameScene::Initialize() {
 	skyDome_ = std::make_unique<Skydome>();
 	ground_ = std::make_unique<Ground>();
 	followCamera_ = std::make_unique<FollowCamera>();
-	/// <summary>
-	/// 初期化
-	/// </summary>
-	// 自キャラ初期化
+	lockOn_ = std::make_unique<LockOn>();
+
+	// 自キャラ初期化***********************************************************************
 	std::vector<Model*> playerModels = {modelFighterBody_.get(), modelFighterHead_.get(), modelFighterLeftArm_.get(), modelFighterRightArm_.get(), modelPlayerWeapon_.get()};
 	player_->Init(playerModels);
 	skyDome_->Init(modelSkyDome_.get());
 	ground_->Init(modelGround_.get());
 	followCamera_->Init();
-	//敵キャラ初期化
+	//敵キャラ初期化*******************************************************************************
 	std::vector<Model*> enemyModels = {modelEnemyBody_.get(), modelEnemyThurn_.get(), modelEnemyThurn_.get()};
 	enemy_->Init(enemyModels);
 	worldTransform_.Initialize();
 	viewProjection_.Initialize();
+	//ロックオン初期化*****************************************************************************************
+	lockOn_->Init();
 	// 自キャラのワールドトランスフォームを追従カメラにセット
 	followCamera_->SetTarget(&player_->GetWorldTransform());
 	player_->SetViewProjection(&followCamera_->GetViewProjection());
@@ -65,7 +66,6 @@ void GameScene::Update() {
 	// デバッグカメラモード切り替え------------------------------
 #endif
 
-	
 	skyDome_->Update();
 	ground_->Update();
 	player_->Update();
@@ -103,7 +103,7 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに背景スプライトの描画処理を追加できる
 	/// </summary>
-
+	lockOn_->Draw();
 	// スプライト描画後処理
 	Sprite::PostDraw();
 	// 深度バッファクリア

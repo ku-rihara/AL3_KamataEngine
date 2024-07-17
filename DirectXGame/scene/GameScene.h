@@ -17,6 +17,7 @@
 #include "SkyDome.h"
 #include "Ground.h"
 #include "FollowCamera.h"
+#include"LockOn.h"
 
 /// <summary>
 /// ゲームシーン
@@ -67,6 +68,10 @@ private: // メンバ変数
 	WorldTransform worldTransform_;
 	// ビュープロジェクション
 	ViewProjection viewProjection_;
+	//敵リスト
+	std::list<std::unique_ptr<Enemy>> enemies_;
+	//ロックオン
+	std::unique_ptr<LockOn> lockOn_;
 
 public: // メンバ関数
 	/// <summary>
