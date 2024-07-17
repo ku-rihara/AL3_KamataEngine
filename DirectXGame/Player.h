@@ -23,18 +23,22 @@ private:
 		kRoot,   // 通常状態
 		kAttack, // 攻撃中
 		kDash,//ダッシュ中
+		kJump,//ジャンプ中
 	};
 	//ダッシュ用ワーク
 	struct WorkDash {
 		//ダッシュ用の媒介変数
 		uint32_t dashPrameter_ = 0;
 	};
-
+	//パーツの数
 	const int partsnum = 5;
 	// カメラのビュープロジェクション
 	const ViewProjection* viewProjection_ = nullptr;
 	// 3Dモデル
 	std::vector<Model*> modelParts_;
+
+	//速度
+	Vector3 velocity_={};
 
 	float stiffeningTime_ = 0;
 	float objectiveAngle_=0;
@@ -63,10 +67,12 @@ public:
 	void BehaviorRootInitialize();
 	void BehaviorAttackInitialize();
 	void BehaviorDashInitialize();
+	void BehaviorJumpInitialize();
 	//更新-------------------------------
 	void BehaviorRootUpdate();
 	void BehaviorAttackUpdate();
 	void BehabiorDashUpdate();
+	void BehaviorJumpUpdate();
 	void Move(const float& speed);
 	//アニメーション
 	void AnimationInit() override;
