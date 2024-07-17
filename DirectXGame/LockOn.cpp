@@ -1,9 +1,8 @@
 #include "LockOn.h"
+#include"TextureManager.h"
+void LockOn::Init(){
 
-void LockOn::Init() {
-	
-	lockOnMark_.reset() 
-}
+    lockOnMark_.reset(TextureManager::);
 
 
 void LockOn::Update() {}
