@@ -47,6 +47,9 @@ void GameScene::Initialize() {
 	followCamera_->SetTarget(&player_->GetWorldTransform());
 	player_->SetViewProjection(&followCamera_->GetViewProjection());
 
+	//setter
+	/*lockOn_->SetEnemy(enemy_);*/
+
 	// 軸方向表示の表示を有効にする
 	AxisIndicator::GetInstance()->SetVisible(true);
 	// 軸方向表示が参照するビュープロジェクションを指定する（アドレス渡し）
@@ -71,6 +74,9 @@ void GameScene::Update() {
 	player_->Update();
 	followCamera_->Update();
 	enemy_->Update();
+	for (std::unique_ptr<Enemy>& enemy : enemies_) {
+		enemy->Update();
+	}
 	lockOn_->Update(enemies_,viewProjection_);
 
 	if (isDebugCameraActive_ == true) { // デバッグカメラがアクティブなら

@@ -27,5 +27,6 @@ public:
 	void Update(const std::list<std::unique_ptr<Enemy>>&enemies,const ViewProjection&viewProjection);
 	void Draw();
 
+	void SetEnemy( Enemy* player) { target_ = player; }
 	void Search(const std::list<std::unique_ptr<Enemy>>& enemies, const ViewProjection& viewProjection);
 };
