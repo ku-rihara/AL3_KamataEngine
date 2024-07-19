@@ -3,20 +3,22 @@
 #include "Geometry/fMatrix4x4.h"
 #include "TextureManager.h"
 #include "input/Input.h"
+
 void LockOn::Init() {
 	int TextureHandle = TextureManager::Load("./Resources/anchorPoint.png");
 
-	lockOnMark_.reset(Sprite::Create(TextureHandle, {}));
+	lockOnMark_.reset(Sprite::Create(TextureHandle, Vector2{640,320},Vector4(1,1,1,1), Vector2(0.5f, 0.5f)));
 }
 
 void LockOn::Update(const std::list<std::unique_ptr<Enemy>>& enemies, const ViewProjection& viewProjection) {
 
 	// ロックオンをトリガー
-	if (!isRockOn_ && Input::GetInstance()->TriggerKey(DIK_R)) {
+	if (/*!isRockOn_ &&*/ Input::GetInstance()->TriggerKey(DIK_R)) {
 		// ロックオン対象の検索
 		Search(enemies, viewProjection);
-		isRockOn_ = true;
+		/*isRockOn_ = true;*/
 	}
+	
 }
 
 void LockOn::Draw() {
