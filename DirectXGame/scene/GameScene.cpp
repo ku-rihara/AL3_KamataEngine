@@ -65,13 +65,13 @@ void GameScene::Update() {
 	}
 	// デバッグカメラモード切り替え------------------------------
 #endif
-
+	//各クラス更新処理---------
 	skyDome_->Update();
 	ground_->Update();
 	player_->Update();
 	followCamera_->Update();
-
 	enemy_->Update();
+	lockOn_->Update(enemies_,viewProjection_);
 
 	if (isDebugCameraActive_ == true) { // デバッグカメラがアクティブなら
 		// デバッグカメラの更新
@@ -103,7 +103,7 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに背景スプライトの描画処理を追加できる
 	/// </summary>
-	lockOn_->Draw();
+	
 	// スプライト描画後処理
 	Sprite::PostDraw();
 	// 深度バッファクリア
@@ -128,7 +128,7 @@ void GameScene::Draw() {
 #pragma region 前景スプライト描画
 	// 前景スプライト描画前処理
 	Sprite::PreDraw(commandList);
-
+	lockOn_->Draw();
 	/// <summary>
 	/// ここに前景スプライトの描画処理を追加できる
 	/// </summary>

@@ -71,3 +71,12 @@ void Enemy::AnimationUpdate() {
 }
 
 Vector3 Enemy::GetBaseWorldPos() { return BaseCharacter::GetBaseWorldPos(); }
+
+ Vector3 Enemy::GetCenterPos() {
+	//見た目上の中心点オフセット(モデル座標系)
+	 const Vector3 offset = {0.0f, 1.0f, 0.0f};
+	 //ワールド座標に変換
+	 Vector3 worldPos = Transform(offset, baseWorldTransform_.matWorld_);
+	 return worldPos;
+
+}
