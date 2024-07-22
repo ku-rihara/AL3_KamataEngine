@@ -1,6 +1,6 @@
 #include "Player.h"
 #include "Easing.h"
-#include "Geometry/fMatrix4x4.h"
+#include "Matrix4x4.h"
 #include "MathFunction.h"
 #include "cassert"
 #include <imgui.h>
@@ -171,7 +171,7 @@ void Player::BehaviorJumpUpdate() {
 
 	// 着地
 	if (baseWorldTransform_.translation_.y <= 0.0f) {
-		baseWorldTransform_.translation_.y = 0;
+		baseWorldTransform_.translation_.y = 0.9f;
 		// ジャンプ終了
 		behaviorRequest_ = Behavior::kRoot;
 	}

@@ -1,6 +1,8 @@
-#include"Geometry/fMatrix4x4.h"
+#include"Matrix4x4.h"
 #include<cmath>
+#include"WinApp.h"
 #include<assert.h>
+#include"ViewProjection.h"
 
 Matrix4x4 MakeIdentity4x4() {
 	Matrix4x4 result;
@@ -25,6 +27,48 @@ Matrix4x4 MakeIdentity4x4() {
 	return result;
 }
 
+Matrix4x4 Matrix4x4::operator + (const Matrix4x4& obj) const {
+	Matrix4x4 result;
+
+	for (int row = 0; row < 4; ++row) {
+
+		for (int column = 0; column < 4; ++column) {
+
+			result.m[row][column] = m[row][column] + obj.m[row][column];
+		}
+	}
+
+	return result;
+}
+
+Matrix4x4 Matrix4x4::operator - (const Matrix4x4& obj) const {
+	Matrix4x4 result;
+
+	for (int row = 0; row < 4; ++row) {
+
+		for (int column = 0; column < 4; ++column) {
+
+			result.m[row][column] = m[row][column] - obj.m[row][column];
+		}
+	}
+
+	return result;
+}
+
+Matrix4x4 Matrix4x4::operator*(const Matrix4x4& obj) const {
+	Matrix4x4 result;
+
+	for (int row = 0; row < 4; ++row) {
+
+		for (int column = 0; column < 4; ++column) {
+
+			result.m[row][column] = m[row][0] * obj.m[0][column] + m[row][1] * obj.m[1][column] + m[row][2] * obj.m[2][column] + m[row][3] * obj.m[3][column];
+		}
+	}
+	return result;
+}
+
+
 
 Matrix4x4 Multiply(const Matrix4x4& m1, const Matrix4x4& m2) {
 	Matrix4x4 result;
@@ -39,6 +83,7 @@ Matrix4x4 Multiply(const Matrix4x4& m1, const Matrix4x4& m2) {
 
 	return result;
 }
+
 Vector3 Multiply(const Vector3& vector, const Matrix4x4& matrix) {
 	Vector3 result;
 
@@ -314,3 +359,11 @@ Matrix4x4 MakeViewportMatrix(float left, float top, float width, float height, f
 	return result;
 }
 
+Vector3 ScreenTransform(Vector3 worldPos, const ViewProjection& viewProjection) {
+	//ビューポート行列
+	Matrix4x4 matViewport = MakeViewportMatrix(0, 0, WinApp::kWindowWidth, WinApp::kWindowHeight, 0, 1);
+	//ビュー行列とプロジェクション行列、ビューポート行列を合成する
+	Matrix4x4 matViewProjectionViewport =viewProjection.matView*viewProjection.matProjection* matViewport;
+	//ワールド→スクリーン変換
+	return Transform(worldPos, matViewProjectionViewport);
+}

@@ -37,8 +37,7 @@ void GameScene::Initialize() {
 	ground_->Init(modelGround_.get());
 	followCamera_->Init();
 	//敵キャラ初期化*******************************************************************************
-	std::vector<Model*> enemyModels = {modelEnemyBody_.get(), modelEnemyThurn_.get(), modelEnemyThurn_.get()};
-	enemy_->Init(enemyModels);
+	AddEnemy();
 	worldTransform_.Initialize();
 	viewProjection_.Initialize();
 	//ロックオン初期化*****************************************************************************************
@@ -73,7 +72,7 @@ void GameScene::Update() {
 	ground_->Update();
 	player_->Update();
 	followCamera_->Update();
-	enemy_->Update();
+	
 	for (std::unique_ptr<Enemy>& enemy : enemies_) {
 		enemy->Update();
 	}
@@ -126,7 +125,9 @@ void GameScene::Draw() {
 	skyDome_->Draw(viewProjection_);
 	ground_->Draw(viewProjection_);
 	player_->Draw(viewProjection_);
-	enemy_->Draw(viewProjection_);
+	for (std::unique_ptr<Enemy>& enemy : enemies_) {
+		enemy->Draw(viewProjection_);
+	}
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
 #pragma endregion
@@ -142,4 +143,11 @@ void GameScene::Draw() {
 	Sprite::PostDraw();
 
 #pragma endregion
+}
+
+void GameScene::AddEnemy() {
+	std::vector<Model*> enemyModels = {modelEnemyBody_.get(), modelEnemyThurn_.get(), modelEnemyThurn_.get()};
+	enemy_ = std::make_unique<Enemy>();
+	enemy_->Init(enemyModels);
+	enemies_.push_back(std::move(enemy_));
 }

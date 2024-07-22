@@ -33,7 +33,7 @@ public:
 	void AnimationInit()override;
 	void AnimationUpdate()override;
 
-	 Vector3 GetCenterPos();
+	 Vector3 GetCenterPos()const;
 	// setter
 	void SetViewProjection(const ViewProjection* viewProjection) { viewProjection_ = viewProjection; }
 };

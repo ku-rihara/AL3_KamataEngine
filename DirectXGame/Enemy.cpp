@@ -1,5 +1,5 @@
 #include "Enemy.h"
-#include "Geometry/fMatrix4x4.h"
+#include "Matrix4x4.h"
 #include<imgui.h>
 #include "cassert"
 
@@ -72,7 +72,7 @@ void Enemy::AnimationUpdate() {
 
 Vector3 Enemy::GetBaseWorldPos() { return BaseCharacter::GetBaseWorldPos(); }
 
- Vector3 Enemy::GetCenterPos() {
+ Vector3 Enemy::GetCenterPos() const {
 	//見た目上の中心点オフセット(モデル座標系)
 	 const Vector3 offset = {0.0f, 1.0f, 0.0f};
 	 //ワールド座標に変換
