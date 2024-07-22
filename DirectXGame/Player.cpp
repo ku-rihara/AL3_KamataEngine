@@ -123,8 +123,8 @@ void Player::BehaviorRootUpdate() {
 	if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_LEFT_SHOULDER) {
 		behaviorRequest_ = Behavior::kDash;
 	}
-	// 一旦Jでジャンプ
-	if (Input::GetInstance()->TriggerKey(DIK_J)) {
+	// Aでジャンプ
+	if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_A) {
 		behaviorRequest_ = Behavior::kJump;
 	}
 }
@@ -171,7 +171,7 @@ void Player::BehaviorJumpUpdate() {
 
 	// 着地
 	if (baseWorldTransform_.translation_.y <= 0.0f) {
-		baseWorldTransform_.translation_.y = 0;
+		baseWorldTransform_.translation_.y = 0.9f;
 		// ジャンプ終了
 		behaviorRequest_ = Behavior::kRoot;
 	}
