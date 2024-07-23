@@ -3,17 +3,30 @@
 #include "Matrix4x4.h"
 #include "input/input.h"
 #include"MathFunction.h"
+#include<cmath>
+//class
+#include"LockOn.h"
+
 void FollowCamera::Init() { viewprojection_.Initialize(); }
 
 void FollowCamera::Update() {
 	XINPUT_STATE joyState;
-	//旋回操作
-	if (Input::GetInstance()->GetJoystickState(0, joyState)) {
-		const float rotateSpeed = 0.1f;//回転速度
-		destinationAngleY_ += (float)(joyState.Gamepad.sThumbRX / SHRT_MAX)*rotateSpeed;
-		//右スティック押し込みでリセット
-		if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_THUMB) {
-			Reset();
+
+	if (lockOn_&&lockOn_->GetEnemyTarget()) {
+		Vector3 differectialVector = lockOn_->GetTargetPosition() - viewprojection_.translation_;
+		differectialVector = Normnalize(differectialVector);
+		// Y軸周り角度(θy)
+		viewprojection_.rotation_.y = std::atan2(differectialVector.x, differectialVector.z);
+		
+	} else {
+		// 旋回操作
+		if (Input::GetInstance()->GetJoystickState(0, joyState)) {
+			const float rotateSpeed = 0.1f; // 回転速度
+			destinationAngleY_ += (float)(joyState.Gamepad.sThumbRX / SHRT_MAX) * rotateSpeed;
+			// 右スティック押し込みでリセット
+			if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_THUMB) {
+				Reset();
+			}
 		}
 	}
 	viewprojection_.rotation_.y =LerpShortAngle(viewprojection_.rotation_.y,destinationAngleY_,0.15f);

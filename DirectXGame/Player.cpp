@@ -1,9 +1,11 @@
 #include "Player.h"
 #include "Easing.h"
-#include "Matrix4x4.h"
 #include "MathFunction.h"
+#include "Matrix4x4.h"
 #include "cassert"
 #include <imgui.h>
+// class
+#include "LockOn.h"
 
 float pi = 3.14159265358f;
 
@@ -25,11 +27,7 @@ void Player::Init(const std::vector<Model*>& models) {
 	partsWorldTransforms_[IndexWeapon]->parent_ = partsWorldTransforms_[IndexBody].get();
 	// パーツの変位の値
 	baseWorldTransform_.translation_.y = 0.9f;
-	partsWorldTransforms_[IndexHead]->translation_.y = 1.7f;
-	partsWorldTransforms_[IndexLeftArm]->translation_.x = 0.6f;
-	partsWorldTransforms_[IndexLeftArm]->translation_.y = 1.0f;
-	partsWorldTransforms_[IndexRightArm]->translation_.x = -0.6f;
-	partsWorldTransforms_[IndexRightArm]->translation_.y = 1.0f;
+
 	BehaviorRootInitialize();
 	globalParameter_ = GlobalParameter::GetInstance();
 	const char* groupName = "Player";
@@ -129,9 +127,29 @@ void Player::BehaviorRootUpdate() {
 }
 
 void Player::BehaviorAttackUpdate() {
-
+	if (lockOn_ && lockOn_->GetEnemyTarget()) {
+		Vector3 differectialVector = lockOn_->GetTargetPosition() - GetBaseWorldPos();
+		// 距離
+		float distance = Length(differectialVector);
+		// 距離しきい値
+		const float threshold = 0.2f;
+		// しきい値より離れている時
+		if (distance > threshold) {
+			// Y軸回り角度
+			baseWorldTransform_.rotation_.y = std::atan2(differectialVector.x, differectialVector.z);
+			// しきい値を超える速さなら補正する
+			if (attackSpeed > distance - threshold) {
+				attackSpeed = distance - threshold;
+			}
+		}
+		
+	}
 	/*浮遊移動のサイクル*/
 	AttackEaseT_ += 0.05f;
+	attackMoveT_ += 0.1f;
+	if (attackMoveT_ >= 1.0f) {
+		attackMoveT_ = 1.0f;
+	}
 	if (AttackEaseT_ >= 1.0f) {
 		AttackEaseT_ = 1.0f;
 		stiffeningTime_++;
@@ -139,7 +157,10 @@ void Player::BehaviorAttackUpdate() {
 			behaviorRequest_ = Behavior::kRoot;
 		}
 	}
+	//攻撃先の座標を決める
+	Vector3 attackPos = attackDirection_ * attackSpeed;
 
+	baseWorldTransform_.translation_ = Lerp(baseWorldTransform_.translation_, savePos_ + attackPos, attackMoveT_);
 	// 回転する
 	partsWorldTransforms_[IndexWeapon]->rotation_.x = Lerp(-pi / 3, pi / 2, AttackEaseT_);
 	partsWorldTransforms_[IndexRightArm]->rotation_.x = Lerp(2.4f, 5.0f, AttackEaseT_);
@@ -183,7 +204,7 @@ void Player::Move(const float& speed) {
 		const float thresholdValue = 0.7f;
 		bool isMoving = false;
 		// 移動量
-		 velocity_ = {(float)joyState.Gamepad.sThumbLX / SHRT_MAX, 0, (float)joyState.Gamepad.sThumbLY / SHRT_MAX};
+		velocity_ = {(float)joyState.Gamepad.sThumbLX / SHRT_MAX, 0, (float)joyState.Gamepad.sThumbLY / SHRT_MAX};
 		if (Length(velocity_) > thresholdValue) {
 			isMoving = true;
 		}
@@ -197,9 +218,15 @@ void Player::Move(const float& speed) {
 			baseWorldTransform_.translation_ += velocity_;
 			// 目標角度
 			objectiveAngle_ = std::atan2(velocity_.x, velocity_.z);
+			// 最短角度補間
+			baseWorldTransform_.rotation_.y = LerpShortAngle(baseWorldTransform_.rotation_.y, objectiveAngle_, 0.3f);
+
+		} else if (lockOn_ && lockOn_->GetEnemyTarget()) {
+			Vector3 differectialVector = lockOn_->GetTargetPosition() - GetBaseWorldPos();
+
+			// Y軸周り角度(θy)
+			baseWorldTransform_.rotation_.y = std::atan2(differectialVector.x, differectialVector.z);
 		}
-		// 最短角度補間
-		baseWorldTransform_.rotation_.y = LerpShortAngle(baseWorldTransform_.rotation_.y, objectiveAngle_, 0.3f);
 	}
 }
 
@@ -215,6 +242,15 @@ void Player::BehaviorAttackInitialize() {
 	partsWorldTransforms_[IndexWeapon]->scale_ = {1, 1, 1};
 	stiffeningTime_ = 0;
 	AttackEaseT_ = 0;
+	attackMoveT_ = 0;
+
+	Matrix4x4 rotateMatrix = MakeRotateYMatrix(baseWorldTransform_.rotation_.y);
+	Vector3 forward = {0, 0, 1};
+	Vector3 direction = TransformNormal(forward, rotateMatrix);
+	savePos_ = baseWorldTransform_.translation_;
+	attackDirection_ = Normnalize(direction);
+	attackSpeed = 5.0f;
+
 }
 // ダッシュ初期化
 void Player::BehaviorDashInitialize() {

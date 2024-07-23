@@ -2,11 +2,12 @@
 #include "ViewProjection.h"
 #include "WorldTransform.h"
 
-/// <summary>
-/// 追従カメラ
-/// </summary>
+class LockOn;
 class FollowCamera {
 private:
+	//包含
+	LockOn* lockOn_;
+
 	ViewProjection viewprojection_;
 	// 追従対象
 	const WorldTransform* target_ = nullptr;
@@ -24,4 +25,5 @@ public:
 	const ViewProjection& GetViewProjection() { return viewprojection_; }
 	// setter
 	void SetTarget(const WorldTransform* target);
+	void SetLockOn(LockOn* lockon) { lockOn_ = lockon; }
 };

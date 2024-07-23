@@ -33,9 +33,12 @@ void GameScene::Initialize() {
 	// 自キャラ初期化***********************************************************************
 	std::vector<Model*> playerModels = {modelFighterBody_.get(), modelFighterHead_.get(), modelFighterLeftArm_.get(), modelFighterRightArm_.get(), modelPlayerWeapon_.get()};
 	player_->Init(playerModels);
+	player_->SetLockOn(lockOn_.get());
 	skyDome_->Init(modelSkyDome_.get());
 	ground_->Init(modelGround_.get());
+	//追尾カメラ初期化***********************************************************
 	followCamera_->Init();
+	followCamera_->SetLockOn(lockOn_.get());
 	//敵キャラ初期化*******************************************************************************
 	AddEnemy();
 	worldTransform_.Initialize();
