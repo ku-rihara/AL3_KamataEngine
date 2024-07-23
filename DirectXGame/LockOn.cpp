@@ -1,8 +1,8 @@
 #include "LockOn.h"
 #include "Enemy.h"
+#include "JoyState.h"
 #include "Matrix4x4.h"
 #include "TextureManager.h"
-#include "JoyState.h"
 
 void LockOn::Init() {
 	int TextureHandle = TextureManager::Load("./Resources/anchorPoint.png");
@@ -12,22 +12,22 @@ void LockOn::Init() {
 
 void LockOn::Update(const std::list<std::unique_ptr<Enemy>>& enemies, const ViewProjection& viewProjection) {
 	if (Input::GetInstance()->GetJoystickState(0, joyState)) {
-	// ロックオン外す
-	if (isRockOn_) {
-		if (joyState.Gamepad.wButtons && XINPUT_GAMEPAD_B) {
-			target_ = nullptr;
-			isRockOn_ = false;
-		} else if (IsOutOfRange(enemies,viewProjection)) {
-			target_ = nullptr;
-			isRockOn_ = false;
+		// ロックオン外す
+		if (isRockOn_) {
+			if (joyState.Gamepad.wButtons && XINPUT_GAMEPAD_B) {
+				target_ = nullptr;
+				isRockOn_ = false;
+			} else if (IsOutOfRange(enemies, viewProjection)) {
+				target_ = nullptr;
+				isRockOn_ = false;
+			}
+		} else {
+			if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_B) { // ロックオンする
+				// ロックオン対象の検索
+				Search(enemies, viewProjection);
+				isRockOn_ = true;
+			}
 		}
-	} else {
-		if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_B) { // ロックオンする
-			// ロックオン対象の検索
-			Search(enemies, viewProjection);
-			isRockOn_ = true;
-		}
-	}
 	}
 
 	// ロックオン継続
@@ -51,12 +51,12 @@ void LockOn::Draw() {
 }
 
 void LockOn::Search(const std::list<std::unique_ptr<Enemy>>& enemies, const ViewProjection& viewProjection) {
-	Vector3 positionView = {};//
-	
-	std::list<std::pair<float, const Enemy*>> targets;// 目標
+	Vector3 positionView = {}; //
+
+	std::list<std::pair<float, const Enemy*>> targets; // 目標
 
 	// 全ての敵に対して順にロックオンを判定
-	for (const std::unique_ptr<Enemy>& enemy : enemies) {	
+	for (const std::unique_ptr<Enemy>& enemy : enemies) {
 		if (IsTargetRange(*enemy, viewProjection, positionView)) {
 			targets.emplace_back(std::make_pair(positionView.z, enemy.get()));
 		}
@@ -77,7 +77,7 @@ bool LockOn::IsOutOfRange(const std::list<std::unique_ptr<Enemy>>& enemies, cons
 	// 全ての敵に対して順にロックオンを判定
 	for (const std::unique_ptr<Enemy>& enemy : enemies) {
 		if (IsTargetRange(*enemy, viewProjection, positionView)) {
-			//範囲外ではない
+			// 範囲外ではない
 			return false;
 		}
 	}
