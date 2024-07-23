@@ -7,7 +7,6 @@
 
 float pi = 3.14159265358f;
 
-XINPUT_STATE joyState;
 Player::Player() {}
 
 void Player::Init(const std::vector<Model*>& models) {
@@ -124,7 +123,7 @@ void Player::BehaviorRootUpdate() {
 		behaviorRequest_ = Behavior::kDash;
 	}
 	// 一旦Jでジャンプ
-	if (Input::GetInstance()->TriggerKey(DIK_J)) {
+	if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_A) {
 		behaviorRequest_ = Behavior::kJump;
 	}
 }

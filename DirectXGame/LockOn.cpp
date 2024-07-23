@@ -2,7 +2,7 @@
 #include "Enemy.h"
 #include "Matrix4x4.h"
 #include "TextureManager.h"
-#include "input/Input.h"
+#include "JoyState.h"
 
 void LockOn::Init() {
 	int TextureHandle = TextureManager::Load("./Resources/anchorPoint.png");
@@ -11,9 +11,10 @@ void LockOn::Init() {
 }
 
 void LockOn::Update(const std::list<std::unique_ptr<Enemy>>& enemies, const ViewProjection& viewProjection) {
+	if (Input::GetInstance()->GetJoystickState(0, joyState)) {
 	// ロックオン外す
 	if (isRockOn_) {
-		if (Input::GetInstance()->TriggerKey(DIK_R)) {
+		if (joyState.Gamepad.wButtons && XINPUT_GAMEPAD_B) {
 			target_ = nullptr;
 			isRockOn_ = false;
 		} else if (IsOutOfRange(enemies,viewProjection)) {
@@ -21,11 +22,12 @@ void LockOn::Update(const std::list<std::unique_ptr<Enemy>>& enemies, const View
 			isRockOn_ = false;
 		}
 	} else {
-		if (Input::GetInstance()->TriggerKey(DIK_R)) { // ロックオンする
+		if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_B) { // ロックオンする
 			// ロックオン対象の検索
 			Search(enemies, viewProjection);
 			isRockOn_ = true;
 		}
+	}
 	}
 
 	// ロックオン継続

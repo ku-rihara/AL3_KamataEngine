@@ -157,6 +157,7 @@
     <ClInclude Include="GlobalParameter.h" />
     <ClInclude Include="Ground.h" />
     <ClInclude Include="input\Input.h" />
+    <ClInclude Include="JoyState.h" />
     <ClInclude Include="LockOn.h" />
     <ClInclude Include="MathFunction.h" />
     <ClInclude Include="math\Matrix4x4.h" />

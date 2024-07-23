@@ -5,7 +5,7 @@
 #include "BaseCharacter.h"
 #include "WorldTransform.h"
 #include "ViewProjection.h"
-#include "input/input.h"
+#include "JoyState.h"
 #include "GlobalParameter.h"
 #include <optional>
 
