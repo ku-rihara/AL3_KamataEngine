@@ -29,7 +29,8 @@ public:
 	void Init(const std::vector<Model*>& models) override;
 	void Update() override;
 	void Draw(const ViewProjection& viewProjection) override;
-	Vector3 GetBaseWorldPos()override;
+
+	Vector3 GetBaseCenterPosition()const  override;
 	void AnimationInit()override;
 	void AnimationUpdate()override;
 

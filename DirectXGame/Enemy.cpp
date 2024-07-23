@@ -70,7 +70,13 @@ void Enemy::AnimationUpdate() {
 	partsWorldTransforms_[IndexRightThorn]->translation_.z = std::cos(animeParamater_) * floatingAmplitude;
 }
 
-Vector3 Enemy::GetBaseWorldPos() { return BaseCharacter::GetBaseWorldPos(); }
+Vector3 Enemy::GetBaseCenterPosition() const {
+	// ローカル座標でのオフセット
+	const Vector3 offset = {0.0f, 1.5f, 0.0f};
+	// ワールド座標に変換
+	Vector3 worldPos = Transform(offset, baseWorldTransform_.matWorld_);
+	return worldPos;
+}
 
  Vector3 Enemy::GetCenterPos() const {
 	//見た目上の中心点オフセット(モデル座標系)

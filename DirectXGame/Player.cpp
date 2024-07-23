@@ -128,7 +128,7 @@ void Player::BehaviorRootUpdate() {
 
 void Player::BehaviorAttackUpdate() {
 	if (lockOn_ && lockOn_->GetEnemyTarget()) {
-		Vector3 differectialVector = lockOn_->GetTargetPosition() - GetBaseWorldPos();
+		Vector3 differectialVector = lockOn_->GetTargetPosition() - GetBaseCenterPosition();
 		// 距離
 		float distance = Length(differectialVector);
 		// 距離しきい値
@@ -142,7 +142,6 @@ void Player::BehaviorAttackUpdate() {
 				attackSpeed = distance - threshold;
 			}
 		}
-		
 	}
 	/*浮遊移動のサイクル*/
 	AttackEaseT_ += 0.05f;
@@ -157,7 +156,7 @@ void Player::BehaviorAttackUpdate() {
 			behaviorRequest_ = Behavior::kRoot;
 		}
 	}
-	//攻撃先の座標を決める
+	// 攻撃先の座標を決める
 	Vector3 attackPos = attackDirection_ * attackSpeed;
 
 	baseWorldTransform_.translation_ = Lerp(baseWorldTransform_.translation_, savePos_ + attackPos, attackMoveT_);
@@ -222,7 +221,7 @@ void Player::Move(const float& speed) {
 			baseWorldTransform_.rotation_.y = LerpShortAngle(baseWorldTransform_.rotation_.y, objectiveAngle_, 0.3f);
 
 		} else if (lockOn_ && lockOn_->GetEnemyTarget()) {
-			Vector3 differectialVector = lockOn_->GetTargetPosition() - GetBaseWorldPos();
+			Vector3 differectialVector = lockOn_->GetTargetPosition() - GetBaseCenterPosition();
 
 			// Y軸周り角度(θy)
 			baseWorldTransform_.rotation_.y = std::atan2(differectialVector.x, differectialVector.z);
@@ -250,7 +249,6 @@ void Player::BehaviorAttackInitialize() {
 	savePos_ = baseWorldTransform_.translation_;
 	attackDirection_ = Normnalize(direction);
 	attackSpeed = 5.0f;
-
 }
 // ダッシュ初期化
 void Player::BehaviorDashInitialize() {
@@ -271,7 +269,13 @@ void Player::BehaviorJumpInitialize() {
 // アニメーション初期化
 void Player::AnimationInit() { floatingParameter_ = 0.0f; }
 
-Vector3 Player::GetBaseWorldPos() { return BaseCharacter::GetBaseWorldPos(); }
+Vector3 Player::GetBaseCenterPosition() const {
+	// ローカル座標でのオフセット
+	const Vector3 offset = {0.0f, 1.5f, 0.0f};
+	// ワールド座標に変換
+	Vector3 worldPos = Transform(offset, baseWorldTransform_.matWorld_);
+	return worldPos;
+}
 
 void Player::ApplyGlobalParameter() {
 

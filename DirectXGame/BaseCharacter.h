@@ -4,8 +4,9 @@
 #include "WorldTransform.h"
 #include "ViewProjection.h"
 #include "vector"
+#include"Colider.h"
 
-class BaseCharacter {
+class BaseCharacter:public Colider {
 protected:
 	//モデル配列データ
 	std::vector<Model*> models_;
@@ -13,12 +14,14 @@ protected:
 	WorldTransform baseWorldTransform_;
 	std::vector<std::unique_ptr<WorldTransform>> partsWorldTransforms_;
 
-
 public:
 	virtual void Init(const std::vector<Model*>& models);
 	virtual void Update();
 	virtual void Draw(const ViewProjection&viewProjection);
-	virtual Vector3 GetBaseWorldPos();
+
+	virtual Vector3 GetBaseCenterPosition() const override;
+
+	
 	virtual void AnimationInit() = 0;
 	virtual void AnimationUpdate() = 0;
 
