@@ -89,6 +89,9 @@ public:
 	void AnimationInit() override;
 	void AnimationUpdate() override;
 
+	//コールバック関数
+	void OnCollision() override;
+
 	// 調節項目を適用
 	void ApplyGlobalParameter();
 

@@ -29,6 +29,7 @@ void GameScene::Initialize() {
 	ground_ = std::make_unique<Ground>();
 	followCamera_ = std::make_unique<FollowCamera>();
 	lockOn_ = std::make_unique<LockOn>();
+	collisionManager_ = std::make_unique<CollisionManager>();
 
 	// 自キャラ初期化***********************************************************************
 	std::vector<Model*> playerModels = {modelFighterBody_.get(), modelFighterHead_.get(), modelFighterLeftArm_.get(), modelFighterRightArm_.get(), modelPlayerWeapon_.get()};
@@ -80,6 +81,9 @@ void GameScene::Update() {
 		enemy->Update();
 	}
 	lockOn_->Update(enemies_,viewProjection_);
+
+	//衝突判定と応答
+	CheckAllCollisions();
 
 	if (isDebugCameraActive_ == true) { // デバッグカメラがアクティブなら
 		// デバッグカメラの更新
@@ -153,4 +157,16 @@ void GameScene::AddEnemy() {
 	enemy_ = std::make_unique<Enemy>();
 	enemy_->Init(enemyModels);
 	enemies_.push_back(std::move(enemy_));
+}
+
+void GameScene::CheckAllCollisions() {
+	//衝突マネージャーのリセット
+	collisionManager_->Reset();
+	//コライダーをリストに登録
+	collisionManager_->AddCollider(player_.get());
+	for (const std::unique_ptr<Enemy>& enemy : enemies_) {
+		collisionManager_->AddCollider(enemy.get());
+	}
+	//衝突判定と応答
+	collisionManager_->CheckAllCollisions();
 }

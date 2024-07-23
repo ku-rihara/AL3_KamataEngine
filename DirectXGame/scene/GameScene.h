@@ -17,6 +17,7 @@
 #include "SkyDome.h"
 #include "Ground.h"
 #include "FollowCamera.h"
+#include "CollisionManager.h"
 #include"LockOn.h"
 
 /// <summary>
@@ -56,6 +57,7 @@ private: // メンバ変数
 	std::unique_ptr<Skydome> skyDome_;
 	std::unique_ptr<Ground> ground_;
 	std::unique_ptr<FollowCamera> followCamera_;
+	std::unique_ptr<CollisionManager> collisionManager_;
 	/// <summary>
 	/// メンバ変数
 	/// </summary>
@@ -96,4 +98,8 @@ public: // メンバ関数
 
 	void AddEnemy();
 
+	/// <summary>
+	/// 衝突判定と応答
+	/// </summary>
+	void CheckAllCollisions();
 };

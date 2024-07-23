@@ -287,3 +287,8 @@ void Player::ApplyGlobalParameter() {
 	floatingCycle_ = globalParameter->GetValue<int32_t>(groupName, "floatingCycle");
 	floatingAmplitude_ = globalParameter->GetValue<float>(groupName, "floatingAmplitude");
 }
+
+void Player::OnCollision() {
+	//ジャンプリクエスト
+	behaviorRequest_ = Behavior::kJump;
+	}
