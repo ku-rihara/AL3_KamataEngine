@@ -9,17 +9,14 @@
 class GlobalParameter {
 private:
 	//項目
-	using Item =std::variant<int32_t, float, Vector3>;
-	
-	
+	using Item =std::variant<int32_t, float, Vector3,bool>;
 	//グループ
 	using Group =std::map<std::string, Item>;
-
-	
 	// 全データ
 	std::map<std::string, Group> datas_;
 	//Json
 	using json=nlohmann::json;
+	
 	//グローバル変数の保存先ファイルパス
 	const std::string kDirectoryPath = "Resources/GlobalParameter/";
 

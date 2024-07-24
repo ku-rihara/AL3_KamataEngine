@@ -1,11 +1,18 @@
 #pragma once
 #include"Vector3.h"
+#include "WorldTransform.h"
+#include "Model.h"
 class Colider {
 private:
 	//衝突半径
 	float radius_ = 1.5f;
+	//ワールドトランスフォーム
+	WorldTransform worldTransform_;
 
 public:
+	void Init();
+	void UpdateWorldTransform();
+	void Draw(Model* model, const ViewProjection& viewProjection);
 
 	virtual ~Colider()=default;
 	//中心座標を取得

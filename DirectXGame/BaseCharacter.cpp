@@ -8,6 +8,8 @@ void BaseCharacter::Init(const std::vector<Model*>& models) {
 	for (auto& worldTransform : partsWorldTransforms_) {
 		worldTransform->Initialize();
 	}
+	//コライダー初期化
+	Colider::Init();
 }
 
 void BaseCharacter::Update() {

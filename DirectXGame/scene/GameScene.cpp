@@ -37,7 +37,7 @@ void GameScene::Initialize() {
 	player_->SetLockOn(lockOn_.get());
 	skyDome_->Init(modelSkyDome_.get());
 	ground_->Init(modelGround_.get());
-	//追尾カメラ初期化***********************************************************
+	//追尾カメラ初期化*********************************************************************************
 	followCamera_->Init();
 	followCamera_->SetLockOn(lockOn_.get());
 	//敵キャラ初期化*******************************************************************************
@@ -46,6 +46,8 @@ void GameScene::Initialize() {
 	viewProjection_.Initialize();
 	//ロックオン初期化*****************************************************************************************
 	lockOn_->Init();
+	//コリジョンマネージャー
+	collisionManager_->Init();
 	// 自キャラのワールドトランスフォームを追従カメラにセット
 	followCamera_->SetTarget(&player_->GetWorldTransform());
 	player_->SetViewProjection(&followCamera_->GetViewProjection());
@@ -70,6 +72,7 @@ void GameScene::Update() {
 		}
 	}
 	// デバッグカメラモード切り替え------------------------------
+	collisionManager_->Update();
 #endif
 	//各クラス更新処理---------
 	skyDome_->Update();
@@ -84,6 +87,8 @@ void GameScene::Update() {
 
 	//衝突判定と応答
 	CheckAllCollisions();
+	//衝突マネージャー更新(WorldTransform)
+	collisionManager_->UpdateWorldTransform();
 
 	if (isDebugCameraActive_ == true) { // デバッグカメラがアクティブなら
 		// デバッグカメラの更新
@@ -135,6 +140,7 @@ void GameScene::Draw() {
 	for (std::unique_ptr<Enemy>& enemy : enemies_) {
 		enemy->Draw(viewProjection_);
 	}
+	collisionManager_->Draw(viewProjection_);
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
 #pragma endregion

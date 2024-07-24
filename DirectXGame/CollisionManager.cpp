@@ -1,5 +1,15 @@
 #include "CollisionManager.h"
 
+void CollisionManager::Init() { 
+	model_.reset(Model::CreateFromOBJ("CollisionSphere", true));
+
+	globalParameter_ = GlobalParameter::GetInstance();
+	const char* groupName = "CollisionManager";
+	// グループを追加
+	globalParameter_->CreateGroup(groupName);
+	globalParameter_->AddItem(groupName, "isColliderVisible", isColliderVisible_);
+}
+
 void CollisionManager::AddCollider(Colider* collider) {
 	// コライダーをリストに登録
 	colliders_.push_back(collider);
@@ -8,6 +18,33 @@ void CollisionManager::AddCollider(Colider* collider) {
 void CollisionManager::Reset() {
 	// リストを空っぽにする
 	colliders_.clear();
+}
+
+void CollisionManager::Update() { 
+	ApplyGlobalParameter();
+}
+
+void CollisionManager::UpdateWorldTransform() {
+	
+	//非表示なら抜ける
+	if (!isColliderVisible_) {
+		return;
+	}
+	//全てのコライダーについて
+	for (Colider* colider : colliders_) {
+		colider->UpdateWorldTransform();
+	}
+}
+
+void CollisionManager::Draw(const ViewProjection& viewProjection) {
+	// 非表示なら抜ける
+	if (!isColliderVisible_) {
+		return;
+	}
+	//全てのコライダー
+	for (Colider* colider : colliders_) {
+		colider->Draw(model_.get(), viewProjection);
+	}
 }
 
 void CollisionManager::CheckCollisionPair(Colider* colliderA, Colider* colliderB) {
@@ -43,4 +80,12 @@ void CollisionManager::CheckAllCollisions() {
 			CheckCollisionPair(colliderA, colliderB);
 		}
 	}
+}
+
+void CollisionManager::ApplyGlobalParameter() {
+	
+	GlobalParameter* globalParameter = GlobalParameter::GetInstance();
+	const char* groupName = "CollisionManager";
+
+	isColliderVisible_ = globalParameter->GetValue<bool>(groupName, "isColliderVisible");
 }

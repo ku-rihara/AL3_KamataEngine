@@ -6,14 +6,17 @@
 template void GlobalParameter::SetValue<int>(const std::string& groupName, const std::string& key, int value);
 template void GlobalParameter::SetValue<float>(const std::string& groupName, const std::string& key, float value);
 template void GlobalParameter::SetValue<Vector3>(const std::string& groupName, const std::string& key, Vector3 value);
+template void GlobalParameter::SetValue<bool>(const std::string& groupName, const std::string& key, bool value);
 
 template void GlobalParameter::AddItem<int>(const std::string& groupName, const std::string& key, int value);
 template void GlobalParameter::AddItem<float>(const std::string& groupName, const std::string& key, float value);
 template void GlobalParameter::AddItem<Vector3>(const std::string& groupName, const std::string& key, Vector3 value);
+template void GlobalParameter::AddItem<bool>(const std::string& groupName, const std::string& key, bool value);
 
 template int32_t GlobalParameter::GetValue<int32_t>(const std::string& groupName, const std::string& key) const;
 template float GlobalParameter::GetValue<float>(const std::string& groupName, const std::string& key) const;
 template Vector3 GlobalParameter::GetValue<Vector3>(const std::string& groupName, const std::string& key) const;
+template bool GlobalParameter::GetValue<bool>(const std::string& groupName, const std::string& key) const;
 
 // シングルトンインスタンス
 GlobalParameter* GlobalParameter::GetInstance() {
@@ -39,7 +42,7 @@ void GlobalParameter::Update() {
 	for (std::map<std::string, Group>::iterator itGroup = datas_.begin(); itGroup != datas_.end(); ++itGroup) {
 		// グループ名を取得
 		const std::string& groupName = itGroup->first;
-		//グループ名の参照を取得
+		// グループ名の参照を取得
 		Group& group = itGroup->second;
 
 		if (!ImGui::BeginMenu(groupName.c_str()))
@@ -47,9 +50,9 @@ void GlobalParameter::Update() {
 		for (std::map<std::string, Item>::iterator itItem = group.begin(); itItem != group.end(); ++itItem) {
 			// 項目名を取得
 			const std::string& itemName = itItem->first;
-			//項目の参照を取得
+			// 項目の参照を取得
 			Item& item = itItem->second;
-			
+
 			// int32_t型の値を肘していれば
 			if (std::holds_alternative<int32_t>(item)) {
 				int32_t* ptr = std::get_if<int32_t>(&item);
@@ -65,7 +68,13 @@ void GlobalParameter::Update() {
 			// Vector3型の値を肘していれば
 			else if (std::holds_alternative<Vector3>(item)) {
 				Vector3* ptr = std::get_if<Vector3>(&item);
-				ImGui::DragFloat3(itemName.c_str(), reinterpret_cast<float*>(ptr),0.01f);
+				ImGui::DragFloat3(itemName.c_str(), reinterpret_cast<float*>(ptr), 0.01f);
+			}
+
+			// bool型の値を肘していれば
+			else if (std::holds_alternative<bool>(item)) {
+				bool* ptr = std::get_if<bool>(&item);
+				ImGui::Checkbox(itemName.c_str(), reinterpret_cast<bool*>(ptr));
 			}
 		}
 		// 改行
@@ -97,7 +106,7 @@ template<typename T> void GlobalParameter::AddItem(const std::string& groupName,
 	// グループを検索
 	json::iterator itGroup = root.find(groupName);
 	// 未登録チェック
-	if(itGroup != root.end()){
+	if (itGroup != root.end()) {
 		SetValue(groupName, key, value);
 	}
 }
@@ -140,6 +149,11 @@ void GlobalParameter::SaveFile(const std::string& groupName) {
 			// Vector3型の値を登録
 			Vector3 value = std::get<Vector3>(item);
 			root[groupName][itemName] = json::array({value.x, value.y, value.z});
+		}
+		// bool型の値を保持していれば
+		else if (std::holds_alternative<bool>(item)) {
+			// bool型の値を登録
+			root[groupName][itemName] = std::get<bool>(item);
 		}
 	}
 	// ディレクトリが無ければ作成する
@@ -236,12 +250,18 @@ void GlobalParameter::LoadFile(const std::string& groupName) {
 			Vector3 value = {itItem->at(0), itItem->at(1), itItem->at(2)};
 			SetValue(groupName, itemName, value);
 		}
+		// boolであれば
+		else if (itItem->is_boolean()) {
+			// bool型のjson配列登録
+			bool value = itItem->get<bool>();
+			SetValue(groupName, itemName, value);
+		}
 	}
 }
 
 template<typename T> T GlobalParameter::GetValue(const std::string& groupName, const std::string& key) const {
 
-	 // グル―プを検索
+	// グル―プを検索
 	std::map<std::string, Group>::const_iterator itGroup = datas_.find(groupName);
 	// 指定グループが存在するか
 	assert(itGroup != datas_.end());
@@ -251,8 +271,8 @@ template<typename T> T GlobalParameter::GetValue(const std::string& groupName, c
 
 	// キーが存在するかを確認
 	std::map<std::string, Item>::const_iterator itItem = group.find(key);
-		assert(itItem != group.end());
+	assert(itItem != group.end());
 
 	// キーに対応する値を返す
-	    return std::get<T>(itItem->second);
+	return std::get<T>(itItem->second);
 }
