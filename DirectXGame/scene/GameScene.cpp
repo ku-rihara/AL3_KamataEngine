@@ -24,6 +24,7 @@ void GameScene::Initialize() {
 	/// 生成
 	/// </summary>
 	player_ = std::make_unique<Player>();
+	hummer_ = std::make_unique<Hummer>();
 	enemy_ = std::make_unique<Enemy>();
 	skyDome_ = std::make_unique<Skydome>();
 	ground_ = std::make_unique<Ground>();
@@ -32,11 +33,14 @@ void GameScene::Initialize() {
 	collisionManager_ = std::make_unique<CollisionManager>();
 
 	// 自キャラ初期化***********************************************************************
-	std::vector<Model*> playerModels = {modelFighterBody_.get(), modelFighterHead_.get(), modelFighterLeftArm_.get(), modelFighterRightArm_.get(), modelPlayerWeapon_.get()};
+	std::vector<Model*> playerModels = {modelFighterBody_.get(), modelFighterHead_.get(), modelFighterLeftArm_.get(), modelFighterRightArm_.get()};
 	player_->Init(playerModels);
 	player_->SetLockOn(lockOn_.get());
 	skyDome_->Init(modelSkyDome_.get());
 	ground_->Init(modelGround_.get());
+	//武器初期化
+	Model* weaponModel = modelPlayerWeapon_.get();
+	hummer_->Init(*weaponModel);
 	//追尾カメラ初期化*********************************************************************************
 	followCamera_->Init();
 	followCamera_->SetLockOn(lockOn_.get());

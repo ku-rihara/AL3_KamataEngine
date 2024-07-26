@@ -19,6 +19,7 @@
 #include "FollowCamera.h"
 #include "CollisionManager.h"
 #include"LockOn.h"
+#include "Hummer.h"
 
 /// <summary>
 /// ゲームシーン
@@ -44,6 +45,7 @@ private: // メンバ変数
 	std::unique_ptr<Model> modelFighterHead_ = nullptr;
 	std::unique_ptr<Model> modelFighterLeftArm_ = nullptr;  
 	std::unique_ptr<Model> modelFighterRightArm_ = nullptr; 
+	//武器モデル
 	std::unique_ptr<Model> modelPlayerWeapon_ = nullptr;
 	//敵モデル
 	std::unique_ptr<Model> modelEnemyBody_ = nullptr; 
@@ -53,6 +55,7 @@ private: // メンバ変数
 	/// 包含
 	/// </summary>
 	std::unique_ptr<Player> player_;
+	std::unique_ptr<Hummer> hummer_;
 	std::unique_ptr<Enemy> enemy_;
 	std::unique_ptr<Skydome> skyDome_;
 	std::unique_ptr<Ground> ground_;

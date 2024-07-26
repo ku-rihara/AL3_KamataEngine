@@ -10,6 +10,7 @@
 #include <vector>
 
 class LockOn;
+class Hummer;
 class Player : public BaseCharacter {
 private:
 	enum Parts {
@@ -17,7 +18,7 @@ private:
 		IndexHead,
 		IndexLeftArm,
 		IndexRightArm,
-		IndexWeapon,
+		/*IndexWeapon,*/
 	};
 
 private:
@@ -31,6 +32,7 @@ private:
 private:
 	// 包含
 	LockOn* lockOn_;
+	Hummer* hummer_;
 	// ダッシュ用ワーク
 	struct WorkDash {
 		// ダッシュ用の媒介変数

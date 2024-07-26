@@ -119,6 +119,7 @@
     <ClCompile Include="Geometry\Vector3.cpp" />
     <ClCompile Include="GlobalParameter.cpp" />
     <ClCompile Include="Ground.cpp" />
+    <ClCompile Include="Hummer.cpp" />
     <ClCompile Include="LockOn.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MathFunction.cpp" />
@@ -160,6 +161,7 @@
     <ClInclude Include="Geometry\fMatrix4x4.h" />
     <ClInclude Include="GlobalParameter.h" />
     <ClInclude Include="Ground.h" />
+    <ClInclude Include="Hummer.h" />
     <ClInclude Include="input\Input.h" />
     <ClInclude Include="JoyState.h" />
     <ClInclude Include="LockOn.h" />

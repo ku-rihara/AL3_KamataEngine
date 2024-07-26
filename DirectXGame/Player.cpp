@@ -6,6 +6,7 @@
 #include <imgui.h>
 // class
 #include "LockOn.h"
+#include "Hummer.h"
 
 float pi = 3.14159265358f;
 
@@ -24,7 +25,7 @@ void Player::Init(const std::vector<Model*>& models) {
 	partsWorldTransforms_[IndexHead]->parent_ = partsWorldTransforms_[IndexBody].get();
 	partsWorldTransforms_[IndexLeftArm]->parent_ = partsWorldTransforms_[IndexBody].get();
 	partsWorldTransforms_[IndexRightArm]->parent_ = partsWorldTransforms_[IndexBody].get();
-	partsWorldTransforms_[IndexWeapon]->parent_ = partsWorldTransforms_[IndexBody].get();
+	//partsWorldTransforms_[IndexWeapon]->parent_ = partsWorldTransforms_[IndexBody].get();
 	// パーツの変位の値
 	baseWorldTransform_.translation_.y = 0.9f;
 
@@ -39,6 +40,8 @@ void Player::Init(const std::vector<Model*>& models) {
 	globalParameter_->AddItem(groupName, "ArmR Translation", partsWorldTransforms_[IndexRightArm]->translation_);
 	globalParameter_->AddItem(groupName, "floatingCycle", floatingCycle_);
 	globalParameter_->AddItem(groupName, "floatingAmplitude", floatingAmplitude_);
+	//ハンマー初期化
+	hummer_->SetParent(*partsWorldTransforms_[IndexBody].get());
 }
 
 void Player::Update() {
@@ -85,7 +88,10 @@ void Player::Update() {
 
 	BaseCharacter::Update();
 }
-void Player::Draw(const ViewProjection& viewProjection) { BaseCharacter::Draw(viewProjection); }
+void Player::Draw(const ViewProjection& viewProjection) {
+	hummer_->Draw(viewProjection);
+	BaseCharacter::Draw(viewProjection);
+}
 /*関数*/
 void Player::AnimationUpdate() {
 
@@ -161,7 +167,7 @@ void Player::BehaviorAttackUpdate() {
 
 	baseWorldTransform_.translation_ = Lerp(baseWorldTransform_.translation_, savePos_ + attackPos, attackMoveT_);
 	// 回転する
-	partsWorldTransforms_[IndexWeapon]->rotation_.x = Lerp(-pi / 3, pi / 2, AttackEaseT_);
+
 	partsWorldTransforms_[IndexRightArm]->rotation_.x = Lerp(2.4f, 5.0f, AttackEaseT_);
 	partsWorldTransforms_[IndexLeftArm]->rotation_.x = Lerp(2.4f, 5.0f, AttackEaseT_);
 }
@@ -231,14 +237,14 @@ void Player::Move(const float& speed) {
 
 // 通常初期化
 void Player::BehaviorRootInitialize() {
-	partsWorldTransforms_[IndexWeapon]->scale_ = {};
+	/*partsWorldTransforms_[IndexWeapon]->scale_ = {};*/
 	partsWorldTransforms_[IndexLeftArm]->rotation_ = {0, 0, 0};
 	partsWorldTransforms_[IndexRightArm]->rotation_ = {0, 0, 0};
 	AnimationInit();
 }
 // アタック初期化
 void Player::BehaviorAttackInitialize() {
-	partsWorldTransforms_[IndexWeapon]->scale_ = {1, 1, 1};
+	/*partsWorldTransforms_[IndexWeapon]->scale_ = {1, 1, 1};*/
 	stiffeningTime_ = 0;
 	AttackEaseT_ = 0;
 	attackMoveT_ = 0;
