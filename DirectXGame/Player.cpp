@@ -28,7 +28,8 @@ void Player::Init(const std::vector<Model*>& models) {
 	if (hummer_ != nullptr) {
 		hummer_->SetParent(*partsWorldTransforms_[IndexBody].get());
 	}
-	// partsWorldTransforms_[IndexWeapon]->parent_ = partsWorldTransforms_[IndexBody].get();
+	/*hummer_->SetRadius(0.0f);*/
+	
 	//  パーツの変位の値
 	baseWorldTransform_.translation_.y = 0.9f;
 
@@ -236,6 +237,7 @@ void Player::Move(const float& speed) {
 // 通常初期化
 void Player::BehaviorRootInitialize() {
 	hummer_->SetScale(Vector3{0, 0, 0});
+	/*hummer_->SetRadius(0.0f);*/
 	partsWorldTransforms_[IndexLeftArm]->rotation_ = {0, 0, 0};
 	partsWorldTransforms_[IndexRightArm]->rotation_ = {0, 0, 0};
 	AnimationInit();
@@ -243,6 +245,7 @@ void Player::BehaviorRootInitialize() {
 // アタック初期化
 void Player::BehaviorAttackInitialize() {
 	hummer_->SetScale(Vector3{1, 1, 1});
+	//hummer_->SetRadius(1);
 	stiffeningTime_ = 0;
 	AttackEaseT_ = 0;
 	attackMoveT_ = 0;

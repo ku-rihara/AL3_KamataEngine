@@ -85,6 +85,7 @@ void GameScene::Update() {
 	skyDome_->Update();
 	ground_->Update();
 	player_->Update();
+	//hummer_->Update();
 	followCamera_->Update();
 	
 	for (std::unique_ptr<Enemy>& enemy : enemies_) {

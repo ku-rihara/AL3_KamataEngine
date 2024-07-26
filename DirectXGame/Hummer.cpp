@@ -32,7 +32,7 @@ void Hummer::Draw(const ViewProjection& viewProjection) {
 
 Vector3 Hummer::GetBaseCenterPosition() const {
 	// ローカル座標でのオフセット
-	const Vector3 offset = {0.0f, 1.5f, 0.0f};
+	const Vector3 offset = {0.0f, 9.5f, 0.0f};
 	// ワールド座標に変換
 	Vector3 worldPos = Transform(offset, worldTransform_.matWorld_);
 	return worldPos;
