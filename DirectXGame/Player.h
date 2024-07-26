@@ -33,6 +33,7 @@ private:
 	// 包含
 	LockOn* lockOn_;
 	Hummer* hummer_;
+	/*Hummer* hummer_;*/
 	// ダッシュ用ワーク
 	struct WorkDash {
 		// ダッシュ用の媒介変数
@@ -91,8 +92,8 @@ public:
 	void AnimationInit() override;
 	void AnimationUpdate() override;
 
-	//コールバック関数
-	void OnCollision() override;
+	// コールバック関数
+	 void OnCollision([[maybe_unused]] Colider* other)override;
 
 	// 調節項目を適用
 	void ApplyGlobalParameter();
@@ -100,4 +101,5 @@ public:
 	// setter
 	void SetViewProjection(const ViewProjection* viewProjection) { viewProjection_ = viewProjection; }
 	void SetLockOn(LockOn* lockon) { lockOn_ = lockon; }
+	void SetHummer(Hummer* hummer) { hummer_ = hummer; }
 };

@@ -2,7 +2,8 @@
 #include "Matrix4x4.h"
 #include<imgui.h>
 #include "cassert"
-
+#include"CollisionTypeIdDef.h"
+#include"Pi.h"
 Enemy::Enemy() {}
 
 void Enemy::Init(const std::vector<Model*>& models) {
@@ -23,6 +24,8 @@ void Enemy::Init(const std::vector<Model*>& models) {
 	partsWorldTransforms_[IndexHead]->parent_ = &baseWorldTransform_;
 	partsWorldTransforms_[IndexLeftThorn]->parent_ = partsWorldTransforms_[IndexHead].get();
 	partsWorldTransforms_[IndexRightThorn]->parent_ = partsWorldTransforms_[IndexHead].get();
+
+	Colider::SetTypeID(static_cast<uint32_t>(CollisionTypeIdDef::kEnemy));
 }
 
 void Enemy::Update() {
@@ -52,7 +55,7 @@ void Enemy::AnimationInit() {
 }
 
 void Enemy::AnimationUpdate() {
-	float pi = 3.14159265358f;
+
 	// 浮遊移動のサイクル
 	const uint16_t cycle = 10;
 	// 1フレームでのパラメータ加算値

@@ -5,11 +5,10 @@
 #include "cassert"
 #include <imgui.h>
 // class
-#include "LockOn.h"
+#include"CollisionTypeIdDef.h"
 #include "Hummer.h"
-
-float pi = 3.14159265358f;
-
+#include "LockOn.h"
+#include "Pi.h"
 Player::Player() {}
 
 void Player::Init(const std::vector<Model*>& models) {
@@ -25,8 +24,12 @@ void Player::Init(const std::vector<Model*>& models) {
 	partsWorldTransforms_[IndexHead]->parent_ = partsWorldTransforms_[IndexBody].get();
 	partsWorldTransforms_[IndexLeftArm]->parent_ = partsWorldTransforms_[IndexBody].get();
 	partsWorldTransforms_[IndexRightArm]->parent_ = partsWorldTransforms_[IndexBody].get();
-	//partsWorldTransforms_[IndexWeapon]->parent_ = partsWorldTransforms_[IndexBody].get();
-	// パーツの変位の値
+	////  ハンマー初期化
+	if (hummer_ != nullptr) {
+		hummer_->SetParent(*partsWorldTransforms_[IndexBody].get());
+	}
+	// partsWorldTransforms_[IndexWeapon]->parent_ = partsWorldTransforms_[IndexBody].get();
+	//  パーツの変位の値
 	baseWorldTransform_.translation_.y = 0.9f;
 
 	BehaviorRootInitialize();
@@ -40,8 +43,6 @@ void Player::Init(const std::vector<Model*>& models) {
 	globalParameter_->AddItem(groupName, "ArmR Translation", partsWorldTransforms_[IndexRightArm]->translation_);
 	globalParameter_->AddItem(groupName, "floatingCycle", floatingCycle_);
 	globalParameter_->AddItem(groupName, "floatingAmplitude", floatingAmplitude_);
-	//ハンマー初期化
-	hummer_->SetParent(*partsWorldTransforms_[IndexBody].get());
 }
 
 void Player::Update() {
@@ -85,7 +86,7 @@ void Player::Update() {
 		BehaviorJumpUpdate();
 		break;
 	}
-
+	hummer_->Update();
 	BaseCharacter::Update();
 }
 void Player::Draw(const ViewProjection& viewProjection) {
@@ -95,8 +96,6 @@ void Player::Draw(const ViewProjection& viewProjection) {
 /*関数*/
 void Player::AnimationUpdate() {
 
-	// 浮遊移動のサイクル
-	// floatingCycle_ = 70;
 	// 1フレームでのパラメータ加算値
 	const float step = 2.0f * float(pi) / floatingCycle_;
 	// パラメータを1ステップ分加算
@@ -167,7 +166,7 @@ void Player::BehaviorAttackUpdate() {
 
 	baseWorldTransform_.translation_ = Lerp(baseWorldTransform_.translation_, savePos_ + attackPos, attackMoveT_);
 	// 回転する
-
+	hummer_->Attack(AttackEaseT_);
 	partsWorldTransforms_[IndexRightArm]->rotation_.x = Lerp(2.4f, 5.0f, AttackEaseT_);
 	partsWorldTransforms_[IndexLeftArm]->rotation_.x = Lerp(2.4f, 5.0f, AttackEaseT_);
 }
@@ -184,7 +183,6 @@ void Player::BehabiorDashUpdate() {
 }
 
 void Player::BehaviorJumpUpdate() {
-
 	// 移動
 	baseWorldTransform_.translation_ += velocity_;
 	// 重力加速度
@@ -237,14 +235,14 @@ void Player::Move(const float& speed) {
 
 // 通常初期化
 void Player::BehaviorRootInitialize() {
-	/*partsWorldTransforms_[IndexWeapon]->scale_ = {};*/
+	hummer_->SetScale(Vector3{0, 0, 0});
 	partsWorldTransforms_[IndexLeftArm]->rotation_ = {0, 0, 0};
 	partsWorldTransforms_[IndexRightArm]->rotation_ = {0, 0, 0};
 	AnimationInit();
 }
 // アタック初期化
 void Player::BehaviorAttackInitialize() {
-	/*partsWorldTransforms_[IndexWeapon]->scale_ = {1, 1, 1};*/
+	hummer_->SetScale(Vector3{1, 1, 1});
 	stiffeningTime_ = 0;
 	AttackEaseT_ = 0;
 	attackMoveT_ = 0;
@@ -294,7 +292,13 @@ void Player::ApplyGlobalParameter() {
 	floatingAmplitude_ = globalParameter->GetValue<float>(groupName, "floatingAmplitude");
 }
 
-void Player::OnCollision() {
-	//ジャンプリクエスト
-	behaviorRequest_ = Behavior::kJump;
+void Player::OnCollision([[maybe_unused]] Colider* other) {
+	// 衝突相手の種別IDを取得
+	uint32_t typeID = other->GetTypeID();
+	// 衝突相手が敵なら
+	if (typeID == static_cast<uint32_t>(CollisionTypeIdDef::kEnemy)) {
+		// ジャンプリクエスト
+		behaviorRequest_ = Behavior::kJump;
 	}
+	
+}

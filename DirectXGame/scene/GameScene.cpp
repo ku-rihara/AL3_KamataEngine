@@ -31,16 +31,19 @@ void GameScene::Initialize() {
 	followCamera_ = std::make_unique<FollowCamera>();
 	lockOn_ = std::make_unique<LockOn>();
 	collisionManager_ = std::make_unique<CollisionManager>();
+	// 武器初期化
+	Model* weaponModel = modelPlayerWeapon_.get();
+	hummer_->Init(weaponModel);
+	player_->SetHummer(hummer_.get());
 
+	//
 	// 自キャラ初期化***********************************************************************
 	std::vector<Model*> playerModels = {modelFighterBody_.get(), modelFighterHead_.get(), modelFighterLeftArm_.get(), modelFighterRightArm_.get()};
 	player_->Init(playerModels);
 	player_->SetLockOn(lockOn_.get());
 	skyDome_->Init(modelSkyDome_.get());
 	ground_->Init(modelGround_.get());
-	//武器初期化
-	Model* weaponModel = modelPlayerWeapon_.get();
-	hummer_->Init(*weaponModel);
+	
 	//追尾カメラ初期化*********************************************************************************
 	followCamera_->Init();
 	followCamera_->SetLockOn(lockOn_.get());
@@ -58,7 +61,7 @@ void GameScene::Initialize() {
 
 	//setter
 	/*lockOn_->SetEnemy(enemy_);*/
-
+	
 	// 軸方向表示の表示を有効にする
 	AxisIndicator::GetInstance()->SetVisible(true);
 	// 軸方向表示が参照するビュープロジェクションを指定する（アドレス渡し）
@@ -177,6 +180,7 @@ void GameScene::CheckAllCollisions() {
 	for (const std::unique_ptr<Enemy>& enemy : enemies_) {
 		collisionManager_->AddCollider(enemy.get());
 	}
+	collisionManager_->AddCollider(hummer_.get());
 	//衝突判定と応答
 	collisionManager_->CheckAllCollisions();
 }
