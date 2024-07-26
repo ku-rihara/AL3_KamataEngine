@@ -31,10 +31,38 @@ private:
 private:
 	// 包含
 	LockOn* lockOn_;
+	//攻撃用定数
+	struct ConstAttack {
+		//振りかぶりの時間
+		uint32_t anticipationTime;
+		//ための時間
+		uint32_t chargeTime;
+		//攻撃振りの時間
+		uint32_t swingTime;
+		//硬直時間
+		uint32_t recoveryTime;
+		//振りかぶりの移動速さ
+		float anticipationSpeed;
+		//ための移動速さ
+		float chargeSpeed;
+		//攻撃振りの移動速さ
+		float swingSpeed;
+	};
+	//コンボの数
+	static const int comboNum = 3;
+	//コンボ定数表
+	static const std::array<ConstAttack, comboNum> kConstAttacks_;
 	// ダッシュ用ワーク
 	struct WorkDash {
 		// ダッシュ用の媒介変数
 		uint32_t dashPrameter_ = 0;
+	};
+	//攻撃用ワーク
+	struct WorkAttack {
+		uint32_t attackParameters_ = 0;
+		int32_t comboIndex = 0;
+		int32_t inComboPhase = 0;
+		bool comboNext = false;
 	};
 	// パーツの数
 	const int partsnum = 5;
@@ -44,6 +72,7 @@ private:
 	float stiffeningTime_ = 0;
 	float objectiveAngle_ = 0;
 	WorkDash workDash_;
+	WorkAttack workAttack_;
 
 	// ふるまい
 	Behavior behavior_ = Behavior::kRoot;
@@ -53,7 +82,6 @@ private:
 	// 浮遊ギミックの媒介変数
 	float floatingParameter_ = 0.0f;
 	float attackMoveT_ = 0;
-	float AttackEaseT_ = 0;
 	int32_t floatingCycle_;
 	float floatingAmplitude_;
 
@@ -94,7 +122,8 @@ public:
 
 	// 調節項目を適用
 	void ApplyGlobalParameter();
-
+	uint32_t GetSwingTime() const { return kConstAttacks_[workAttack_.comboIndex].swingTime; }
+	uint32_t GetAnticipationTime() const { return kConstAttacks_[workAttack_.comboIndex].anticipationTime; }
 	// setter
 	void SetViewProjection(const ViewProjection* viewProjection) { viewProjection_ = viewProjection; }
 	void SetLockOn(LockOn* lockon) { lockOn_ = lockon; }
