@@ -34,7 +34,8 @@ void GameScene::Initialize() {
 	collisionManager_ = std::make_unique<CollisionManager>();
 	// 武器初期化
 	Model* weaponModel = modelPlayerWeapon_.get();
-	hummer_->Init(weaponModel);
+	Model* effectModel = modelEffect_.get();
+	hummer_->Init(weaponModel, effectModel);
 	player_->SetHummer(hummer_.get());
 
 	//

@@ -236,6 +236,7 @@ void Player::Move(const float& speed) {
 
 // 通常初期化
 void Player::BehaviorRootInitialize() {
+	hummer_->HistoryClear();
 	hummer_->SetScale(Vector3{0, 0, 0});
 	hummer_->SetRadius(0.0f);
 	/*hummer_->SetRadius(0.0f);*/

@@ -4,6 +4,7 @@
 #include"CollisionTypeIdDef.h"
 //class
 #include"Enemy.h"
+
 Hummer::Hummer() {}
 
 void Hummer::SetParent(const WorldTransform& worldTransform) { 	
@@ -45,6 +46,13 @@ void Hummer::OnCollision([[maybe_unused]] Colider* other){
 	//衝突相手が敵なら
 	if (typeID == static_cast<uint32_t>(CollisionTypeIdDef::kEnemy)) {
 		Enemy* enemy = static_cast<Enemy*>(other);
+		uint32_t serialNum = enemy->GetSerialNum();
+		//接触履歴があるなら何もせず抜ける
+		if (collisionRecord_.CheckHistory(serialNum)) {
+			return;
+		}
+		//接触履歴に登録
+		collisionRecord_.AddHistory(serialNum);
 	
 			enemy->GetCenterPos();
 			
@@ -63,3 +71,7 @@ void Hummer::HitEffectUpdate() {
 		effectEase = 1.0f;
 	}
 }
+
+//履歴抹消
+void Hummer::HistoryClear() { collisionRecord_.Clear();
+ }

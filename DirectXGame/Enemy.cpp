@@ -5,7 +5,13 @@
 #include"CollisionTypeIdDef.h"
 #include"Easing.h"
 #include"Pi.h"
-Enemy::Enemy() {}
+uint32_t Enemy::nextSerialNum_ = 0;
+Enemy::Enemy() {
+//シリアル番号を振る
+	serialNum_ = nextSerialNum_;
+	//次の番号を加算
+	++nextSerialNum_;
+}
 
 void Enemy::Init(const std::vector<Model*>& models) {
 
