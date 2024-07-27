@@ -33,9 +33,10 @@ void Player::Init(const std::vector<Model*>& models) {
 	partsWorldTransforms_[IndexHead]->parent_ = partsWorldTransforms_[IndexBody].get();
 	partsWorldTransforms_[IndexLeftArm]->parent_ = partsWorldTransforms_[IndexBody].get();
 	partsWorldTransforms_[IndexRightArm]->parent_ = partsWorldTransforms_[IndexBody].get();
-	partsWorldTransforms_[IndexWeapon]->parent_ = partsWorldTransforms_[IndexBody].get();
+	partsWorldTransforms_[IndexWeapon]->parent_ = &baseWorldTransform_;
 	// パーツの変位の値
 	baseWorldTransform_.translation_.y = 0.9f;
+
 
 	BehaviorRootInitialize();
 	globalParameter_ = GlobalParameter::GetInstance();
@@ -46,17 +47,14 @@ void Player::Init(const std::vector<Model*>& models) {
 	globalParameter_->AddItem(groupName, "Head Translation", partsWorldTransforms_[IndexHead]->translation_);
 	globalParameter_->AddItem(groupName, "ArmL Translation", partsWorldTransforms_[IndexLeftArm]->translation_);
 	globalParameter_->AddItem(groupName, "ArmR Translation", partsWorldTransforms_[IndexRightArm]->translation_);
+	globalParameter_->AddItem(groupName, "HummerRotate", partsWorldTransforms_[IndexWeapon]->rotation_);
 	globalParameter_->AddItem(groupName, "floatingCycle", floatingCycle_);
 	globalParameter_->AddItem(groupName, "floatingAmplitude", floatingAmplitude_);
 }
 
 void Player::Update() {
 	ApplyGlobalParameter();
-	ImGui::Begin("P");
-	ImGui::DragInt("comBoIndex", &workAttack_.comboIndex);
-	/*ImGui::DragFloat3("", &0.01f);
-	ImGui::DragFloat3("", & 0.01f);*/
-	ImGui::End();
+	
 	if (behaviorRequest_) {
 		// 振る舞いを変更する
 		behavior_ = behaviorRequest_.value();
@@ -96,7 +94,7 @@ void Player::Update() {
 		BehaviorJumpUpdate();
 		break;
 	}
-
+	
 	BaseCharacter::Update();
 }
 void Player::Draw(const ViewProjection& viewProjection) { BaseCharacter::Draw(viewProjection); }
@@ -156,10 +154,12 @@ void Player::BehaviorAttackUpdate() {
 	}
 	// 動作時間
 	uint32_t swingTime = kConstAttacks_[workAttack_.comboIndex].swingTime;
+	//硬直時間
+	uint32_t waitTime = kConstAttacks_[workAttack_.comboIndex].recoveryTime;
 	Vector3 attackPos = attackDirection_ * attackSpeed;
 
 	//コンボ上限に達していない
-	if (workAttack_.comboIndex < comboNum) {
+	if (workAttack_.comboIndex < comboNum-1) {
 		if (Input::GetInstance()->GetJoystickState(0, joyState) && Input::GetInstance()->GetJoystickStatePrevious(0, joyStatePre)) {
 			//攻撃ボタンをトリガーしたら
 			if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER && joyStatePre.Gamepad.wButtons != XINPUT_GAMEPAD_RIGHT_SHOULDER) {
@@ -169,27 +169,35 @@ void Player::BehaviorAttackUpdate() {
 		}
 	}
 	//既定の時間経過で通常攻撃に戻る
-	if (workAttack_.attackParameters_ >= swingTime) {
+	if (workAttack_.attackParameters_ + workAttack_.stopParameters_ >= swingTime + waitTime) {
 		//コンボ継続なら次のコンボに進む
 		if (workAttack_.comboNext) {
 			workAttack_.comboNext = false;
-			workAttack_.comboIndex++;
+		
+				workAttack_.comboIndex++;
+			
 			BehaviorAttackInitialize();
 		} else {
 			workAttack_.comboIndex = 0;
 			behaviorRequest_ = Behavior::kRoot;
 		}
 	}
-	workAttack_.attackParameters_++; 
+	
+	if (workAttack_.attackParameters_ < swingTime) {
+		workAttack_.attackParameters_++; 
+		
+	} else {
+		workAttack_.stopParameters_++;
+	}
 	//コンボ段階によってモーションを分岐
 	switch (workAttack_.comboIndex) {
 	
 	case 0:
 		// 0:右から半時計回り
 		Move(kConstAttacks_[workAttack_.comboIndex].swingSpeed);
-		partsWorldTransforms_[IndexWeapon]->rotation_.x = 3.0f * pi / 7.0f;
-		
-		partsWorldTransforms_[IndexWeapon]->rotation_.y = Lerp(pi / 4.0f,-pi/4.0f, float(workAttack_.attackParameters_) / float(kConstAttacks_[workAttack_.comboIndex].swingTime));
+		partsWorldTransforms_[IndexWeapon]->rotation_.x = Lerp(0.7f, 2.41f, float(workAttack_.attackParameters_) / float(kConstAttacks_[workAttack_.comboIndex].swingTime));	
+		partsWorldTransforms_[IndexWeapon]->rotation_.y = -0.1f;
+		partsWorldTransforms_[IndexWeapon]->rotation_.z = -1.56f;	
 		break;
 	case 1:
 		//上から降り下ろし
@@ -203,16 +211,17 @@ void Player::BehaviorAttackUpdate() {
 		 //}
 		baseWorldTransform_.translation_ = Lerp(baseWorldTransform_.translation_, savePos_ + attackPos, attackMoveT_);
 		// 回転する
-		partsWorldTransforms_[IndexWeapon]->rotation_.x = Lerp(-pi / 4.0f, 3.0f*pi / 7.0f, float(workAttack_.attackParameters_ )/ float(kConstAttacks_[workAttack_.comboIndex].swingTime));
-		 partsWorldTransforms_[IndexRightArm]->rotation_.x = Lerp(2.4f, 5.0f, float(workAttack_.attackParameters_) / float(kConstAttacks_[workAttack_.comboIndex].swingTime));
-		partsWorldTransforms_[IndexLeftArm]->rotation_.x = Lerp(2.4f, 5.0f, float(workAttack_.attackParameters_) / float(kConstAttacks_[workAttack_.comboIndex].swingTime));
+		partsWorldTransforms_[IndexWeapon]->rotation_.x = Lerp(-pi / 4.0f, 3.0f * pi / 7.0f, float(workAttack_.attackParameters_) / float(swingTime));
+		partsWorldTransforms_[IndexRightArm]->rotation_.x = Lerp(2.4f, 5.0f, float(workAttack_.attackParameters_) / float(swingTime));
+		partsWorldTransforms_[IndexLeftArm]->rotation_.x = Lerp(2.4f, 5.0f, float(workAttack_.attackParameters_) / float(swingTime));
 		break;
 	case 2:
 	default:
 		//右からホームラン
-		partsWorldTransforms_[IndexWeapon]->rotation_.x = 3.0f * pi / 7.0f;
+		partsWorldTransforms_[IndexWeapon]->rotation_.x = Lerp(0.5f, 6.8f, float(workAttack_.attackParameters_) / float(swingTime));
+		partsWorldTransforms_[IndexWeapon]->rotation_.y = -0.1f;
+		partsWorldTransforms_[IndexWeapon]->rotation_.z = -1.56f;	
 		partsWorldTransforms_[IndexBody]->rotation_.y = Lerp(pi / 2.0f, -3.0f * pi / 2.0f, float(workAttack_.attackParameters_) / float(swingTime));
-		partsWorldTransforms_[IndexWeapon]->rotation_.y = Lerp(pi / 2.0f, -3.0f*pi / 2.0f, float(workAttack_.attackParameters_) / float(swingTime));
 		break;
 
 	}
@@ -298,6 +307,7 @@ void Player::Move(const float& speed) {
 // 通常初期化
 void Player::BehaviorRootInitialize() {
 	partsWorldTransforms_[IndexWeapon]->scale_ = {};
+	partsWorldTransforms_[IndexBody]->rotation_ = {0, 0, 0};
 	partsWorldTransforms_[IndexLeftArm]->rotation_ = {0, 0, 0};
 	partsWorldTransforms_[IndexRightArm]->rotation_ = {0, 0, 0};
 	AnimationInit();
@@ -307,6 +317,7 @@ void Player::BehaviorAttackInitialize() {
 	//攻撃モーションパラメータ初期化
 	stiffeningTime_ = 0;
 	workAttack_.attackParameters_ = 0;
+	workAttack_.stopParameters_ = 0;
 	attackMoveT_ = 0;
 	//各パーツの初期化
 	partsWorldTransforms_[IndexWeapon]->scale_ = {1, 1, 1};
@@ -357,6 +368,7 @@ void Player::ApplyGlobalParameter() {
 	partsWorldTransforms_[IndexHead]->translation_ = globalParameter->GetValue<Vector3>(groupName, "Head Translation");
 	partsWorldTransforms_[IndexLeftArm]->translation_ = globalParameter->GetValue<Vector3>(groupName, "ArmL Translation");
 	partsWorldTransforms_[IndexRightArm]->translation_ = globalParameter->GetValue<Vector3>(groupName, "ArmR Translation");
+	partsWorldTransforms_[IndexWeapon]->rotation_ = globalParameter->GetValue<Vector3>(groupName, "HummerRotate");
 	floatingCycle_ = globalParameter->GetValue<int32_t>(groupName, "floatingCycle");
 	floatingAmplitude_ = globalParameter->GetValue<float>(groupName, "floatingAmplitude");
 }

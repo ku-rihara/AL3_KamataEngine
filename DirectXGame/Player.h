@@ -60,6 +60,7 @@ private:
 	//攻撃用ワーク
 	struct WorkAttack {
 		uint32_t attackParameters_ = 0;
+		uint32_t stopParameters_ = 0;
 		int32_t comboIndex = 0;
 		int32_t inComboPhase = 0;
 		bool comboNext = false;
