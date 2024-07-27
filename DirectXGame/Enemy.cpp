@@ -3,6 +3,7 @@
 #include<imgui.h>
 #include "cassert"
 #include"CollisionTypeIdDef.h"
+#include"Easing.h"
 #include"Pi.h"
 Enemy::Enemy() {}
 
@@ -24,7 +25,8 @@ void Enemy::Init(const std::vector<Model*>& models) {
 	partsWorldTransforms_[IndexHead]->parent_ = &baseWorldTransform_;
 	partsWorldTransforms_[IndexLeftThorn]->parent_ = partsWorldTransforms_[IndexHead].get();
 	partsWorldTransforms_[IndexRightThorn]->parent_ = partsWorldTransforms_[IndexHead].get();
-
+	/*partsWorldTransforms_[IndexEffect]->parent_ = &baseWorldTransform_;*/
+	
 	Colider::SetTypeID(static_cast<uint32_t>(CollisionTypeIdDef::kEnemy));
 }
 
@@ -46,6 +48,7 @@ void Enemy::Update() {
 }
 void Enemy::Draw(const ViewProjection& viewProjection) {
 	BaseCharacter::Draw(viewProjection);
+	
 }
 
 
@@ -89,3 +92,5 @@ Vector3 Enemy::GetBaseCenterPosition() const {
 	 return worldPos;
 
 }
+
+  

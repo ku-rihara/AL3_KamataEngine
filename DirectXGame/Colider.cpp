@@ -7,6 +7,7 @@ void Colider::Init() {
 void Colider::UpdateWorldTransform() {
 	//ワールド座標をワールドトランスフォームに適用
 	worldTransform_.translation_ =GetBaseCenterPosition();
+	worldTransform_.scale_ = {radius_, radius_, radius_};
 	worldTransform_.UpdateMatrix();
 }
 

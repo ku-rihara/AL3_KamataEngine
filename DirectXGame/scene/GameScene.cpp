@@ -20,6 +20,7 @@ void GameScene::Initialize() {
 	modelPlayerWeapon_.reset(Model::CreateFromOBJ("Hunmer", true));
 	modelEnemyBody_.reset(Model::CreateFromOBJ("EnemyHead", true));
 	modelEnemyThurn_.reset(Model::CreateFromOBJ("EnemyThurn", true));
+	modelEffect_.reset(Model::CreateFromOBJ("DamageEffect", true));
 	/// <summary>
 	/// 生成
 	/// </summary>

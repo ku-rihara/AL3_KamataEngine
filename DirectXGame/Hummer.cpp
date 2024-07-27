@@ -39,12 +39,27 @@ Vector3 Hummer::GetBaseCenterPosition() const {
 }
 
 void Hummer::OnCollision([[maybe_unused]] Colider* other){
+
 	//衝突相手の種別IDを取得
 	uint32_t typeID = other->GetTypeID();
 	//衝突相手が敵なら
 	if (typeID == static_cast<uint32_t>(CollisionTypeIdDef::kEnemy)) {
 		Enemy* enemy = static_cast<Enemy*>(other);
-		enemy;
+	
+			enemy->GetCenterPos();
+			
 	}
 }
 
+
+
+void Hummer::HitEffectInit() { effectEase = 0; }
+
+void Hummer::HitEffectUpdate() {
+
+	effectEase += 0.05f;
+
+	if (effectEase >= 1.0f) {
+		effectEase = 1.0f;
+	}
+}

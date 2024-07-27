@@ -9,6 +9,7 @@ private:
 	
 	Model* model_ = nullptr;
 	WorldTransform worldTransform_;
+	float effectEase = 0;
 	
 public:
 	Hummer();
@@ -17,6 +18,8 @@ public:
 	void Update();
 	void Attack(float easeT);
 	void Draw(const ViewProjection& viewProjection);
+	void HitEffectUpdate();
+	void HitEffectInit();
 
 	Vector3 GetBaseCenterPosition() const override;
 	 void OnCollision([[maybe_unused]] Colider* other) override;

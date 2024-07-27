@@ -56,7 +56,7 @@ void CollisionManager::CheckCollisionPair(Colider* colliderA, Colider* colliderB
 	//座標AとBの距離を求める
 	float distance = Length(subtract);
 	//球同士の交差判定
-	if (distance <= 1 +3) {
+	if (distance <= colliderA->GetRadius()+colliderB->GetRadius()) {
 		colliderA->OnCollision(colliderB);
 		colliderB->OnCollision(colliderA);
 	

@@ -237,6 +237,7 @@ void Player::Move(const float& speed) {
 // 通常初期化
 void Player::BehaviorRootInitialize() {
 	hummer_->SetScale(Vector3{0, 0, 0});
+	hummer_->SetRadius(0.0f);
 	/*hummer_->SetRadius(0.0f);*/
 	partsWorldTransforms_[IndexLeftArm]->rotation_ = {0, 0, 0};
 	partsWorldTransforms_[IndexRightArm]->rotation_ = {0, 0, 0};
@@ -245,7 +246,7 @@ void Player::BehaviorRootInitialize() {
 // アタック初期化
 void Player::BehaviorAttackInitialize() {
 	hummer_->SetScale(Vector3{1, 1, 1});
-	//hummer_->SetRadius(1);
+	hummer_->SetRadius(1.0f);
 	stiffeningTime_ = 0;
 	AttackEaseT_ = 0;
 	attackMoveT_ = 0;

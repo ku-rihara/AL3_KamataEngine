@@ -50,6 +50,7 @@ private: // メンバ変数
 	//敵モデル
 	std::unique_ptr<Model> modelEnemyBody_ = nullptr; 
 	std::unique_ptr<Model> modelEnemyThurn_ = nullptr;
+	std::unique_ptr<Model> modelEffect_ = nullptr;
 
 	/// <summary>
 	/// 包含
