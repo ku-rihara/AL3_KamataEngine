@@ -247,7 +247,7 @@ void Player::BehaviorRootInitialize() {
 // アタック初期化
 void Player::BehaviorAttackInitialize() {
 	hummer_->SetScale(Vector3{1, 1, 1});
-	hummer_->SetRadius(1.0f);
+	hummer_->SetRadius(3.0f);
 	stiffeningTime_ = 0;
 	AttackEaseT_ = 0;
 	attackMoveT_ = 0;
