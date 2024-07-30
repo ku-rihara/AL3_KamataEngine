@@ -53,6 +53,7 @@ void GameScene::Initialize() {
 	worldTransform_.Initialize();
 	viewProjection_.Initialize();
 	//ロックオン初期化*****************************************************************************************
+	//エフェクト初期化
 	lockOn_->Init();
 	//コリジョンマネージャー
 	collisionManager_->Init();

@@ -16,6 +16,11 @@
   </Class>
   <Class Name="BaseCharacter" Collapsed="true">
     <Position X="4.25" Y="1.5" Width="1.5" />
+    <InheritanceLine Type="Colider">
+      <InheritanceModifierLabel ManuallyPlaced="true" ManuallySized="true">
+        <Position X="0.11" Y="0.06" Height="0.182" Width="0.596" />
+      </InheritanceModifierLabel>
+    </InheritanceLine>
     <TypeIdentifier>
       <HashCode>AIQQAAgAAAgAAgEAAAAAAAAAAAIAAAAAAAACAAAAAgA=</HashCode>
       <FileName>BaseCharacter.h</FileName>
@@ -31,14 +36,14 @@
   <Class Name="GameScene" Collapsed="true">
     <Position X="4.25" Y="5" Width="1.75" />
     <TypeIdentifier>
-      <HashCode>CAYACEACAAEAAwEEAAAKAAKDBoA4EFEAAQBAEIBAAkI=</HashCode>
+      <HashCode>CAYACEACAAEAAwEEABAKAAKDBoA4EFEAAQBAEIBAAkI=</HashCode>
       <FileName>scene\GameScene.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Hummer" Collapsed="true">
     <Position X="0.5" Y="1.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAQAAAgAAACAAgAAAAAAAAIAAIAAAIgAIEACAgAIAAA=</HashCode>
+      <HashCode>AAQAAAgAAACAAgAAQAQAAAIAAIAAAIgAIEACAgAICAA=</HashCode>
       <FileName>Hummer.h</FileName>
     </TypeIdentifier>
   </Class>

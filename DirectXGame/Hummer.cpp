@@ -14,6 +14,7 @@ void Hummer::Init(Model* models) {
 	
 	worldTransform_.Initialize();
 	model_=models;
+	//種族IDを設定(ハンマー)
 	Colider::SetTypeID(static_cast<uint32_t>(CollisionTypeIdDef::kPlayerWeapon));
 	// コライダー初期化
 	Colider::Init();

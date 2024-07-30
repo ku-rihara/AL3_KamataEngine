@@ -25,7 +25,7 @@ void Enemy::Init(const std::vector<Model*>& models) {
 	partsWorldTransforms_[IndexHead]->parent_ = &baseWorldTransform_;
 	partsWorldTransforms_[IndexLeftThorn]->parent_ = partsWorldTransforms_[IndexHead].get();
 	partsWorldTransforms_[IndexRightThorn]->parent_ = partsWorldTransforms_[IndexHead].get();
-	/*partsWorldTransforms_[IndexEffect]->parent_ = &baseWorldTransform_;*/
+
 	
 	Colider::SetTypeID(static_cast<uint32_t>(CollisionTypeIdDef::kEnemy));
 }
