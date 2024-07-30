@@ -19,21 +19,16 @@ void Hummer::Init(Model* models) {
 	Colider::SetTypeID(static_cast<uint32_t>(CollisionTypeIdDef::kPlayerWeapon));
 	// コライダー初期化
 	Colider::Init();
+
 }
 
 void Hummer::Update() { 
-	  // 各エフェクトを更新
-	for (std::unique_ptr<Effect>& effect : effects_) {
-		  if (effect) {
-			  effect->Update();
-		  }
-	}
+	 HitEffectUpdate();
 	worldTransform_.UpdateMatrix(); }
 
 void Hummer::Attack(float easeT) { worldTransform_.rotation_.x = Lerp(-pi / 3, pi / 2, easeT); }
 
-void Hummer::Draw(
-	const ViewProjection& viewProjection) { 
+void Hummer::Draw(	const ViewProjection& viewProjection) { 
 	// 各エフェクトを更新
 	for (std::unique_ptr<Effect>& effect : effects_) {
 		if (effect) {
@@ -75,7 +70,9 @@ void Hummer::HitEffectInit(const Vector3& pos) {
 void Hummer::HitEffectUpdate() {
 	// 各エフェクトを更新
 	for (std::unique_ptr<Effect>& effect : effects_) {
-		effect->Update();
+		if (effect) {
+			effect->Update();
+		}
 	}
 	//完了したエフェクトを消す
 	effects_.erase(std::remove_if(effects_.begin(), effects_.end(), 

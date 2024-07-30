@@ -4,12 +4,10 @@
 #include"WorldTransform.h"
 #include "Effect.h"
 
-class Enemy;
 class Hummer final :public Colider {
 private:
 	std::vector<std::unique_ptr<Effect>> effects_;
 	Model* model_ = nullptr;
-	Enemy* enemy_;
 	WorldTransform worldTransform_;
 	
 public:
@@ -28,6 +26,4 @@ public:
 	const Vector3& GetRotation() const { return worldTransform_.rotation_; }
 	void SetRotation(const Vector3& rotation) { worldTransform_.rotation_ = rotation; }
 	void SetScale(const Vector3& scale) { worldTransform_.scale_ = scale; }
-	
-	void SetEnemy(Enemy* enemy) { enemy_ = enemy; }
 };

@@ -37,7 +37,6 @@ void GameScene::Initialize() {
 	// 武器初期化
 	Model* weaponModel = modelPlayerWeapon_.get();
 	hummer_->Init(weaponModel);
-	hummer_->SetEnemy(enemy_.get());
 	player_->SetHummer(hummer_.get());
 
 	//
@@ -148,10 +147,11 @@ void GameScene::Draw() {
 	/// </summary>
 	skyDome_->Draw(viewProjection_);
 	ground_->Draw(viewProjection_);
-	player_->Draw(viewProjection_);
 	for (std::unique_ptr<Enemy>& enemy : enemies_) {
 		enemy->Draw(viewProjection_);
 	}
+	player_->Draw(viewProjection_);
+	
 	collisionManager_->Draw(viewProjection_);
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();

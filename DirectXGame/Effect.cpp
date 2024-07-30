@@ -5,6 +5,7 @@ void Effect::Init(Model* model, const Vector3& Pos) {
 	model_ = model;
 	worldTransform_.translation_ = Pos;
 	easeT_ = 0.0f;
+	model_->SetAlpha(0.5f);
 	isFinished_ = false;
 	worldTransform_.Initialize();
 }
@@ -16,10 +17,12 @@ void Effect::Update() {
 		easeT_ = 1.0f;
 		isFinished_ = true;
 	}
-
-	worldTransform_.scale_ = Lerp({}, Vector3(1, 1, 1), easeT_);
+	model_->SetAlpha(Lerp(0.5f, 0.0f, easeT_));
+	worldTransform_.scale_ = Lerp({0.5f,0.5f,0.5f}, Vector3(3.5f, 3.5f, 3.5f), easeT_);
+	worldTransform_.UpdateMatrix();
 }
 void Effect::Draw(const ViewProjection& viewProjection) {
+	
 	model_->Draw(worldTransform_, viewProjection); 
 }
 
