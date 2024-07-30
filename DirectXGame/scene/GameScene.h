@@ -20,6 +20,7 @@
 #include "CollisionManager.h"
 #include"LockOn.h"
 #include "Hummer.h"
+//#include "Effect.h"
 
 /// <summary>
 /// ゲームシーン
@@ -50,14 +51,14 @@ private: // メンバ変数
 	//敵モデル
 	std::unique_ptr<Model> modelEnemyBody_ = nullptr; 
 	std::unique_ptr<Model> modelEnemyThurn_ = nullptr;
-	std::unique_ptr<Model> modelEffect_ = nullptr;
-
+	
 	/// <summary>
 	/// 包含
 	/// </summary>
 	std::unique_ptr<Player> player_;
 	std::unique_ptr<Hummer> hummer_;
 	std::unique_ptr<Enemy> enemy_;
+	/*std::unique_ptr<Effect> effect_;*/
 	std::unique_ptr<Skydome> skyDome_;
 	std::unique_ptr<Ground> ground_;
 	std::unique_ptr<FollowCamera> followCamera_;
@@ -78,6 +79,10 @@ private: // メンバ変数
 	std::list<std::unique_ptr<Enemy>> enemies_;
 	//ロックオン
 	std::unique_ptr<LockOn> lockOn_;
+
+public:
+	// エフェクトモデル
+	static std::unique_ptr<Model> modelEffect_;
 
 public: // メンバ関数
 	/// <summary>

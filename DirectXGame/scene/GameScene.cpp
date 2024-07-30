@@ -3,6 +3,7 @@
 #include "TextureManager.h"
 #include <cassert>
 
+std::unique_ptr<Model> GameScene::modelEffect_ = nullptr;
 GameScene::GameScene() {}
 
 void GameScene::Initialize() {
@@ -20,11 +21,12 @@ void GameScene::Initialize() {
 	modelPlayerWeapon_.reset(Model::CreateFromOBJ("Hunmer", true));
 	modelEnemyBody_.reset(Model::CreateFromOBJ("EnemyHead", true));
 	modelEnemyThurn_.reset(Model::CreateFromOBJ("EnemyThurn", true));
-	modelEffect_.reset(Model::CreateFromOBJ("DamageEffect", true));
+	GameScene::modelEffect_.reset(Model::CreateFromOBJ("DamageEffect", true));
 	/// <summary>
 	/// 生成
 	/// </summary>
 	player_ = std::make_unique<Player>();
+	/*effect_ = std::make_unique<Effect>();*/
 	hummer_ = std::make_unique<Hummer>();
 	enemy_ = std::make_unique<Enemy>();
 	skyDome_ = std::make_unique<Skydome>();
@@ -35,6 +37,7 @@ void GameScene::Initialize() {
 	// 武器初期化
 	Model* weaponModel = modelPlayerWeapon_.get();
 	hummer_->Init(weaponModel);
+	hummer_->SetEnemy(enemy_.get());
 	player_->SetHummer(hummer_.get());
 
 	//
@@ -44,26 +47,25 @@ void GameScene::Initialize() {
 	player_->SetLockOn(lockOn_.get());
 	skyDome_->Init(modelSkyDome_.get());
 	ground_->Init(modelGround_.get());
-	
-	//追尾カメラ初期化*********************************************************************************
+
+	// 追尾カメラ初期化*********************************************************************************
 	followCamera_->Init();
 	followCamera_->SetLockOn(lockOn_.get());
-	//敵キャラ初期化*******************************************************************************
+	// 敵キャラ初期化*******************************************************************************
 	AddEnemy();
 	worldTransform_.Initialize();
 	viewProjection_.Initialize();
-	//ロックオン初期化*****************************************************************************************
-	//エフェクト初期化
+	// ロックオン初期化*****************************************************************************************
 	lockOn_->Init();
-	//コリジョンマネージャー
+	// コリジョンマネージャー
 	collisionManager_->Init();
 	// 自キャラのワールドトランスフォームを追従カメラにセット
 	followCamera_->SetTarget(&player_->GetWorldTransform());
 	player_->SetViewProjection(&followCamera_->GetViewProjection());
 
-	//setter
+	// setter
 	/*lockOn_->SetEnemy(enemy_);*/
-	
+
 	// 軸方向表示の表示を有効にする
 	AxisIndicator::GetInstance()->SetVisible(true);
 	// 軸方向表示が参照するビュープロジェクションを指定する（アドレス渡し）
@@ -83,21 +85,21 @@ void GameScene::Update() {
 	// デバッグカメラモード切り替え------------------------------
 	collisionManager_->Update();
 #endif
-	//各クラス更新処理---------
+	// 各クラス更新処理---------
 	skyDome_->Update();
 	ground_->Update();
 	player_->Update();
-	//hummer_->Update();
+	// hummer_->Update();
 	followCamera_->Update();
-	
+
 	for (std::unique_ptr<Enemy>& enemy : enemies_) {
 		enemy->Update();
 	}
-	lockOn_->Update(enemies_,viewProjection_);
+	lockOn_->Update(enemies_, viewProjection_);
 
-	//衝突判定と応答
+	// 衝突判定と応答
 	CheckAllCollisions();
-	//衝突マネージャー更新(WorldTransform)
+	// 衝突マネージャー更新(WorldTransform)
 	collisionManager_->UpdateWorldTransform();
 
 	if (isDebugCameraActive_ == true) { // デバッグカメラがアクティブなら
@@ -107,7 +109,7 @@ void GameScene::Update() {
 		viewProjection_.matProjection = debugCamera_->GetViewProjection().matProjection;
 
 		viewProjection_.TransferMatrix();
-		
+
 	}
 	// アクティブでない
 	else if (isDebugCameraActive_ == false) { // デバッグカメラがアクティブでない
@@ -130,7 +132,7 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに背景スプライトの描画処理を追加できる
 	/// </summary>
-	
+
 	// スプライト描画後処理
 	Sprite::PostDraw();
 	// 深度バッファクリア
@@ -176,14 +178,14 @@ void GameScene::AddEnemy() {
 }
 
 void GameScene::CheckAllCollisions() {
-	//衝突マネージャーのリセット
+	// 衝突マネージャーのリセット
 	collisionManager_->Reset();
-	//コライダーをリストに登録
+	// コライダーをリストに登録
 	collisionManager_->AddCollider(player_.get());
 	for (const std::unique_ptr<Enemy>& enemy : enemies_) {
 		collisionManager_->AddCollider(enemy.get());
 	}
 	collisionManager_->AddCollider(hummer_.get());
-	//衝突判定と応答
+	// 衝突判定と応答
 	collisionManager_->CheckAllCollisions();
 }

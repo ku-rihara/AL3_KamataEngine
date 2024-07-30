@@ -1,35 +1,47 @@
 #include "Hummer.h"
-#include"Easing.h"
-#include"Pi.h"
-#include"CollisionTypeIdDef.h"
-//class
-#include"Enemy.h"
+#include "CollisionTypeIdDef.h"
+#include "Easing.h"
+#include "Pi.h"
+// class
+#include "Enemy.h"
+#include "GameScene.h"
+
+
 Hummer::Hummer() {}
 
-void Hummer::SetParent(const WorldTransform& worldTransform) { 	
-	worldTransform_.parent_ = &worldTransform; 
-}
+void Hummer::SetParent(const WorldTransform& worldTransform) { worldTransform_.parent_ = &worldTransform; }
 
-void Hummer::Init(Model* models) { 
-	
+void Hummer::Init(Model* models) {
+
 	worldTransform_.Initialize();
-	model_=models;
-	//種族IDを設定(ハンマー)
+	model_ = models;
+	// 種族IDを設定(ハンマー)
 	Colider::SetTypeID(static_cast<uint32_t>(CollisionTypeIdDef::kPlayerWeapon));
 	// コライダー初期化
 	Colider::Init();
 }
 
-void Hummer::Update() { worldTransform_.UpdateMatrix(); }
+void Hummer::Update() { 
+	  // 各エフェクトを更新
+	for (std::unique_ptr<Effect>& effect : effects_) {
+		  if (effect) {
+			  effect->Update();
+		  }
+	}
+	worldTransform_.UpdateMatrix(); }
 
-void Hummer::Attack(float easeT) { 
-	worldTransform_.rotation_.x = Lerp(-pi / 3, pi / 2, easeT); 
+void Hummer::Attack(float easeT) { worldTransform_.rotation_.x = Lerp(-pi / 3, pi / 2, easeT); }
+
+void Hummer::Draw(
+	const ViewProjection& viewProjection) { 
+	// 各エフェクトを更新
+	for (std::unique_ptr<Effect>& effect : effects_) {
+		if (effect) {
+			effect->Draw(viewProjection);
+		}
+	}
+	model_->Draw(worldTransform_, viewProjection);
 }
-
-void Hummer::Draw(const ViewProjection& viewProjection) { 
-	model_->Draw(worldTransform_, viewProjection); 
-}
-
 
 Vector3 Hummer::GetBaseCenterPosition() const {
 	// ローカル座標でのオフセット
@@ -39,28 +51,34 @@ Vector3 Hummer::GetBaseCenterPosition() const {
 	return worldPos;
 }
 
-void Hummer::OnCollision([[maybe_unused]] Colider* other){
+void Hummer::OnCollision([[maybe_unused]] Colider* other) {
 
-	//衝突相手の種別IDを取得
+	// 衝突相手の種別IDを取得
 	uint32_t typeID = other->GetTypeID();
-	//衝突相手が敵なら
+	// 衝突相手が敵なら
 	if (typeID == static_cast<uint32_t>(CollisionTypeIdDef::kEnemy)) {
 		Enemy* enemy = static_cast<Enemy*>(other);
-	
-			enemy->GetCenterPos();
-			
+
+		enemy->GetCenterPos();
+		HitEffectInit(enemy->GetCenterPos());
 	}
 }
 
+void Hummer::HitEffectInit(const Vector3& pos) {
+	std::unique_ptr<Effect> effect = std::make_unique<Effect>();
 
+	effect->Init(GameScene::modelEffect_.get(), pos);
 
-void Hummer::HitEffectInit() { effectEase = 0; }
+	effects_.push_back(std::move(effect));
+}
 
 void Hummer::HitEffectUpdate() {
-
-	effectEase += 0.05f;
-
-	if (effectEase >= 1.0f) {
-		effectEase = 1.0f;
+	// 各エフェクトを更新
+	for (std::unique_ptr<Effect>& effect : effects_) {
+		effect->Update();
 	}
+	//完了したエフェクトを消す
+	effects_.erase(std::remove_if(effects_.begin(), effects_.end(), 
+		[](const std::unique_ptr<Effect>& effect) { return effect->IsFinished(); }),
+		effects_.end());
 }
