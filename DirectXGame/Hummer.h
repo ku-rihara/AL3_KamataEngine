@@ -6,7 +6,7 @@
 
 class Hummer final :public Colider {
 private:
-	std::vector<std::unique_ptr<Effect>> effects_;
+	std::list<std::unique_ptr<Effect>> effects_;
 	Model* model_ = nullptr;
 	WorldTransform worldTransform_;
 	

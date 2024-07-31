@@ -2,6 +2,7 @@
 #include "CollisionTypeIdDef.h"
 #include "Easing.h"
 #include "Pi.h"
+#include<imgui.h>
 // class
 #include "Enemy.h"
 #include "GameScene.h"
@@ -23,18 +24,24 @@ void Hummer::Init(Model* models) {
 }
 
 void Hummer::Update() { 
+	ImGui::Begin("Hummer");
+	ImGui::Text("effectNum:%d",(int)effects_.size());
+	ImGui::End();
 	 HitEffectUpdate();
-	worldTransform_.UpdateMatrix(); }
+	worldTransform_.UpdateMatrix(); 
+}
 
 void Hummer::Attack(float easeT) { worldTransform_.rotation_.x = Lerp(-pi / 3, pi / 2, easeT); }
 
 void Hummer::Draw(	const ViewProjection& viewProjection) { 
 	// 各エフェクトを更新
+	effects_.reverse();
 	for (std::unique_ptr<Effect>& effect : effects_) {
 		if (effect) {
 			effect->Draw(viewProjection);
 		}
 	}
+	effects_.reverse();
 	model_->Draw(worldTransform_, viewProjection);
 }
 
