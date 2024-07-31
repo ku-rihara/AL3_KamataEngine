@@ -11,17 +11,17 @@ void LockOn::Init() {
 }
 
 void LockOn::Update(const std::list<std::unique_ptr<Enemy>>& enemies, const ViewProjection& viewProjection) {
-	if (Input::GetInstance()->GetJoystickState(0, joyState)) {
+	if (Input::GetInstance()->GetJoystickState(0, joyState) && Input::GetInstance()->GetJoystickStatePrevious(0, joyStatePre)) {
 		// ロックオン外す
 		if (target_) {
-			if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_B) {
+			if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_B &&joyState.Gamepad.wButtons != XINPUT_GAMEPAD_B) {
 				target_ = nullptr;
 
 			} else if (IsOutOfRange(enemies, viewProjection)) {
 				target_ = nullptr;
 			}
 		} else {
-			if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_B) { // ロックオンする
+			if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_B && joyState.Gamepad.wButtons != XINPUT_GAMEPAD_B) { // ロックオンする
 				// ロックオン対象の検索
 				Search(enemies, viewProjection);
 			}
