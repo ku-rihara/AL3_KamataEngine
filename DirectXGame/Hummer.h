@@ -3,7 +3,7 @@
 #include "Model.h"
 #include "WorldTransform.h"
 #include "CollisionRecord.h"
-
+#include "Effect.h"
 //class CollisionRecord;
 class Hummer final : public Colider {
 private:
@@ -11,16 +11,17 @@ private:
 	CollisionRecord collisionRecord_;
 	WorldTransform worldTransform_;
 	float effectEase = 0;
+	std::list<std::unique_ptr<Effect>> effects_;
 
 public:
 	Hummer();
 	void SetParent(const WorldTransform& worldTransform);
-	void Init(Model* WeaponModel, Model* effectModel);
+	void Init(Model* WeaponModel);
 	void Update();
 	void Attack(float easeT);
 	void Draw(const ViewProjection& viewProjection);
 	void HitEffectUpdate();
-	void HitEffectInit();
+	void HitEffectInit(const Vector3& pos);
     void HistoryClear();
 
 	Vector3 GetBaseCenterPosition() const override;

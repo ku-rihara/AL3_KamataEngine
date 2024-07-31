@@ -114,6 +114,7 @@
     <ClCompile Include="CollisionManager.cpp" />
     <ClCompile Include="CollisionRecord.cpp" />
     <ClCompile Include="Easing.cpp" />
+    <ClCompile Include="Effect.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="FollowCamera.cpp" />
     <ClCompile Include="Geometry\Matrix4x4.cpp" />
@@ -159,6 +160,7 @@
     <ClInclude Include="CollisionRecord.h" />
     <ClInclude Include="CollisionTypeIdDef.h" />
     <ClInclude Include="Easing.h" />
+    <ClInclude Include="Effect.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="FollowCamera.h" />
     <ClInclude Include="Geometry\fMatrix4x4.h" />

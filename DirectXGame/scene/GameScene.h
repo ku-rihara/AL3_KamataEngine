@@ -50,8 +50,7 @@ private: // メンバ変数
 	//敵モデル
 	std::unique_ptr<Model> modelEnemyBody_ = nullptr; 
 	std::unique_ptr<Model> modelEnemyThurn_ = nullptr;
-	std::unique_ptr<Model> modelEffect_ = nullptr;
-
+	
 	/// <summary>
 	/// 包含
 	/// </summary>
@@ -78,6 +77,9 @@ private: // メンバ変数
 	std::list<std::unique_ptr<Enemy>> enemies_;
 	//ロックオン
 	std::unique_ptr<LockOn> lockOn_;
+
+public:
+	static std::unique_ptr<Model> modelEffect_;
 
 public: // メンバ関数
 	/// <summary>

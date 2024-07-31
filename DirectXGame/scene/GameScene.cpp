@@ -3,6 +3,8 @@
 #include "TextureManager.h"
 #include <cassert>
 
+std::unique_ptr<Model> GameScene::modelEffect_ = nullptr;
+
 GameScene::GameScene() {}
 
 void GameScene::Initialize() {
@@ -20,7 +22,7 @@ void GameScene::Initialize() {
 	modelPlayerWeapon_.reset(Model::CreateFromOBJ("Hunmer", true));
 	modelEnemyBody_.reset(Model::CreateFromOBJ("EnemyHead", true));
 	modelEnemyThurn_.reset(Model::CreateFromOBJ("EnemyThurn", true));
-	modelEffect_.reset(Model::CreateFromOBJ("DamageEffect", true));
+	GameScene::modelEffect_.reset(Model::CreateFromOBJ("DamageEffect", true));
 	/// <summary>
 	/// 生成
 	/// </summary>
@@ -34,8 +36,8 @@ void GameScene::Initialize() {
 	collisionManager_ = std::make_unique<CollisionManager>();
 	// 武器初期化
 	Model* weaponModel = modelPlayerWeapon_.get();
-	Model* effectModel = modelEffect_.get();
-	hummer_->Init(weaponModel, effectModel);
+	
+	hummer_->Init(weaponModel);
 	player_->SetHummer(hummer_.get());
 
 	//
@@ -146,10 +148,11 @@ void GameScene::Draw() {
 	/// </summary>
 	skyDome_->Draw(viewProjection_);
 	ground_->Draw(viewProjection_);
-	player_->Draw(viewProjection_);
 	for (std::unique_ptr<Enemy>& enemy : enemies_) {
 		enemy->Draw(viewProjection_);
 	}
+	player_->Draw(viewProjection_);
+	
 	collisionManager_->Draw(viewProjection_);
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();

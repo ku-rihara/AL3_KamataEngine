@@ -2,8 +2,10 @@
 #include"Easing.h"
 #include"Pi.h"
 #include"CollisionTypeIdDef.h"
+#include<imgui.h>
 //class
 #include"Enemy.h"
+#include"GameScene.h"
 
 Hummer::Hummer() {}
 
@@ -20,13 +22,27 @@ void Hummer::Init(Model* models) {
 	Colider::Init();
 }
 
-void Hummer::Update() { worldTransform_.UpdateMatrix(); }
+void Hummer::Update() {
+	ImGui::Begin("Hummer");
+	ImGui::Text("effectNum:%d", (int)effects_.size());
+	ImGui::End();
+	HitEffectUpdate();
+	worldTransform_.UpdateMatrix();
+}
 
 void Hummer::Attack(float easeT) { 
 	worldTransform_.rotation_.x = Lerp(-pi / 3, pi / 2, easeT); 
 }
 
 void Hummer::Draw(const ViewProjection& viewProjection) { 
+	// 各エフェクトを更新
+	effects_.reverse();
+	for (std::unique_ptr<Effect>& effect : effects_) {
+		if (effect) {
+			effect->Draw(viewProjection);
+		}
+	}
+	effects_.reverse();
 	model_->Draw(worldTransform_, viewProjection); 
 }
 
@@ -53,23 +69,30 @@ void Hummer::OnCollision([[maybe_unused]] Colider* other){
 		}
 		//接触履歴に登録
 		collisionRecord_.AddHistory(serialNum);
-	
-			enemy->GetCenterPos();
-			
+		//エフェクト初期化
+		HitEffectInit(enemy->GetCenterPos());
 	}
 }
 
 
 
-void Hummer::HitEffectInit() { effectEase = 0; }
+void Hummer::HitEffectInit(const Vector3& pos) {
+	std::unique_ptr<Effect> effect = std::make_unique<Effect>();
+
+	effect->Init(GameScene::modelEffect_.get(), pos);
+
+	effects_.push_back(std::move(effect));
+}
 
 void Hummer::HitEffectUpdate() {
-
-	effectEase += 0.05f;
-
-	if (effectEase >= 1.0f) {
-		effectEase = 1.0f;
+	// 各エフェクトを更新
+	for (std::unique_ptr<Effect>& effect : effects_) {
+		if (effect) {
+			effect->Update();
+		}
 	}
+	// 完了したエフェクトを消す
+	effects_.erase(std::remove_if(effects_.begin(), effects_.end(), [](const std::unique_ptr<Effect>& effect) { return effect->IsFinished(); }), effects_.end());
 }
 
 //履歴抹消
