@@ -2,10 +2,11 @@
 #include "AxisIndicator.h"
 #include "TextureManager.h"
 #include <cassert>
-
+#include"ShakeManager.h"
 GameScene::GameScene() {}
 
 void GameScene::Initialize() {
+	ShakeManager::GetInstance().SetShakeGroupSettings(1, 0.3f, 600, 0.05f);
 	dxCommon_ = DirectXCommon::GetInstance();
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
@@ -64,7 +65,13 @@ void GameScene::Update() {
 	}
 	// デバッグカメラモード切り替え------------------------------
 #endif
-
+	if (Input::GetInstance()->TriggerKey(DIK_S)) {
+		shakeTime_ = 0;
+	
+	}
+	
+		ShakeManager::GetInstance().Update(1, shakeTime_);
+	
 	
 	skyDome_->Update();
 	ground_->Update();

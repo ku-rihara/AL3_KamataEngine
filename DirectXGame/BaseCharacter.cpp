@@ -1,4 +1,5 @@
 #include "BaseCharacter.h"
+#include"ShakeManager.h"
 
 void BaseCharacter::Init(const std::vector<Model*>& models) {
 	models_ = models; // モデル
@@ -8,6 +9,8 @@ void BaseCharacter::Init(const std::vector<Model*>& models) {
 	for (auto& worldTransform : partsWorldTransforms_) {
 		worldTransform->Initialize();
 	}
+	ShakeManager::GetInstance().AddShake(partsWorldTransforms_[0]->translation_,1);
+	
 }
 
 void BaseCharacter::Update() {

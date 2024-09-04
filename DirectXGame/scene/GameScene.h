@@ -59,7 +59,8 @@ private: // メンバ変数
 	/// メンバ変数
 	/// </summary>
 	bool isDebugCameraActive_ = false;
-
+	float shakeTime_ = 0;
+	bool isStart = false;
 	// ImGuiで値を入力する変数
 	float inputFloat3[3] = {0, 0, 0};
 	

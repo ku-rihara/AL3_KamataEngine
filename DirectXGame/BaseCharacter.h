@@ -11,8 +11,8 @@ protected:
 	std::vector<Model*> models_;
 	//ワールド変換データ
 	WorldTransform baseWorldTransform_;
-	std::vector<std::unique_ptr<WorldTransform>> partsWorldTransforms_;
 
+	std::vector<std::unique_ptr<WorldTransform>> partsWorldTransforms_;
 
 public:
 	virtual void Init(const std::vector<Model*>& models);
